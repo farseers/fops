@@ -1,0 +1,259 @@
+<template>
+	<div class="system-user-container layout-padding">
+		<el-card shadow="hover" class="layout-padding-auto">
+			<div class="system-user-search mb15">
+				<el-input size="default" v-model="state.keyWord" placeholder="请输入任务名称" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.clientId" placeholder="请输入客户端ID" style="max-width: 180px"  class="ml10"> </el-input>
+        <el-select v-model="state.enable" placeholder="请选择运行状态"  class="ml10" @change="onEnableChange">
+          <el-option label="全部" :value="-1"></el-option>
+          <el-option label="停止" :value="0"></el-option>
+          <el-option label="正常" :value="1"></el-option>
+        </el-select>
+        <el-select v-model="state.taskStatus" placeholder="请选择调度状态" class="ml10" @change="onStatusChange">
+          <el-option label="全部" :value="-1"></el-option>
+          <el-option label="未开始" :value="0"></el-option>
+          <el-option label="调度中" :value="1"></el-option>
+          <el-option label="调度失败" :value="2"></el-option>
+          <el-option label="执行中" :value="3"></el-option>
+          <el-option label="失败" :value="4"></el-option>
+          <el-option label="成功" :value="5"></el-option>
+        </el-select>
+				<el-button size="default" type="primary" class="ml10" @click="onQuery">
+					<el-icon>
+						<ele-Search />
+					</el-icon>
+					查询
+				</el-button>
+			</div>
+			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%" class="mytable">
+				<el-table-column prop="Id" label="序号" width="60" />
+				<el-table-column label="名称" style="line-height: 45px;height: 45px">
+                  <template #default="scope">
+                    <div style="float: left;padding-right: 10px;padding-top: 5px">
+                      <el-tag style="color:#7a7a7a" v-if="scope.row.Task.Status==0">未开始</el-tag>
+                      <el-tag v-if="scope.row.Task.Status==1">调度中</el-tag>
+                      <el-tag style="color:red" v-if="scope.row.Task.Status==2">调度失败</el-tag>
+                      <el-tag v-if="scope.row.Task.Status==3">执行中</el-tag>
+                      <el-tag v-if="scope.row.Task.Status==4">失败</el-tag>
+                      <el-tag style="color:green" v-if="scope.row.Task.Status==5">成功</el-tag>
+                    </div>
+                    <div @click="onTaskList(scope.row)" style="float: left">
+                      <span>{{scope.row.Task.Caption}}</span><br>
+                      <span>{{scope.row.Name}}（<span style="color:#4eb8ff">Ver:{{scope.row.Ver}}</span>）</span>
+                    </div>
+                  </template>
+            </el-table-column>
+            <el-table-column prop="StartAt" label="开始时间" width="170" show-overflow-tooltip>
+                      <template #default="scope">
+                        <span label="开始时间">{{scope.row.StartAt}}</span><br>
+                        <span label="上次运行时间">{{scope.row.LastRunAt}}</span>
+                      </template>
+            </el-table-column>
+                <el-table-column label="下次运行时间" width="170" show-overflow-tooltip>
+                  <template #default="scope">
+                    <span label="Cron表达式">{{scope.row.Cron}}</span><br>
+                    <span style="color:red" label="下次运行时间" v-if="compareTime(scope.row.NextAt)"> {{scope.row.NextAt}}</span>
+                    <span label="下次运行时间" v-else> {{scope.row.NextAt}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="运行情况" width="170" show-overflow-tooltip>
+                  <template #default="scope">
+                    <span>平均耗时: {{scope.row.RunSpeedAvg}}ms</span><br>
+                    <span>运行次数: {{scope.row.RunCount}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="数据">
+                  <template #default="scope">
+                    <span>{{friendlyJSONstringify(scope.row.Data)}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="客户端信息" width="180" show-overflow-tooltip>
+                  <template #default="scope">
+                    <span>{{scope.row.Task.Client.Name}}</span><br>
+                    <span>{{scope.row.Task.Client.Ip}}:{{scope.row.Task.Client.Port}}</span>
+                  </template>
+                </el-table-column>
+				<el-table-column label="操作" width="150">
+					<template #default="scope">
+						<el-button size="small" text type="primary" @click="onDetail(scope.row)">详情信息</el-button>
+                        <el-button size="small" text type="warning" @click="onEdit('edit',scope.row)">修改</el-button>
+                        <el-button size="small" text type="danger" @click="onLog(scope.row)">日志</el-button>
+                        <el-button size="small" text type="info" @click="onDel(scope.row)">删除</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+			<el-pagination
+				@size-change="onHandleSizeChange"
+				@current-change="onHandleCurrentChange"
+				class="mt15"
+				:pager-count="5"
+				:page-sizes="[10, 20, 30]"
+				v-model:current-page="state.tableData.param.pageNum"
+				background
+				v-model:page-size="state.tableData.param.pageSize"
+				layout="total, sizes, prev, pager, next, jumper"
+				:total="state.tableData.total"
+			>
+			</el-pagination>
+		</el-card>
+    <editDialog ref="editDialogRef" @refresh="getTableData()" />
+    <detailDialog ref="detailDialogRef" @refresh="getTableData()" />
+    <taskDialog ref="taskDialogRef" @refresh="getTableData()" />
+    <logDialog ref="logDialogRef" @refresh="getTableData()" />
+	</div>
+</template>
+
+<script setup lang="ts" name="fopsTask">
+import { defineAsyncComponent, reactive, onMounted, ref,nextTick  } from 'vue';
+import { ElMessageBox, ElMessage } from 'element-plus';
+import {fopsApi} from "/@/api/fops";
+import {friendlyJSONstringify} from "@intlify/shared";
+import {time} from "echarts/core";
+
+// 引入 api 请求接口
+const serverApi = fopsApi();
+
+// 引入组件
+const editDialog = defineAsyncComponent(() => import('/src/views/fops/task/editGroupDialog.vue'));
+const detailDialog = defineAsyncComponent(() => import('/src/views/fops/task/detailGroupDialog.vue'));
+const taskDialog = defineAsyncComponent(() => import('/src/views/fops/task/taskDialog.vue'));
+const logDialog = defineAsyncComponent(() => import('/src/views/fops/task/logDialog.vue'));
+
+
+// 定义变量内容
+const editDialogRef = ref();
+const detailDialogRef = ref();
+const taskDialogRef = ref();
+const logDialogRef = ref();
+const state = reactive({
+  keyWord:'',
+  enable:-1,
+  taskStatus:-1,
+  clientId:'',
+	tableData: {
+		data: [],
+		total: 0,
+		loading: false,
+		param: {
+			pageNum: 1,
+			pageSize: 10,
+		},
+	},
+  NowTime:new Date()
+});
+
+// 初始化表格数据
+const getTableData = () => {
+	state.tableData.loading = true;
+  // if (state.clientId==""){
+  //   state.clientId="0"
+  // }
+
+  const params = new URLSearchParams();
+  params.append('name', state.keyWord);
+  params.append('enable', state.enable.toString());
+  params.append('taskStatus', state.taskStatus.toString());
+  params.append('clientId', state.clientId);
+  params.append('pageSize', state.tableData.param.pageSize.toString());
+  params.append('pageIndex', state.tableData.param.pageNum.toString());
+
+  // 请求接口
+  serverApi.taskGroupList(params.toString()).then(function (res){
+    if (res.Status){
+      state.tableData.data = res.Data.List;
+      state.tableData.total = res.Data.RecordCount;
+      setTimeout(() => {
+        state.tableData.loading = false;
+      }, 500);
+    }else{
+      state.tableData.data=[]
+      setTimeout(() => {
+        state.tableData.loading = false;
+      }, 500);
+    }
+
+  })
+
+};
+const compareTime=(nextAt:any)=>{
+  var convertedTime = new Date(nextAt)
+  return convertedTime.getTime() < new Date().getTime();
+}
+const onDetail=(row: any)=>{
+  detailDialogRef.value.openDialog(row);
+}
+const onQuery=()=>{
+  getTableData();
+}
+const onEdit=(type: string, row: any)=>{
+  editDialogRef.value.openDialog(type, row);
+}
+const onTaskList=(row: any)=>{
+  taskDialogRef.value.openDialog(row);
+}
+const onLog=(row: any)=>{
+  logDialogRef.value.openDialog(row);
+}
+// 删除用户
+const onDel = (row: any) => {
+	ElMessageBox.confirm(`此操作将永久删除：“${row.Name}”，是否继续?`, '提示', {
+		confirmButtonText: '确认',
+		cancelButtonText: '取消',
+		type: 'warning',
+	})
+		.then(() => {
+      // 删除逻辑
+      serverApi.taskDel({"TaskGroupId":row.Id}).then(function (res){
+        if (res.Status){
+          getTableData();
+          ElMessage.success('删除成功');
+        }else{
+          ElMessage.error(res.StatusMessage)
+        }
+      })
+		})
+		.catch(() => {});
+};
+// 分页改变
+const onHandleSizeChange = (val: number) => {
+	state.tableData.param.pageSize = val;
+	getTableData();
+};
+// 分页改变
+const onHandleCurrentChange = (val: number) => {
+	state.tableData.param.pageNum = val;
+	getTableData();
+};
+const onStatusChange=(value:number)=>{
+  state.taskStatus=value
+}
+const onEnableChange=(value:number)=>{
+  state.enable=value
+}
+// 页面加载时
+onMounted(() => {
+  // 等待下一次 DOM 更新后再执行代码
+  nextTick(() => {
+    getTableData();
+  });
+});
+</script>
+
+<style lang="scss">
+.system-user-container {
+	:deep(.el-card__body) {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		overflow: auto;
+		.el-table {
+			flex: 1;
+		}
+	}
+}
+
+.el-table tr td {
+  /* 你的自定义样式 */
+  padding: 0 0!important;
+}
+</style>

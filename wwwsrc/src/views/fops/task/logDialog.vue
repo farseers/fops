@@ -1,0 +1,185 @@
+<template>
+		<el-dialog  v-model="state.dialog.isShowDialog" style="height: 80%;width: 70%">
+      <div class="system-user-container layout-padding" style="width: 100%;">
+        <el-card shadow="hover" class="layout-padding-auto">
+          <div class="system-user-search mb15">
+            <span>任务组名称：{{state.dialog.title}}</span>
+<!--            <el-input size="default" v-model="state.taskGroupId" placeholder="请输入任务组ID" style="max-width: 180px"> </el-input>-->
+            <el-select v-model="state.logLevel" placeholder="请选择日志等级" clearable class="ml10">
+              <el-option label="全部" :value="-1"></el-option>
+              <el-option label="Trace" :value="0"></el-option>
+              <el-option label="Debug" :value="1"></el-option>
+              <el-option label="Info" :value="2"></el-option>
+              <el-option label="Warning" :value="3"></el-option>
+              <el-option label="Error" :value="4"></el-option>
+              <el-option label="Critical" :value="5"></el-option>
+            </el-select>
+            <el-button size="default" type="primary" class="ml10" @click="onQuery">
+              <el-icon>
+                <ele-Search />
+              </el-icon>
+              查询
+            </el-button>
+          </div>
+          <el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
+            <el-table-column prop="Id" label="序号" width="100" />
+            <!--				<el-table-column prop="TaskGroupId" label="任务组ID" show-overflow-tooltip></el-table-column>-->
+            <el-table-column label="名称" width="250">
+              <template #default="scope">
+                <span>{{scope.row.Caption}}</span><br>
+                <span>{{scope.row.Name}}（<span style="color:blue">Ver:{{scope.row.Ver}}</span>）</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="TaskId" width="220" label="任务ID" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="LogLevel" width="100" label="日志级别" show-overflow-tooltip>
+              <template #default="scope">
+                <el-tag v-if="scope.row.LogLevel==0">Trace</el-tag>
+                <el-tag v-if="scope.row.LogLevel==1">Debug</el-tag>
+                <el-tag v-if="scope.row.LogLevel==2">Information</el-tag>
+                <el-tag v-if="scope.row.LogLevel==3">Warning</el-tag>
+                <el-tag v-if="scope.row.LogLevel==4">Error</el-tag>
+                <el-tag v-if="scope.row.LogLevel==5">Critical</el-tag>
+                <el-tag v-if="scope.row.LogLevel==6">NoneLevel</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="Content" label="日志内容"></el-table-column>
+            <el-table-column prop="CreateAt" width="200" label="日志时间" show-overflow-tooltip></el-table-column>
+            <!--				<el-table-column label="操作" width="100">-->
+            <!--					<template #default="scope">-->
+            <!--						<el-button size="small" text type="primary" @click="onDetail(scope.row)">详情信息</el-button>-->
+            <!--            <el-button size="small" text type="primary" @click="onEdit('edit',scope.row)">修改</el-button>-->
+            <!--            <el-button size="small" text type="primary" @click="onDel(scope.row)">删除</el-button>-->
+            <!--					</template>-->
+            <!--				</el-table-column>-->
+          </el-table>
+          <el-pagination
+              @size-change="onHandleSizeChange"
+              @current-change="onHandleCurrentChange"
+              class="mt15"
+              :pager-count="5"
+              :page-sizes="[10, 20, 30]"
+              v-model:current-page="state.tableData.param.pageNum"
+              background
+              v-model:page-size="state.tableData.param.pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="state.tableData.total"
+          >
+          </el-pagination>
+        </el-card>
+      </div>
+		</el-dialog>
+</template>
+
+<script setup lang="ts" name="fopsTask">
+import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
+import { ElMessageBox, ElMessage } from 'element-plus';
+import {fopsApi} from "/@/api/fops";
+
+// 引入 api 请求接口
+const serverApi = fopsApi();
+// 引入组件
+
+
+// 定义变量内容
+const editDialogRef = ref();
+const state = reactive({
+  keyWord:'',
+  taskGroupId:'',
+  logLevel:-1,
+  tableData: {
+    data: [],
+    total: 0,
+    loading: false,
+    param: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+  },dialog: {
+    isShowDialog: false,
+    type: '',
+    title: '',
+    submitTxt: '',
+  },
+});
+
+// 初始化表格数据
+const getTableData = () => {
+  state.tableData.loading = true;
+
+  const params = new URLSearchParams();
+  params.append('logLevel', state.logLevel.toString());
+  params.append('taskGroupId', state.taskGroupId.toString());
+  params.append('pageSize', state.tableData.param.pageSize.toString());
+  params.append('pageIndex', state.tableData.param.pageNum.toString());
+
+  // 请求接口
+  serverApi.taskLogList(params.toString()).then(function (res){
+    if (res.Status){
+      state.tableData.data = res.Data.List;
+      state.tableData.total = res.Data.RecordCount;
+      setTimeout(() => {
+        state.tableData.loading = false;
+      }, 500);
+    }else{
+      state.tableData.data=[]
+      setTimeout(() => {
+        state.tableData.loading = false;
+      }, 500);
+    }
+
+  })
+
+};
+const onDetail=(row: any)=>{
+
+}
+const onEdit=(type: string,row:any)=>{
+  editDialogRef.value.openDialog(type, row);
+}
+const openDialog = (row: any) => {
+  state.taskGroupId=row.Id
+  state.dialog.isShowDialog = true;
+  state.dialog.title = row.Caption;
+  getTableData();
+};
+// 关闭弹窗
+const closeDialog = () => {
+  state.dialog.isShowDialog = false;
+};
+// 分页改变
+const onHandleSizeChange = (val: number) => {
+  state.tableData.param.pageSize = val;
+  getTableData();
+};
+// 分页改变
+const onHandleCurrentChange = (val: number) => {
+  state.tableData.param.pageNum = val;
+  getTableData();
+};
+const onQuery=()=>{
+  getTableData();
+}
+// 页面加载时
+onMounted(() => {
+  getTableData();
+});
+// 暴露变量
+defineExpose({
+  openDialog,
+  closeDialog,
+});
+</script>
+
+<style scoped lang="scss">
+.system-user-container {
+  :deep(.el-card__body) {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: auto;
+    .el-table {
+      flex: 1;
+    }
+  }
+}
+</style>
