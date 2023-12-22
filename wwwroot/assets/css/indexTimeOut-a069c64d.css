@@ -1,0 +1,1 @@
+@charset "UTF-8";.system-user-container :deep(.el-card__body){display:flex;flex-direction:column;flex:1;overflow:auto}.system-user-container :deep(.el-card__body) .el-table{flex:1}.el-table tr td{padding:0!important}

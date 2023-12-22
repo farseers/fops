@@ -30,6 +30,11 @@
 				<el-table-column label="名称" style="line-height: 45px;height: 45px">
                   <template #default="scope">
                     <div style="float: left;padding-right: 10px;padding-top: 5px">
+                      <el-tag cursor="cursor" @click="onIsEnable(scope.row)" v-if="scope.row.IsEnable">启用</el-tag>
+                      <el-tag cursor="cursor" @click="onIsEnable(scope.row)" v-else>停用</el-tag>
+<!--                      <el-switch v-model="scope.row.IsEnable" @click="onIsEnable(scope.row)" inline-prompt active-text="启用" inactive-text="停用"></el-switch>-->
+                    </div>
+                    <div style="float: left;padding-right: 10px;padding-top: 5px">
                       <el-tag style="color:#7a7a7a" v-if="scope.row.Task.Status==0">未开始</el-tag>
                       <el-tag v-if="scope.row.Task.Status==1">调度中</el-tag>
                       <el-tag style="color:red" v-if="scope.row.Task.Status==2">调度失败</el-tag>
@@ -45,15 +50,15 @@
             </el-table-column>
             <el-table-column prop="StartAt" label="开始时间" width="170" show-overflow-tooltip>
                       <template #default="scope">
-                        <span label="开始时间">{{scope.row.StartAt}}</span><br>
-                        <span label="上次运行时间">{{scope.row.LastRunAt}}</span>
+                        <span title="开始时间">{{scope.row.StartAt}}</span><br>
+                        <span title="上次运行时间">{{scope.row.LastRunAt}}</span>
                       </template>
             </el-table-column>
                 <el-table-column label="下次运行时间" width="170" show-overflow-tooltip>
                   <template #default="scope">
-                    <span label="Cron表达式">{{scope.row.Cron}}</span><br>
-                    <span style="color:red" label="下次运行时间" v-if="compareTime(scope.row.NextAt)"> {{scope.row.NextAt}}</span>
-                    <span label="下次运行时间" v-else> {{scope.row.NextAt}}</span>
+                    <span title="Cron表达式" >{{scope.row.Cron}}</span><br>
+                    <span style="color:red" title="下次运行时间" v-if="compareTime(scope.row.NextAt)" > {{scope.row.NextAt}}</span>
+                    <span title="下次运行时间" v-else> {{scope.row.NextAt}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="运行情况" width="170" show-overflow-tooltip>
@@ -214,6 +219,29 @@ const onDel = (row: any) => {
 		})
 		.catch(() => {});
 };
+//启用停用
+const onIsEnable=(row: any)=>{
+  var setEnable=row.IsEnable
+  if(setEnable){
+    setEnable=false
+  }else{
+    setEnable=true
+  }
+  // 设置状态
+  serverApi.taskGroupSetEnable({"taskGroupId":row.Id,"enable":setEnable}).then(function (res){
+    if (res.Status){
+      getTableData();
+      if(setEnable){
+        ElMessage.success('启用-成功');
+      }else{
+        ElMessage.success('停用-成功');
+      }
+
+    }else{
+      ElMessage.error(res.StatusMessage)
+    }
+  })
+}
 // 分页改变
 const onHandleSizeChange = (val: number) => {
 	state.tableData.param.pageSize = val;

@@ -137,6 +137,12 @@ export function fopsApi() {
 				url: url,
 				method: 'get',
 			});
+		},taskGroupSetEnable: (param: object) => {
+			return requestFS({
+				url: '/basicapi/taskGroup/setEnable',
+				method: 'post',
+				data:param,
+			});
 		},taskUpdate: (param: object) => {
 			return requestFS({
 				url: '/basicapi/taskGroup/update',
