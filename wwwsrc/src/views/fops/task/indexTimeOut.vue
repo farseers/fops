@@ -38,7 +38,7 @@
               <el-tag style="color:green" v-if="scope.row.Task.Status==5">成功</el-tag>
             </div>
             <div @click="onTaskList(scope.row)" style="float: left">
-              <span>{{scope.row.Task.Caption}}</span><br>
+              <span>{{scope.row.Caption}}</span><br>
               <span>{{scope.row.Name}}（<span style="color:#4eb8ff">Ver:{{scope.row.Ver}}</span>）</span>
             </div>
           </template>
@@ -151,14 +151,10 @@ const getTableData = () => {
     if (res.Status){
       state.tableData.data = res.Data.List;
       state.tableData.total = res.Data.RecordCount;
-      setTimeout(() => {
         state.tableData.loading = false;
-      }, 500);
     }else{
       state.tableData.data=[]
-      setTimeout(() => {
         state.tableData.loading = false;
-      }, 500);
     }
 
   })

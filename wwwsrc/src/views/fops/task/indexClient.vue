@@ -48,11 +48,6 @@
             <span>调度：{{scope.row.ScheduleAt}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="Status" label="客户端状态" show-overflow-tooltip>
-          <template #default="scope">
-
-          </template>
-        </el-table-column>
         <el-table-column label="队列数量" show-overflow-tooltip>
           <template #default="scope">
             <span>队列数量：{{scope.row.QueueCount}}</span><br>
@@ -147,14 +142,10 @@ const getTableData = () => {
     if (res.Status){
       state.tableData.data = res.Data;
       state.tableData.total = res.Data.length;
-      setTimeout(() => {
         state.tableData.loading = false;
-      }, 500);
     }else{
       state.tableData.data=[]
-      setTimeout(() => {
         state.tableData.loading = false;
-      }, 500);
     }
 
   })

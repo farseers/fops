@@ -31,7 +31,7 @@
                   <template #default="scope">
                     <div style="float: left;padding-right: 10px;padding-top: 5px">
                       <el-tag cursor="cursor" @click="onIsEnable(scope.row)" v-if="scope.row.IsEnable">启用</el-tag>
-                      <el-tag cursor="cursor" @click="onIsEnable(scope.row)" v-else>停用</el-tag>
+                      <el-tag  style="color:#7a7a7a" cursor="cursor" @click="onIsEnable(scope.row)" v-else>停用</el-tag>
 <!--                      <el-switch v-model="scope.row.IsEnable" @click="onIsEnable(scope.row)" inline-prompt active-text="启用" inactive-text="停用"></el-switch>-->
                     </div>
                     <div style="float: left;padding-right: 10px;padding-top: 5px">
@@ -43,7 +43,7 @@
                       <el-tag style="color:green" v-if="scope.row.Task.Status==5">成功</el-tag>
                     </div>
                     <div @click="onTaskList(scope.row)" style="float: left">
-                      <span>{{scope.row.Task.Caption}}</span><br>
+                      <span>{{scope.row.Caption}}</span><br>
                       <span>{{scope.row.Name}}（<span style="color:#4eb8ff">Ver:{{scope.row.Ver}}</span>）</span>
                     </div>
                   </template>
@@ -222,25 +222,37 @@ const onDel = (row: any) => {
 //启用停用
 const onIsEnable=(row: any)=>{
   var setEnable=row.IsEnable
+  var tips=""
   if(setEnable){
     setEnable=false
+    tips="停用"
   }else{
     setEnable=true
+    tips="启用"
   }
-  // 设置状态
-  serverApi.taskGroupSetEnable({"taskGroupId":row.Id,"enable":setEnable}).then(function (res){
-    if (res.Status){
-      getTableData();
-      if(setEnable){
-        ElMessage.success('启用-成功');
-      }else{
-        ElMessage.success('停用-成功');
-      }
 
-    }else{
-      ElMessage.error(res.StatusMessage)
-    }
+  ElMessageBox.confirm(`该任务即将：“${tips}”，是否继续?`, '提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
   })
+      .then(() => {
+        // 设置状态
+        serverApi.taskGroupSetEnable({"taskGroupId":row.Id,"enable":setEnable}).then(function (res){
+          if (res.Status){
+            getTableData();
+            if(setEnable){
+              ElMessage.success('启用-成功');
+            }else{
+              ElMessage.success('停用-成功');
+            }
+
+          }else{
+            ElMessage.error(res.StatusMessage)
+          }
+        })
+      })
+      .catch(() => {});
 }
 // 分页改变
 const onHandleSizeChange = (val: number) => {
