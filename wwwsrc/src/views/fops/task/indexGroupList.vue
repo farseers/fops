@@ -7,7 +7,7 @@
         <el-select v-model="state.enable" placeholder="请选择运行状态"  class="ml10" @change="onEnableChange">
           <el-option label="全部" :value="-1"></el-option>
           <el-option label="停止" :value="0"></el-option>
-          <el-option label="正常" :value="1"></el-option>
+          <el-option label="启用" :value="1"></el-option>
         </el-select>
         <el-select v-model="state.taskStatus" placeholder="请选择调度状态" class="ml10" @change="onStatusChange">
           <el-option label="全部" :value="-1"></el-option>
