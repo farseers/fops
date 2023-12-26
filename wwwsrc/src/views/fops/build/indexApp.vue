@@ -2,6 +2,14 @@
 	<div class="system-user-container layout-padding">
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
+        <el-select v-model="state.clusterId" placeholder="请选择集群" class="ml10" @change="onClusterChange">
+          <el-option
+              v-for="item in state.clusterData"
+              :key="item.Id"
+              :label="item.Name"
+              :value="item.Id"
+          ></el-option>
+        </el-select>
 <!--				<el-input size="default" placeholder="请输入用户名称" style="max-width: 180px"> </el-input>-->
 <!--				<el-button size="default" type="primary" class="ml10">-->
 <!--					<el-icon>-->
@@ -16,12 +24,11 @@
 					新增应用
 				</el-button>
 			</div>
-      <div class="list-adapt-container layout-pd">
-      <div class="flex-warp" v-if="state.tableData.data.length > 0">
-        <el-row :gutter="15">
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb15" >
+      <div class="flex-warp" style="background: #e0e0e0">
+        <el-row>
+          <el-col style="float: left;background: #ffffff;margin: 10px"  :xs="16" :sm="16" :md="16" :lg="16" :xl="16" class="mb15" v-if="state.tableData.data.length > 0">
             <div class="flex-warp-item" v-for="(v, k) in state.tableData.data" :key="k">
-              <div class="flex-warp-item-box">
+              <div class="flex-warp-item-box" @click="onShowBuildList(v)">
                 <div class="appItem">应用ID：{{ v.AppId }}</div>
                 <div class="appItem">应用名称：{{ v.AppName }}</div>
                 <div class="appItem">容器版本：{{ v.DockerVer }}</div>
@@ -33,68 +40,69 @@
                   <el-tag v-for="(item, k) in v.FrameworkGitsStr">{{item}}</el-tag>
                 </div>
                 <div class="appItem">容器文件：{{ v.DockerfilePath }}</div>
+                <div class="appItem"><el-button @click="onBuildAdd(v)" size="default" type="danger">构建</el-button></div>
               </div>
             </div>
           </el-col>
+          <el-empty v-else description="暂无数据"></el-empty>
+          <el-col style="float: left;background: #ffffff;margin: 10px;margin-left: 0;padding:5px;" :xs="8" :sm="8" :md="8" :lg="8" :xl="8" class="mb15" v-if="state.tableLogData.data.length > 0">
+            <h3 style="padding: 5px;">构建队列</h3>
+            <template v-if="state.tableLogData.data.length > 0">
+              <el-table :data="state.tableLogData.data" v-loading="state.tableLogData.loading" style="min-width: 576px;">
+                <el-table-column prop="Id" label="编号" width="60" />
+                <el-table-column prop="AppName" label="应用名称" ></el-table-column>
+                <el-table-column label="状态" width="100" show-overflow-tooltip>
+                  <template #default="scope">
+                    <el-tag style="color:#7a7a7a" v-if="scope.row.Status==0">未开始</el-tag>
+                    <el-tag v-if="scope.row.Status==1">构建中</el-tag>
+                    <el-tag style="color:green" v-if="scope.row.Status==2">完成</el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="FinishAt" width="170" label="完成时间"></el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template #default="scope">
+                    <el-button size="small" text type="primary" @click="showLog(scope.row)">构建日志</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-pagination
+                  @size-change="onHandleSizeLogChange"
+                  @current-change="onHandleCurrentLogChange"
+                  class="mt15"
+                  :pager-count="5"
+                  :page-sizes="[10, 20, 30]"
+                  v-model:current-page="state.tableLogData.param.pageNum"
+                  background
+                  v-model:page-size="state.tableLogData.param.pageSize"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="state.tableLogData.total"
+              >
+              </el-pagination>
+            </template>
+          </el-col>
+          <el-empty v-else description="暂无数据"></el-empty>
         </el-row>
       </div>
-      <el-empty v-else description="暂无数据"></el-empty>
-      <template v-if="state.tableData.data.length > 0">
-<!--        <el-pagination-->
-<!--            style="text-align: right"-->
-<!--            background-->
-<!--            @size-change="onHandleSizeChange"-->
-<!--            @current-change="onHandleCurrentChange"-->
-<!--            :page-sizes="[10, 20, 30]"-->
-<!--            :current-page="state.tableData.param.pageNum"-->
-<!--            :page-size="state.tableData.param.pageSize"-->
-<!--            layout="total, sizes, prev, pager, next, jumper"-->
-<!--            :total="state.tableData.total"-->
-<!--        >-->
-<!--        </el-pagination>-->
-      </template>
 
-      </div>
-<!--			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">-->
-<!--				<el-table-column prop="AppId" label="应用ID" width="60" />-->
-<!--				<el-table-column prop="AppName" label="应用名称" show-overflow-tooltip></el-table-column>-->
-<!--				<el-table-column prop="DockerVer" label="镜像版本" show-overflow-tooltip></el-table-column>-->
-<!--&lt;!&ndash;				<el-table-column prop="ShellScript" label="Shell脚本" show-overflow-tooltip></el-table-column>&ndash;&gt;-->
-<!--&lt;!&ndash;				<el-table-column prop="ClusterVer" label="集群版本" show-overflow-tooltip></el-table-column>&ndash;&gt;-->
-<!--				<el-table-column prop="AppGit" label="应用的源代码" show-overflow-tooltip></el-table-column>-->
-<!--&lt;!&ndash;        <el-table-column prop="FrameworkGits" label="依赖的框架源代码" show-overflow-tooltip></el-table-column>&ndash;&gt;-->
-<!--        <el-table-column prop="PullAt" label="拉取时间" show-overflow-tooltip></el-table-column>-->
-<!--&lt;!&ndash;        <el-table-column prop="Dockerfile" label="Dockerfile内容" show-overflow-tooltip></el-table-column>&ndash;&gt;-->
-<!--        <el-table-column prop="DockerfilePath" label="Dockerfile路径" show-overflow-tooltip></el-table-column>-->
-<!--				<el-table-column label="操作" width="100">-->
-<!--					<template #default="scope">-->
-<!--						<el-button size="small" text type="primary" @click="onOpenEdit('edit', scope.row)"-->
-<!--							>修改</el-button-->
-<!--						>-->
-<!--						<el-button size="small" text type="primary" @click="onRowDel(scope.row)">删除</el-button>-->
-<!--					</template>-->
-<!--				</el-table-column>-->
-<!--			</el-table>-->
-<!--			<el-pagination-->
-<!--				@size-change="onHandleSizeChange"-->
-<!--				@current-change="onHandleCurrentChange"-->
-<!--				class="mt15"-->
-<!--				:pager-count="5"-->
-<!--				:page-sizes="[10, 20, 30]"-->
-<!--				v-model:current-page="state.tableData.param.pageNum"-->
-<!--				background-->
-<!--				v-model:page-size="state.tableData.param.pageSize"-->
-<!--				layout="total, sizes, prev, pager, next, jumper"-->
-<!--				:total="state.tableData.total"-->
-<!--			>-->
-<!--			</el-pagination>-->
+
 		</el-card>
 		<appDialog ref="appDialogRef" @refresh="getTableData()" />
+
+
+    <el-dialog title="构建日志" v-model="state.logDialogIsShow" width="700px;" height="300px;">
+      <el-card shadow="hover" class="layout-padding-auto">
+        <div>
+          {{state.logContent}}
+        </div>
+      </el-card>
+    </el-dialog>
+
+
 	</div>
 </template>
 
 <script setup lang="ts" name="fopsApp">
-import { defineAsyncComponent, reactive, onMounted, ref,nextTick } from 'vue';
+import {defineAsyncComponent, reactive, onMounted, ref, nextTick, watch} from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import {fopsApi} from "/@/api/fops";
 
@@ -107,6 +115,8 @@ const appDialog = defineAsyncComponent(() => import('/@/views/fops/app/dialog.vu
 // 定义变量内容
 const appDialogRef = ref();
 const state = reactive({
+  logDialogIsShow:false,
+  logContent:'',
 	tableData: {
 		data: [],
 		total: 0,
@@ -115,7 +125,20 @@ const state = reactive({
 			pageNum: 1,
 			pageSize: 10,
 		},
-	},
+	},tableLogData: {
+    data: [],
+    total: 0,
+    loading: false,
+    param: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+
+  },
+  appName:"",
+  logId:0,
+  clusterId:0,
+  clusterData:[],
 });
 
 // 初始化表格数据
@@ -148,6 +171,52 @@ const getTableData = () => {
 
 
 };
+
+const getTableLogData = () => {
+  state.tableLogData.loading = true;
+  const data = {
+    appName:state.appName,
+    pageIndex:state.tableLogData.param.pageNum,
+    pageSize:state.tableLogData.param.pageSize,
+  };
+  // 请求接口
+  serverApi.buildList(data).then(function (res){
+    if (res.Status){
+      state.tableLogData.data = res.Data.List;
+      state.tableLogData.total = res.Data.RecordCount;
+      state.tableLogData.loading = false;
+    }else{
+      state.tableLogData.data=[]
+      state.tableLogData.loading = false;
+    }
+  })
+
+};
+const getTableClusterData = () => {
+  state.tableData.loading = true;
+  const data = [];
+  // 请求接口
+  serverApi.clusterList({}).then(function (res){
+    if (res.Status){
+      var lst=[]
+      for (let i = 0; i < res.Data.length; i++) {
+        var item=res.Data[i]
+        if (i==0){
+          state.clusterId=item.Id;
+        }
+        item.Name=item.Name+" - "+item.DockerName
+        lst.push(item)
+      }
+      state.clusterData = lst;
+    }else{
+      state.tableData.data=[]
+    }
+  })
+
+};
+const onClusterChange=(value:number)=>{
+  state.clusterId=value
+}
 // 打开新增用户弹窗
 const onOpenAdd = (type: string) => {
   appDialogRef.value.openDialog(type);
@@ -186,6 +255,62 @@ const onHandleCurrentChange = (val: number) => {
 	state.tableData.param.pageNum = val;
 	getTableData();
 };
+const onHandleSizeLogChange = (val: number) => {
+  state.tableLogData.param.pageSize = val;
+  getTableLogData();
+};
+const onShowBuildList=(row: any)=>{
+  state.appName=row.AppName
+  state.tableLogData.param.pageNum=1
+  state.tableLogData.param.pageSize=10
+  getTableLogData();
+}
+// 分页改变
+const onHandleCurrentLogChange = (val: number) => {
+  state.tableLogData.param.pageNum = val;
+  getTableLogData();
+};
+// 定义定时器
+let intervalId = null;
+// 使用 watch 监听 state 中 count 属性的变化
+watch(() => state.logDialogIsShow, (newValue, oldValue) => {
+  //console.log(`count 从 ${oldValue} 变为 ${newValue}`);
+  if(!newValue){
+    clearInterval(intervalId);
+  }else {
+    intervalId = setInterval(onShowLog, 1000);
+  }
+});
+
+const showLog=(row:any)=>{
+  state.logId=row.Id
+  serverApi.buildLog({"buildId":state.logId}).then(function (res){
+    state.logContent=res
+    state.logDialogIsShow=true
+  })
+}
+const onShowLog=()=>{
+  serverApi.buildLog({"buildId":state.logId}).then(function (res){
+    console.log(res)
+    state.logContent=res
+  })
+}
+const onBuildAdd = (row:any) => {
+  // 提交数据
+  var param={
+    "AppName":row.AppName,
+    "ClusterId":state.clusterId,
+  }
+  serverApi.buildAdd(param).then(async function(res){
+    if(res.Status){
+      ElMessage.success("添加成功")
+      // 刷新构建日志
+      getTableLogData()
+    }else{
+      ElMessage.error(res.StatusMessage)
+    }
+  })
+};
 const getGitArray=(lst:[])=>{
   var array=[]
   for (let i = 0; i < lst.length; i++) {
@@ -209,6 +334,8 @@ const getGit=(val:number)=>{
 // 页面加载时
 onMounted(() => {
 	getTableData();
+  getTableLogData();
+  getTableClusterData();
 });
 </script>
 
@@ -231,7 +358,7 @@ onMounted(() => {
   margin: 0 -5px;
   .flex-warp-item {
     padding: 5px;
-    width: 300px;
+    width: 298px;
     min-height: 360px;
     border: #666 1px solid;
     .flex-warp-item-box {

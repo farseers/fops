@@ -86,14 +86,10 @@ const getTableData = () => {
     if (res.Status){
       state.tableData.data = res.Data;
       state.tableData.total = res.Data.length;
-      setTimeout(() => {
         state.tableData.loading = false;
-      }, 500);
     }else{
       state.tableData.data=[]
-      setTimeout(() => {
         state.tableData.loading = false;
-      }, 500);
     }
   })
 

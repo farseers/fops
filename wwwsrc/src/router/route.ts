@@ -108,7 +108,7 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 					{
 						path: '/app/buildDeployment',
 						name: 'appBuildDeployment',
-						component: () => import('/@/views/fops/build/index.vue'),
+						component: () => import('/@/views/fops/build/indexApp.vue'),
 						meta: {
 							title: 'message.router.BuildDeployment',
 							isLink: '',
@@ -132,20 +132,6 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 							isIframe: false,
 							roles: ['admin'],
 							icon: 'iconfont icon-wenducanshu-05',
-						},
-					},{
-						path: '/app/appAdd',
-						name: 'appAdd',
-						component: () => import('/@/views/fops/app/index.vue'),
-						meta: {
-							title: 'message.router.AppAdd',
-							isLink: '',
-							isHide: false,
-							isKeepAlive: true,
-							isAffix: false,
-							isIframe: false,
-							roles: ['admin'],
-							icon: 'iconfont icon-zujian',
 						},
 					},{
 						path: '/app/gitAdd',
