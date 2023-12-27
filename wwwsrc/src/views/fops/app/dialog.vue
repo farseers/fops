@@ -28,13 +28,14 @@
               <el-input v-model="state.ruleForm.ShellScript" type="textarea" placeholder="请输入Shell脚本" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="Git源代码">
-              <el-input v-model="state.ruleForm.AppGit" placeholder="请输入应用的源代码" clearable></el-input>
+          <el-col :xs="24" :sm="18" :md="18" :lg="18" :xl="18" class="mb20">
+            <el-form-item label="Git源代码" style="float: left">
+              <el-input v-model="state.ruleForm.AppGit"  placeholder="请输入应用的源代码" clearable></el-input>
             </el-form-item>
+            <el-button type="primary" @click="onOpenGit(2)" size="default">添加Git</el-button>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-tag>依赖的框架源代码</el-tag><el-button type="primary" @click="onOpenGit()" size="default">添加Git</el-button>
+            <el-tag>依赖的框架源代码</el-tag><el-button type="primary" @click="onOpenGit(1)" size="default">添加Git</el-button>
             <el-table :data="state.gitList" style="width: 100%">
               <el-table-column prop="Id" label="编号" width="60" />
               <el-table-column prop="Name" label="Git名称" show-overflow-tooltip></el-table-column>
@@ -109,7 +110,7 @@ const state = reactive({
     DockerVer: '', // 镜像版本
     ShellScript: '', // Shell脚本
     ClusterVer: '', // 集群版本
-    AppGit: '', // 应用的源代码
+    AppGit: 0, // 应用的源代码
     FrameworkGits:[], // 依赖的框架源代码
     Dockerfile: '', // Dockerfile内容
     DockerfilePath: '', // Dockerfile路径
@@ -132,6 +133,7 @@ const state = reactive({
       pageSize: 10,
     },
   },
+  gitType:1,
 });
 
 // 打开弹窗
@@ -171,7 +173,7 @@ const openDialog = (type: string, row: any) => {
     state.ruleForm.DockerVer=""
     state.ruleForm.ShellScript=""
     state.ruleForm.ClusterVer=""
-    state.ruleForm.AppGit=""
+    state.ruleForm.AppGit=0
     state.ruleForm.FrameworkGits=[]
     state.ruleForm.Dockerfile=""
     state.ruleForm.DockerfilePath=""
@@ -213,7 +215,7 @@ const onSubmit = () => {
     "AppName":state.ruleForm.AppName,
     "AppId":state.ruleForm.AppId,
     "ShellScript":state.ruleForm.ShellScript,
-    "AppGit":state.ruleForm.AppGit,
+    "AppGit":parseInt(state.ruleForm.AppGit),
     "FrameworkGits":state.ruleForm.FrameworkGits,
   }
 
@@ -244,21 +246,14 @@ const onSubmit = () => {
 };
 
 const getTableData = () => {
-  state.tableData.loading = true;
   const data = [];
   // 请求接口
   serverApi.gitList({}).then(function (res){
     if (res.Status){
       state.tableData.data = res.Data;
       state.tableData.total = res.Data.length;
-      setTimeout(() => {
-        state.tableData.loading = false;
-      }, 500);
     }else{
       state.tableData.data=[]
-      setTimeout(() => {
-        state.tableData.loading = false;
-      }, 500);
     }
   })
 };
@@ -275,27 +270,36 @@ const handleSelectionChange=(val:any)=> {
   }
   console.log(state.SelectItem)
 }
-const onOpenGit=()=>{
+const onOpenGit=(type:any)=>{
+  getTableData()
+  state.gitType=type
   state.gitDialogIsShow=true
-  state.tableData.data.forEach(function (item,index){
-    var rowArray=state.ruleForm.FrameworkGits.filter(t=>t==item.Id);
-    if(rowArray.length>0)
-    {
-      multipleTable.value.setCurrentRow(item) //选中已经选中的数据
-    }else{
-      multipleTable.value.setCurrentRow(item,false)
-    }
-  })
+  if (type==1){
+    state.tableData.data.forEach(function (item,index){
+      var rowArray=state.ruleForm.FrameworkGits.filter(t=>t==item.Id);
+      if(rowArray.length>0)
+      {
+        multipleTable.value.setCurrentRow(item) //选中已经选中的数据
+      }else{
+        multipleTable.value.setCurrentRow(item,false)
+      }
+    })
+  }
+
 }
 // 确认选择
 const SureCheck=()=>{
-  state.ruleForm.FrameworkGits=state.SelectItem
-  loadGit(state.ruleForm.FrameworkGits)
+  if (state.gitType==1){
+    state.ruleForm.FrameworkGits=state.SelectItem
+    loadGit(state.ruleForm.FrameworkGits)
+  }else{
+    state.ruleForm.AppGit=state.SelectItem[0]
+  }
   state.gitDialogIsShow=false
 }
 // 页面加载时
 onMounted(() => {
-  getTableData();
+  //getTableData();
 });
 // 暴露变量
 defineExpose({
