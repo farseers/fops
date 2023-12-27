@@ -1,3 +1,4 @@
+// @area /linkTrace/
 package linkTraceApp
 
 import (
@@ -6,7 +7,7 @@ import (
 )
 
 // Info 链路追踪日志详情
-// @get info
+// @get info/{traceId}
 func Info(traceId int64) collections.List[linkTrace_clickhouse.TraceContextPO] {
 	lst := linkTrace_clickhouse.CHContext.TraceContext.Where("trace_id", traceId).Asc("start_ts").ToList()
 	return lst

@@ -28,7 +28,7 @@ var route = []webapi.Route{
 	{"POST", "/git/list", gitApp.List, "", []context.IFilter{}, []string{""}},
 	{"POST", "/git/delete", gitApp.Delete, "", []context.IFilter{}, []string{"gitId", ""}},
 	{"POST", "/git/info", gitApp.Info, "", []context.IFilter{}, []string{"gitId", ""}},
-	{"GET", "/info", linkTraceApp.Info, "", []context.IFilter{}, []string{"traceId"}},
+	{"GET", "/linkTrace/info/{traceId}", linkTraceApp.Info, "", []context.IFilter{}, []string{"traceId"}},
 	{"GET", "/linkTrace/webApiList", linkTraceApp.WebApiList, "", []context.IFilter{}, []string{"appName", "appIp", "requestIp", "searchUrl", "searchUseTs", "statusCode", "pageSize", "pageIndex"}},
 	{"GET", "/linkTrace/taskList", linkTraceApp.TaskList, "", []context.IFilter{}, []string{"appName", "appIp", "taskName", "searchUseTs", "pageSize", "pageIndex"}},
 	{"GET", "/linkTrace/fScheduleList", linkTraceApp.FScheduleList, "", []context.IFilter{}, []string{"appName", "appIp", "taskName", "taskGroupId", "taskId", "searchUseTs", "pageSize", "pageIndex"}},
