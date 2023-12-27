@@ -30,17 +30,22 @@
             <div class="flex-warp-item" v-for="(v, k) in state.tableData.data" :key="k">
               <div class="flex-warp-item-box" @click="onShowBuildList(v)">
                 <div class="appItem">应用ID：{{ v.AppId }}</div>
-                <div class="appItem">应用名称：{{ v.AppName }}</div>
+                <div class="appItem"><el-tag>{{ v.AppName }}</el-tag></div>
                 <div class="appItem">容器版本：{{ v.DockerVer }}</div>
-                <div class="appItem">容器文件：{{ v.Dockerfile }}</div>
-                <div class="appItem">AppGit：
-                  <el-tag v-for="(item, k) in v.AppGitStr">{{item}}</el-tag>
+                <div class="appItem">集群版本：{{ v.ClusterVer }}</div>
+<!--                <div class="appItem">容器文件：{{ v.Dockerfile }}</div>-->
+                <div class="appItem">AppGit：{{ v.AppGitName }}
+<!--                  <el-tag v-for="(item, k) in v.AppGitStr">{{item}}</el-tag>-->
                 </div>
-                <div class="appItem">Git框架：
-                  <el-tag v-for="(item, k) in v.FrameworkGitsStr">{{item}}</el-tag>
+<!--                <div class="appItem">Git框架：-->
+<!--                  <el-tag v-for="(item, k) in v.FrameworkGitsStr">{{item}}</el-tag>-->
+<!--                </div>-->
+                <div class="appItem">容器文件路径：{{ v.DockerfilePath }}</div>
+                <div class="appItem">
+                  <el-button size="default" @click="onOpenEdit('edit', v)" type="warning">修改</el-button>
+                  <el-button @click="onBuildAdd(v)" size="default" type="danger">构建</el-button>
+
                 </div>
-                <div class="appItem">容器文件：{{ v.DockerfilePath }}</div>
-                <div class="appItem"><el-button @click="onBuildAdd(v)" size="default" type="danger">构建</el-button></div>
               </div>
             </div>
           </el-col>
@@ -102,7 +107,7 @@
 </template>
 
 <script setup lang="ts" name="fopsApp">
-import {defineAsyncComponent, reactive, onMounted, ref, nextTick, watch} from 'vue';
+import {defineAsyncComponent, reactive, onMounted, ref, nextTick, watch, onUnmounted} from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import {fopsApi} from "/@/api/fops";
 
@@ -175,7 +180,7 @@ const getTableData = () => {
 const getTableLogData = () => {
   state.tableLogData.loading = true;
   const data = {
-    appName:state.appName,
+    appName:"",//state.appName
     pageIndex:state.tableLogData.param.pageNum,
     pageSize:state.tableLogData.param.pageSize,
   };
@@ -331,12 +336,18 @@ const getGit=(val:number)=>{
     })
   return array
 }
+let intervalLogId = null;
 // 页面加载时
 onMounted(() => {
 	getTableData();
   getTableLogData();
   getTableClusterData();
+  intervalLogId = setInterval(getTableLogData, 1000);
 });
+// 页面注销的时候
+onUnmounted(()=>{
+  clearInterval(intervalLogId);
+})
 </script>
 
 <style scoped lang="scss">
