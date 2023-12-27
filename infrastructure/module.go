@@ -9,6 +9,7 @@ import (
 	"github.com/farseer-go/data"
 	"github.com/farseer-go/eventBus"
 	"github.com/farseer-go/fs/modules"
+	linkTrace_clickhouse "github.com/farseer-go/linkTrace/driver/clickhouse"
 )
 
 type Module struct {
@@ -16,7 +17,7 @@ type Module struct {
 
 func (module Module) DependsModule() []modules.FarseerModule {
 	// 这些模块都是farseer-go内置的模块
-	return []modules.FarseerModule{data.Module{}, eventBus.Module{}}
+	return []modules.FarseerModule{data.Module{}, eventBus.Module{}, linkTrace_clickhouse.Module{}}
 }
 
 func (module Module) PostInitialize() {
