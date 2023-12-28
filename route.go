@@ -37,7 +37,7 @@ var route = []webapi.Route{
 	{"GET", "/linkTrace/slowEsList", linkTraceApp.SlowEsList, "", []context.IFilter{}, []string{"appName", "appIp", "indexName", "aliasesName", "searchUseTs", "startMin", "pageSize", "pageIndex"}},
 	{"GET", "/linkTrace/slowEtcdList", linkTraceApp.SlowEtcdList, "", []context.IFilter{}, []string{"appName", "appIp", "key", "leaseID", "searchUseTs", "startMin", "pageSize", "pageIndex"}},
 	{"GET", "/linkTrace/slowHandList", linkTraceApp.SlowHandList, "", []context.IFilter{}, []string{"appName", "appIp", "name", "searchUseTs", "startMin", "pageSize", "pageIndex"}},
-	{"GET", "/linkTrace/slowHttpList", linkTraceApp.SlowHttpList, "", []context.IFilter{}, []string{"appName", "appIp", "method", "url", "searchUseTs", "startMin", "pageSize", "pageIndex"}},
+	{"GET", "/linkTrace/slowHttpList", linkTraceApp.SlowHttpList, "", []context.IFilter{}, []string{"appName", "appIp", "method", "url", "requestBody", "responseBody", "statusCode", "searchUseTs", "startMin", "pageSize", "pageIndex"}},
 	{"GET", "/linkTrace/slowMqList", linkTraceApp.SlowMqList, "", []context.IFilter{}, []string{"appName", "appIp", "server", "exchange", "routingKey", "searchUseTs", "startMin", "pageSize", "pageIndex"}},
 	{"GET", "/linkTrace/slowRedisList", linkTraceApp.SlowRedisList, "", []context.IFilter{}, []string{"appName", "appIp", "key", "field", "searchUseTs", "startMin", "pageSize", "pageIndex"}},
 }
