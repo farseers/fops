@@ -100,7 +100,7 @@ func SlowHandList(appName, appIp, name string, searchUseTs int64, startMin int, 
 
 // SlowHttpList 慢Http列表
 // @get slowHttpList
-func SlowHttpList(appName, appIp, method, url string, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTrace_clickhouse.TraceDetailHttpPO] {
+func SlowHttpList(appName, appIp, method, url, requestBody, responseBody string, statusCode int, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTrace_clickhouse.TraceDetailHttpPO] {
 	if pageSize < 1 {
 		pageSize = 20
 	}
@@ -111,12 +111,17 @@ func SlowHttpList(appName, appIp, method, url string, searchUseTs int64, startMi
 	appIp = strings.TrimSpace(appIp)
 	method = strings.TrimSpace(method)
 	url = strings.TrimSpace(url)
+	requestBody = strings.TrimSpace(requestBody)
+	responseBody = strings.TrimSpace(responseBody)
 	return linkTrace_clickhouse.CHContext.TraceDetailHttp.
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
 		WhereIf(method != "", "method like ?", method).
 		WhereIf(url != "", "url like ?", url).
+		WhereIf(requestBody != "", "request_body like ?", requestBody).
+		WhereIf(responseBody != "", "response_body like ?", responseBody).
+		WhereIf(statusCode > 0, "status_code >= ?", statusCode).
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
 }
