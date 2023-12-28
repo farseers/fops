@@ -29,7 +29,7 @@ func WebApiList(appName, appIp, requestIp, searchUrl string, statusCode int, sea
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
 		WhereIf(requestIp != "", "web_request_ip = ?", requestIp).
-		WhereIf(searchUrl != "", "web_path like ?", searchUrl).
+		WhereIf(searchUrl != "", "web_path like ?", "%"+searchUrl+"%").
 		WhereIf(statusCode > 0, "web_status_code = ?", statusCode).
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
@@ -52,7 +52,7 @@ func TaskList(appName, appIp, taskName string, searchUseTs int64, startMin int, 
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(taskName != "", "task_Name like ?", taskName).
+		WhereIf(taskName != "", "task_Name like ?", "%"+taskName+"%").
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
 }
@@ -74,7 +74,7 @@ func FScheduleList(appName, appIp, taskName string, taskGroupId, taskId, searchU
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(taskName != "", "task_Name like ?", taskName).
+		WhereIf(taskName != "", "task_Name like ?", "%"+taskName+"%").
 		WhereIf(taskGroupId > 0, "task_group_id = ?", taskGroupId).
 		WhereIf(taskId > 0, "task_id = ?", taskId).
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
@@ -100,9 +100,9 @@ func ConsumerList(appName, appIp, server, queueName, routingKey string, searchUs
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(server != "", "consumer_server like ?", server).
-		WhereIf(queueName != "", "consumer_queue_name like ?", queueName).
-		WhereIf(routingKey != "", "consumer_routing_key like ?", routingKey).
+		WhereIf(server != "", "consumer_server like ?", "%"+server+"%").
+		WhereIf(queueName != "", "consumer_queue_name like ?", "%"+queueName+"%").
+		WhereIf(routingKey != "", "consumer_routing_key like ?", "%"+routingKey+"%").
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
 }

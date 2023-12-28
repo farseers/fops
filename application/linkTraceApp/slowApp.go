@@ -26,8 +26,8 @@ func SlowDbList(appName, appIp, dbName, tableName string, searchUseTs int64, sta
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(dbName != "", "db_name like ?", dbName).
-		WhereIf(tableName != "", "table_name like ?", tableName).
+		WhereIf(dbName != "", "db_name like ?", "%"+dbName+"%").
+		WhereIf(tableName != "", "table_name like ?", "%"+tableName+"%").
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
 }
@@ -49,8 +49,8 @@ func SlowEsList(appName, appIp, indexName, aliasesName string, searchUseTs int64
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(indexName != "", "index_name like ?", indexName).
-		WhereIf(aliasesName != "", "aliases_name like ?", aliasesName).
+		WhereIf(indexName != "", "index_name like ?", "%"+indexName+"%").
+		WhereIf(aliasesName != "", "aliases_name like ?", "%"+aliasesName+"%").
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
 }
@@ -71,7 +71,7 @@ func SlowEtcdList(appName, appIp, key string, leaseID int64, searchUseTs int64, 
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(key != "", "key like ?", key).
+		WhereIf(key != "", "key like ?", "%"+key+"%").
 		WhereIf(leaseID > 0, "leaseID = ?", leaseID).
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
@@ -93,7 +93,7 @@ func SlowHandList(appName, appIp, name string, searchUseTs int64, startMin int, 
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(name != "", "name like ?", name).
+		WhereIf(name != "", "name like ?", "%"+name+"%").
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
 }
@@ -117,10 +117,10 @@ func SlowHttpList(appName, appIp, method, url, requestBody, responseBody string,
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(method != "", "method like ?", method).
-		WhereIf(url != "", "url like ?", url).
-		WhereIf(requestBody != "", "request_body like ?", requestBody).
-		WhereIf(responseBody != "", "response_body like ?", responseBody).
+		WhereIf(method != "", "method like ?", "%"+method+"%").
+		WhereIf(url != "", "url like ?", "%"+url+"%").
+		WhereIf(requestBody != "", "request_body like ?", "%"+requestBody+"%").
+		WhereIf(responseBody != "", "response_body like ?", "%"+responseBody+"%").
 		WhereIf(statusCode > 0, "status_code >= ?", statusCode).
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
@@ -144,9 +144,9 @@ func SlowMqList(appName, appIp, server, exchange, routingKey string, searchUseTs
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(server != "", "server like ?", server).
-		WhereIf(exchange != "", "url like ?", exchange).
-		WhereIf(routingKey != "", "url like ?", routingKey).
+		WhereIf(server != "", "server like ?", "%"+server+"%").
+		WhereIf(exchange != "", "url like ?", "%"+exchange+"%").
+		WhereIf(routingKey != "", "url like ?", "%"+routingKey+"%").
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
 }
@@ -168,8 +168,8 @@ func SlowRedisList(appName, appIp, key, field string, searchUseTs int64, startMi
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(key != "", "key like ?", key).
-		WhereIf(field != "", "field like ?", field).
+		WhereIf(key != "", "key like ?", "%"+key+"%").
+		WhereIf(field != "", "field like ?", "%"+field+"%").
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
 }
