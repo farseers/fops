@@ -206,6 +206,78 @@ export function fopsApi() {
 				method: 'get',
 				data:param,
 			});
+		},linkTraceWebApi:(param: object) => {
+			return requestFS({
+				url: '/linkTrace/webApiList',
+				method: 'get',
+				data:param,
+			});
+		},linkTraceTask:(param: object) => {
+			return requestFS({
+				url: '/linkTrace/taskList',
+				method: 'get',
+				data:param,
+			});
+		},linkTraceConsumerList:(param: object) => {
+			return requestFS({
+				url: '/linkTrace/consumerList',
+				method: 'get',
+				data:param,
+			});
+		},linkTraceFScheduleList:(param: object) => {
+			return requestFS({
+				url: '/linkTrace/fScheduleList',
+				method: 'get',
+				data:param,
+			});
+		},linkTraceInfo:(traceId: object) => {
+			return requestFS({
+				url: '/linkTrace/info/'+traceId,
+				method: 'get',
+				//data:param,
+			});
+		},slowSql:(param: object) => {
+			return requestFS({
+				url: '/linkTrace/slowDbList',
+				method: 'get',
+				data:param,
+			});
+		},slowEs:(param: object) => {
+			return requestFS({
+				url: '/linkTrace/slowEsList',
+				method: 'get',
+				data:param,
+			});
+		},slowEtcd:(param: object) => {
+			return requestFS({
+				url: '/linkTrace/slowEtcdList',
+				method: 'get',
+				data:param,
+			});
+		},slowHand:(param: object) => {
+			return requestFS({
+				url: '/linkTrace/slowHandList',
+				method: 'get',
+				data:param,
+			});
+		},slowHttp:(param: object) => {
+			return requestFS({
+				url: '/linkTrace/slowHttpList',
+				method: 'get',
+				data:param,
+			});
+		},slowMq:(param: object) => {
+			return requestFS({
+				url: '/linkTrace/slowMqList',
+				method: 'get',
+				data:param,
+			});
+		},slowRedis:(param: object) => {
+			return requestFS({
+				url: '/linkTrace/slowRedisList',
+				method: 'get',
+				data:param,
+			});
 		}
 	};
 }

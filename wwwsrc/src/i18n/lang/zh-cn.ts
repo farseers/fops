@@ -99,7 +99,14 @@ export default {
 		Grpc:'Grpc',
 		ES:'ES',
 		Build:"添加构建",
-		TaskList:'任务列表'
+		TaskList:'任务列表',
+		linkTrace:'链路追踪',
+		webApi:'webApi列表',
+		taskApi:'task列表',
+		customerApi:'consumer列表',
+		fscheduleApi:'fsChedule列表',
+		Etcd:'Etcd',
+		Hand:'手动埋点',
 	},
 	staticRoutes: {
 		signIn: '登录',
