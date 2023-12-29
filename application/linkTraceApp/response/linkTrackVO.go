@@ -11,6 +11,7 @@ type LinkTraceVO struct {
 	AppName   string // 应用名称
 	StartTs   int64  // 计算服务的相对调用时间，第一个服务从0ms计算
 	UseTs     int64  // 使用时间
+	UseDesc   string // 使用时间（描述）
 	Caption   string // 标题
 	Desc      string // tips描述
 	Exception *linkTrace_clickhouse.ExceptionStackPO

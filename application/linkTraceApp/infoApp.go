@@ -54,7 +54,7 @@ func (receiver *linkTraceWarp) addEntry(po linkTrace_clickhouse.TraceContextPO) 
 	receiver.rgbaIndex++
 	// 添加服务的入口
 	entryTrace := response.LinkTraceVO{
-		Rgba: response.RgbaList[receiver.rgbaIndex], AppId: po.AppId, AppIp: po.AppIp, AppName: po.AppName, UseTs: po.UseTs.Microseconds(),
+		Rgba: response.RgbaList[receiver.rgbaIndex], AppId: po.AppId, AppIp: po.AppIp, AppName: po.AppName, UseTs: po.UseTs.Microseconds(), UseDesc: po.UseTs.String(),
 		StartTs: (po.StartTs - receiver.startTs) / int64(time.Microsecond),
 		Caption: fmt.Sprintf("%s", po.TraceType.ToString()),
 	}
@@ -86,7 +86,7 @@ func (receiver *linkTraceWarp) addDetail(po linkTrace_clickhouse.TraceContextPO)
 		detailTrace := response.LinkTraceVO{
 			Rgba: response.RgbaList[receiver.rgbaIndex], AppId: po.AppId, AppIp: po.AppIp, AppName: po.AppName,
 			StartTs: baseDetailPO.StartTs - receiver.startTs,
-			UseTs:   baseDetailPO.UseTs.Microseconds()}
+			UseTs:   baseDetailPO.UseTs.Microseconds(), UseDesc: baseDetailPO.UseTs.String()}
 
 		switch eumCallType.Enum(parse.ToInt(detail.(map[string]any)["CallType"])) {
 		case eumCallType.Database:
