@@ -22,7 +22,7 @@ func SlowDbList(appName, appIp, dbName, tableName string, searchUseTs int64, sta
 	appIp = strings.TrimSpace(appIp)
 	dbName = strings.TrimSpace(dbName)
 	tableName = strings.TrimSpace(tableName)
-	return linkTrace_clickhouse.CHContext.TraceDetailDatabase.
+	lst := linkTrace_clickhouse.CHContext.TraceDetailDatabase.
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -30,6 +30,11 @@ func SlowDbList(appName, appIp, dbName, tableName string, searchUseTs int64, sta
 		WhereIf(tableName != "", "table_name like ?", "%"+tableName+"%").
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
+
+	lst.List.Foreach(func(item *linkTrace_clickhouse.TraceDetailDatabasePO) {
+		item.UseDesc = item.UseTs.String()
+	})
+	return lst
 }
 
 // SlowEsList 慢Es列表
@@ -45,7 +50,7 @@ func SlowEsList(appName, appIp, indexName, aliasesName string, searchUseTs int64
 	appIp = strings.TrimSpace(appIp)
 	indexName = strings.TrimSpace(indexName)
 	aliasesName = strings.TrimSpace(aliasesName)
-	return linkTrace_clickhouse.CHContext.TraceDetailEs.
+	lst := linkTrace_clickhouse.CHContext.TraceDetailEs.
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -53,6 +58,11 @@ func SlowEsList(appName, appIp, indexName, aliasesName string, searchUseTs int64
 		WhereIf(aliasesName != "", "aliases_name like ?", "%"+aliasesName+"%").
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
+
+	lst.List.Foreach(func(item *linkTrace_clickhouse.TraceDetailEsPO) {
+		item.UseDesc = item.UseTs.String()
+	})
+	return lst
 }
 
 // SlowEtcdList 慢Etcd列表
@@ -67,7 +77,7 @@ func SlowEtcdList(appName, appIp, key string, leaseID int64, searchUseTs int64, 
 	appName = strings.TrimSpace(appName)
 	appIp = strings.TrimSpace(appIp)
 	key = strings.TrimSpace(key)
-	return linkTrace_clickhouse.CHContext.TraceDetailEtcd.
+	lst := linkTrace_clickhouse.CHContext.TraceDetailEtcd.
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -75,6 +85,11 @@ func SlowEtcdList(appName, appIp, key string, leaseID int64, searchUseTs int64, 
 		WhereIf(leaseID > 0, "leaseID = ?", leaseID).
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
+
+	lst.List.Foreach(func(item *linkTrace_clickhouse.TraceDetailEtcdPO) {
+		item.UseDesc = item.UseTs.String()
+	})
+	return lst
 }
 
 // SlowHandList 慢手动列表
@@ -89,13 +104,18 @@ func SlowHandList(appName, appIp, name string, searchUseTs int64, startMin int, 
 	appName = strings.TrimSpace(appName)
 	appIp = strings.TrimSpace(appIp)
 	name = strings.TrimSpace(name)
-	return linkTrace_clickhouse.CHContext.TraceDetailHand.
+	lst := linkTrace_clickhouse.CHContext.TraceDetailHand.
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
 		WhereIf(name != "", "name like ?", "%"+name+"%").
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
+
+	lst.List.Foreach(func(item *linkTrace_clickhouse.TraceDetailHandPO) {
+		item.UseDesc = item.UseTs.String()
+	})
+	return lst
 }
 
 // SlowHttpList 慢Http列表
@@ -113,7 +133,7 @@ func SlowHttpList(appName, appIp, method, url, requestBody, responseBody string,
 	url = strings.TrimSpace(url)
 	requestBody = strings.TrimSpace(requestBody)
 	responseBody = strings.TrimSpace(responseBody)
-	return linkTrace_clickhouse.CHContext.TraceDetailHttp.
+	lst := linkTrace_clickhouse.CHContext.TraceDetailHttp.
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -124,6 +144,11 @@ func SlowHttpList(appName, appIp, method, url, requestBody, responseBody string,
 		WhereIf(statusCode > 0, "status_code >= ?", statusCode).
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
+
+	lst.List.Foreach(func(item *linkTrace_clickhouse.TraceDetailHttpPO) {
+		item.UseDesc = item.UseTs.String()
+	})
+	return lst
 }
 
 // SlowMqList 慢Mq列表
@@ -140,7 +165,7 @@ func SlowMqList(appName, appIp, server, exchange, routingKey string, searchUseTs
 	server = strings.TrimSpace(server)
 	exchange = strings.TrimSpace(exchange)
 	routingKey = strings.TrimSpace(routingKey)
-	return linkTrace_clickhouse.CHContext.TraceDetailMq.
+	lst := linkTrace_clickhouse.CHContext.TraceDetailMq.
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -149,6 +174,11 @@ func SlowMqList(appName, appIp, server, exchange, routingKey string, searchUseTs
 		WhereIf(routingKey != "", "url like ?", "%"+routingKey+"%").
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
+
+	lst.List.Foreach(func(item *linkTrace_clickhouse.TraceDetailMqPO) {
+		item.UseDesc = item.UseTs.String()
+	})
+	return lst
 }
 
 // SlowRedisList 慢Redis列表
@@ -164,7 +194,7 @@ func SlowRedisList(appName, appIp, key, field string, searchUseTs int64, startMi
 	appIp = strings.TrimSpace(appIp)
 	key = strings.TrimSpace(key)
 	field = strings.TrimSpace(field)
-	return linkTrace_clickhouse.CHContext.TraceDetailRedis.
+	lst := linkTrace_clickhouse.CHContext.TraceDetailRedis.
 		WhereIf(appName != "", "app_name = ?", appName).
 		WhereIf(appIp != "", "app_ip = ?", appIp).
 		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -172,4 +202,9 @@ func SlowRedisList(appName, appIp, key, field string, searchUseTs int64, startMi
 		WhereIf(field != "", "field like ?", "%"+field+"%").
 		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 		Desc("start_ts").ToPageList(pageSize, pageIndex)
+
+	lst.List.Foreach(func(item *linkTrace_clickhouse.TraceDetailRedisPO) {
+		item.UseDesc = item.UseTs.String()
+	})
+	return lst
 }
