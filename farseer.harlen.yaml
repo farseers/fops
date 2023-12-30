@@ -11,7 +11,7 @@ WebApi:
 LinkTrace:
   Enable: false
   PrintLog: true
-  CH: "DataType=clickhouse,PoolMaxSize=50,PoolMinSize=1,ConnectionString=clickhouse://root:steden@192.168.1.8:9000/linkTrace?dial_timeout=10s&read_timeout=20s"
+  CH: "DataType=clickhouse,PoolMaxSize=50,PoolMinSize=1,ConnectionString=clickhouse://default:@localhost:9000/linkTrace?dial_timeout=10s&read_timeout=20s"
 Log:
   Default:
     LogLevel: "info"          # 只记录级别>=info的日志内容

@@ -22,32 +22,39 @@
 				</el-button>
 			</div>
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
-        <el-table-column prop="TraceId" label="跟踪ID" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="AppId" label="应用ID" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="AppName" label="应用名称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="AppIp" label="应用IP" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="StartTs" label="开始时间（微秒）" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="EndTs" label="结束时间（微秒）" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="UseTs" label="耗时（微秒）" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="WebDomain" label="请求的域名" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="WebPath" label="请求的地址" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="WebMethod" label="请求方式" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="WebContentType" label="请求类型" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="WebStatusCode" label="状态码" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="WebHeaders" label="header" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="WebRequestBody" label="入参" show-overflow-tooltip>
+        <el-table-column width="250px" label="跟踪ID" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag>
-              {{friendlyJSONstringify(scope.row.WebRequestBody)}}
-            </el-tag>
+            <el-tag>TraceId：{{scope.row.TraceId}}</el-tag><br>
+            <el-tag>AppId：{{scope.row.AppId}}</el-tag><br>
+            <el-tag>AppName：{{scope.row.AppName}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="WebResponseBody" label="出参" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="WebRequestIp" label="客户端请求IP" show-overflow-tooltip></el-table-column>
+        <el-table-column width="120px" prop="AppIp" label="应用IP" show-overflow-tooltip></el-table-column>
+        <el-table-column width="220px" label="时间（微秒）" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag>StartTs：{{scope.row.StartTs}}</el-tag><br>
+            <el-tag>EndTs：{{scope.row.EndTs}}</el-tag><br>
+            <el-tag>UseTs：{{scope.row.UseTs}}</el-tag><br>
+            <el-tag>UseDesc：{{scope.row.UseDesc}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column width="400px" label="请求的数据"  show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag>{{scope.row.WebDomain}}</el-tag><br>
+            <el-tag>{{scope.row.WebPath}}</el-tag><br>
+            <el-tag>{{scope.row.WebMethod}}</el-tag><br>
+            <el-tag>{{scope.row.WebContentType}}</el-tag><br>
+            <el-tag>{{friendlyJSONstringify(scope.row.WebHeaders)}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column width="80px" prop="WebStatusCode" label="状态码" show-overflow-tooltip></el-table-column>
+        <el-table-column width="200px" prop="WebRequestBody" label="入参" show-overflow-tooltip></el-table-column>
+        <el-table-column width="200px" prop="WebResponseBody" label="出参" show-overflow-tooltip></el-table-column>
+        <el-table-column width="120px" prop="WebRequestIp" label="客户端请求IP" show-overflow-tooltip></el-table-column>
         <el-table-column prop="Exception.ExceptionMessage" label="异常信息" show-overflow-tooltip></el-table-column>
 				<el-table-column label="操作" width="100">
 					<template #default="scope">
-						<el-button size="small" text type="primary" @click="onDetail(scope.row)">详情</el-button>
+						<el-button size="small" text type="primary" @click="onDetail(scope.row)">追踪</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -78,7 +85,7 @@ import {friendlyJSONstringify} from "@intlify/shared";
 // 引入 api 请求接口
 const serverApi = fopsApi();
 // 引入组件
-const detailDialog = defineAsyncComponent(() => import('/src/views/fops/linkTrace/detailDialog.vue'));
+const detailDialog = defineAsyncComponent(() => import('/src/views/fops/linkTrace/detailV2Dialog.vue'));
 
 
 // 定义变量内容
@@ -106,16 +113,17 @@ const state = reactive({
 const getTableData = () => {
 	state.tableData.loading = true;
 
-  var params={
+  var data={
     appName:state.appName,
     appIp:state.appIp,
     requestIp:state.requestIp,
     searchUrl:state.searchUrl,
-    searchUseTs:state.searchUseTs,
-    statusCode:state.statusCode,
-    pageSize:state.tableData.param.pageSize,
-    pageIndex:state.tableData.param.pageNum,
+    searchUseTs:state.searchUseTs.toString(),
+    statusCode:state.statusCode.toString(),
+    pageSize:state.tableData.param.pageSize.toString(),
+    pageIndex:state.tableData.param.pageNum.toString(),
   }
+  const params = new URLSearchParams(data).toString();
   // 请求接口
   serverApi.linkTraceWebApi(params).then(function (res){
     if (res.Status){
@@ -131,7 +139,7 @@ const getTableData = () => {
 
 };
 const onDetail=(row: any)=>{
-  detailDialog.value.openDialog(row);
+  detailDialogRef.value.openDialog(row);
 }
 
 // 删除用户

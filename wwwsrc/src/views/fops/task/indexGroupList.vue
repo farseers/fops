@@ -74,8 +74,11 @@
                 </el-table-column>
                 <el-table-column label="客户端信息" width="180" show-overflow-tooltip>
                   <template #default="scope">
-                    <span>{{scope.row.Task.Client.Name}}</span><br>
-                    <span>{{scope.row.Task.Client.Ip}}:{{scope.row.Task.Client.Port}}</span>
+                    <div v-for="(item, index) in scope.row.Clients.slice(0, 3)" :key="index">
+                      <el-tag>{{item.Name}}</el-tag><br>
+                      <el-tag>{{item.Ip}}:{{item.Port}}</el-tag>
+                      <span v-if="scope.row.Clients.length>3">更多</span>
+                    </div>
                   </template>
                 </el-table-column>
 				<el-table-column label="操作" width="150">

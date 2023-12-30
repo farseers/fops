@@ -14,12 +14,12 @@
         <el-input size="default" v-model="state.routingKey" placeholder="路由KEY" style="max-width: 180px"> </el-input>
         <label class="ml10">往前推N分钟的数据</label>
         <el-select v-model="state.startMin" placeholder="往前推N分钟的数据" clearable class="ml10">
-          <el-option label="全部" value="0"></el-option>
-          <el-option label="1小时耗时最高" value="60"></el-option>
-          <el-option label="30分钟耗时最高" value="30"></el-option>
-          <el-option label="10分钟耗时最高" value="10"></el-option>
-          <el-option label="5分钟耗时最高" value="5"></el-option>
-          <el-option label="1分钟耗时最高" value="1"></el-option>
+          <el-option label="全部" :value="0"></el-option>
+          <el-option label="1小时耗时最高" :value="60"></el-option>
+          <el-option label="30分钟耗时最高" :value="30"></el-option>
+          <el-option label="10分钟耗时最高" :value="10"></el-option>
+          <el-option label="5分钟耗时最高" :value="5"></el-option>
+          <el-option label="1分钟耗时最高" :value="1"></el-option>
         </el-select>
         <label class="ml10">执行时间大于x毫秒的记录</label>
         <el-input size="default" v-model="state.searchUseTs" placeholder="执行时间大于x毫秒的记录" style="max-width: 180px"> </el-input>
@@ -31,13 +31,22 @@
 				</el-button>
 			</div>
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
-        <el-table-column prop="TraceId" label="跟踪ID" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="AppId" label="应用ID" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="AppName" label="应用名称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="AppIp" label="应用IP" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="StartTs" label="开始时间（微秒）" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="EndTs" label="结束时间（微秒）" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="UseTs" label="耗时（微秒）" show-overflow-tooltip></el-table-column>
+        <el-table-column width="250px" label="跟踪ID" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag>TraceId：{{scope.row.TraceId}}</el-tag><br>
+            <el-tag>AppId：{{scope.row.AppId}}</el-tag><br>
+            <el-tag>AppName：{{scope.row.AppName}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column width="120px" prop="AppIp" label="应用IP" show-overflow-tooltip></el-table-column>
+        <el-table-column width="220px" label="时间（微秒）" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag>StartTs：{{scope.row.StartTs}}</el-tag><br>
+            <el-tag>EndTs：{{scope.row.EndTs}}</el-tag><br>
+            <el-tag>UseTs：{{scope.row.UseTs}}</el-tag><br>
+            <el-tag>UseDesc：{{scope.row.UseDesc}}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="Server" label="服务器地址" show-overflow-tooltip></el-table-column>
         <el-table-column prop="Exchange" label="交换器" show-overflow-tooltip></el-table-column>
         <el-table-column prop="RoutingKey" label="路由KEY" show-overflow-tooltip></el-table-column>
@@ -74,7 +83,7 @@ import {friendlyJSONstringify} from "@intlify/shared";
 // 引入 api 请求接口
 const serverApi = fopsApi();
 // 引入组件
-const detailDialog = defineAsyncComponent(() => import('/src/views/fops/linkTrace/detailDialog.vue'));
+const detailDialog = defineAsyncComponent(() => import('/src/views/fops/linkTrace/detailV2Dialog.vue'));
 
 
 // 定义变量内容
@@ -102,19 +111,20 @@ const state = reactive({
 const getTableData = () => {
 	state.tableData.loading = true;
 
-  var params={
+  var data={
     appName:state.appName,
     appIp:state.appIp,
     server:state.server,
     exchange:state.exchange,
     routingKey:state.routingKey,
-    startMin:state.startMin,
-    searchUseTs:state.searchUseTs,
-    pageSize:state.tableData.param.pageSize,
-    pageIndex:state.tableData.param.pageNum,
+    startMin:state.startMin.toString(),
+    searchUseTs:state.searchUseTs.toString(),
+    pageSize:state.tableData.param.pageSize.toString(),
+    pageIndex:state.tableData.param.pageNum.toString(),
   }
+  const params = new URLSearchParams(data).toString();
   // 请求接口
-  serverApi.slowHttp(params).then(function (res){
+  serverApi.slowMq(params).then(function (res){
     if (res.Status){
       state.tableData.data = res.Data.List;
       state.tableData.total = res.Data.RecordCount;
@@ -128,7 +138,7 @@ const getTableData = () => {
 
 };
 const onDetail=(row: any)=>{
-  detailDialog.value.openDialog(row);
+  detailDialogRef.value.openDialog(row);
 }
 
 // 删除用户

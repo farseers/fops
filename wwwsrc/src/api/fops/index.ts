@@ -1,4 +1,5 @@
 import request from '/@/utils/request';
+import requestGet from '/@/utils/requestGet';
 import requestFS from '/@/utils/requestFS';
 import requestFSGet from '/@/utils/requestFSGet';
 
@@ -206,77 +207,76 @@ export function fopsApi() {
 				method: 'get',
 				data:param,
 			});
-		},linkTraceWebApi:(param: object) => {
-			return requestFS({
-				url: '/linkTrace/webApiList',
-				method: 'get',
-				data:param,
-			});
-		},linkTraceTask:(param: object) => {
-			return requestFS({
-				url: '/linkTrace/taskList',
-				method: 'get',
-				data:param,
-			});
-		},linkTraceConsumerList:(param: object) => {
-			return requestFS({
-				url: '/linkTrace/consumerList',
-				method: 'get',
-				data:param,
-			});
-		},linkTraceFScheduleList:(param: object) => {
-			return requestFS({
-				url: '/linkTrace/fScheduleList',
-				method: 'get',
-				data:param,
-			});
-		},linkTraceInfo:(traceId: object) => {
-			return requestFS({
-				url: '/linkTrace/info/'+traceId,
+		},linkTraceWebApi:(param: string) => {
+			return requestGet({
+				url: '/linkTrace/webApiList?'+param,
 				method: 'get',
 				//data:param,
 			});
-		},slowSql:(param: object) => {
-			return requestFS({
-				url: '/linkTrace/slowDbList',
+		},linkTraceTask:(param: string) => {
+			return requestGet({
+				url: '/linkTrace/taskList?'+param,
 				method: 'get',
-				data:param,
+				//data:param,
 			});
-		},slowEs:(param: object) => {
-			return requestFS({
-				url: '/linkTrace/slowEsList',
+		},linkTraceConsumerList:(param: string) => {
+			return requestGet({
+				url: '/linkTrace/consumerList?'+param,
 				method: 'get',
-				data:param,
+				//data:param,
 			});
-		},slowEtcd:(param: object) => {
-			return requestFS({
-				url: '/linkTrace/slowEtcdList',
+		},linkTraceFScheduleList:(param: string) => {
+			return requestGet({
+				url: '/linkTrace/fScheduleList?'+param,
 				method: 'get',
-				data:param,
+				//data:param,
 			});
-		},slowHand:(param: object) => {
-			return requestFS({
-				url: '/linkTrace/slowHandList',
+		},linkTraceInfo:(traceId: object) => {
+			return requestGet({
+				url: '/linkTrace/info/'+traceId,
 				method: 'get',
-				data:param,
 			});
-		},slowHttp:(param: object) => {
-			return requestFS({
-				url: '/linkTrace/slowHttpList',
+		},slowSql:(param: string) => {
+			return requestGet({
+				url: '/linkTrace/slowDbList?'+param,
 				method: 'get',
-				data:param,
+				//data:param,
 			});
-		},slowMq:(param: object) => {
-			return requestFS({
-				url: '/linkTrace/slowMqList',
+		},slowEs:(param: string) => {
+			return requestGet({
+				url: '/linkTrace/slowEsList?'+param,
 				method: 'get',
-				data:param,
+				//data:param,
 			});
-		},slowRedis:(param: object) => {
-			return requestFS({
-				url: '/linkTrace/slowRedisList',
+		},slowEtcd:(param: string) => {
+			return requestGet({
+				url: '/linkTrace/slowEtcdList?'+param,
 				method: 'get',
-				data:param,
+				//data:param,
+			});
+		},slowHand:(param: string) => {
+			return requestGet({
+				url: '/linkTrace/slowHandList?'+param,
+				method: 'get',
+				//data:param,
+			});
+		},slowHttp:(param: string) => {
+			return requestGet({
+				url: '/linkTrace/slowHttpList?'+param,
+				method: 'get',
+				//data:param,
+			});
+		},slowMq:(param: string) => {
+			return requestGet({
+				url: '/linkTrace/slowMqList?'+param,
+				method: 'get',
+				//data:param,
+			});
+		},slowRedis:(param: string) => {
+			return requestGet({
+				url: '/linkTrace/slowRedisList?'+param,
+				method: 'get',
+				//data:param,
 			});
 		}
 	};
