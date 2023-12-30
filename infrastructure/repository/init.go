@@ -3,6 +3,7 @@ package repository
 import (
 	"fops/domain/apps"
 	"fops/domain/cluster"
+	"fops/domain/linkTrace"
 	"github.com/farseer-go/fs/container"
 )
 
@@ -12,4 +13,6 @@ func InitRepository() {
 	container.Register(func() apps.Repository { return &appsRepository{} })
 	// 集群
 	container.Register(func() cluster.Repository { return &clusterRepository{} })
+	// 链路追踪
+	container.Register(func() linkTrace.Repository { return &linkTraceRepository{} })
 }

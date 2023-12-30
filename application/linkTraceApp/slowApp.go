@@ -2,16 +2,15 @@
 package linkTraceApp
 
 import (
+	"fops/domain/linkTrace"
 	"github.com/farseer-go/collections"
-	"github.com/farseer-go/fs/dateTime"
-	"github.com/farseer-go/linkTrace/driver/clickhouse"
+	linkTraceCom "github.com/farseer-go/linkTrace"
 	"strings"
-	"time"
 )
 
 // SlowDbList 慢数据库列表
 // @get slowDbList
-func SlowDbList(appName, appIp, dbName, tableName string, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTrace_clickhouse.TraceDetailDatabasePO] {
+func SlowDbList(appName, appIp, dbName, tableName string, searchUseTs int64, startMin int, pageSize, pageIndex int, linkTraceRepository linkTrace.Repository) collections.PageList[linkTraceCom.TraceDetailDatabase] {
 	if pageSize < 1 {
 		pageSize = 20
 	}
@@ -22,19 +21,13 @@ func SlowDbList(appName, appIp, dbName, tableName string, searchUseTs int64, sta
 	appIp = strings.TrimSpace(appIp)
 	dbName = strings.TrimSpace(dbName)
 	tableName = strings.TrimSpace(tableName)
-	return linkTrace_clickhouse.CHContext.TraceDetailDatabase.
-		WhereIf(appName != "", "app_name = ?", appName).
-		WhereIf(appIp != "", "app_ip = ?", appIp).
-		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(dbName != "", "db_name like ?", "%"+dbName+"%").
-		WhereIf(tableName != "", "table_name like ?", "%"+tableName+"%").
-		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
-		Desc("start_ts").ToPageList(pageSize, pageIndex)
+
+	return linkTraceRepository.ToSlowDbList(appName, appIp, dbName, tableName, searchUseTs, startMin, pageSize, pageIndex)
 }
 
 // SlowEsList 慢Es列表
 // @get slowEsList
-func SlowEsList(appName, appIp, indexName, aliasesName string, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTrace_clickhouse.TraceDetailEsPO] {
+func SlowEsList(appName, appIp, indexName, aliasesName string, searchUseTs int64, startMin int, pageSize, pageIndex int, linkTraceRepository linkTrace.Repository) collections.PageList[linkTraceCom.TraceDetailEs] {
 	if pageSize < 1 {
 		pageSize = 20
 	}
@@ -45,19 +38,13 @@ func SlowEsList(appName, appIp, indexName, aliasesName string, searchUseTs int64
 	appIp = strings.TrimSpace(appIp)
 	indexName = strings.TrimSpace(indexName)
 	aliasesName = strings.TrimSpace(aliasesName)
-	return linkTrace_clickhouse.CHContext.TraceDetailEs.
-		WhereIf(appName != "", "app_name = ?", appName).
-		WhereIf(appIp != "", "app_ip = ?", appIp).
-		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(indexName != "", "index_name like ?", "%"+indexName+"%").
-		WhereIf(aliasesName != "", "aliases_name like ?", "%"+aliasesName+"%").
-		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
-		Desc("start_ts").ToPageList(pageSize, pageIndex)
+
+	return linkTraceRepository.ToSlowEsList(appName, appIp, indexName, aliasesName, searchUseTs, startMin, pageSize, pageIndex)
 }
 
 // SlowEtcdList 慢Etcd列表
 // @get slowEtcdList
-func SlowEtcdList(appName, appIp, key string, leaseID int64, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTrace_clickhouse.TraceDetailEtcdPO] {
+func SlowEtcdList(appName, appIp, key string, leaseID int64, searchUseTs int64, startMin int, pageSize, pageIndex int, linkTraceRepository linkTrace.Repository) collections.PageList[linkTraceCom.TraceDetailEtcd] {
 	if pageSize < 1 {
 		pageSize = 20
 	}
@@ -67,19 +54,13 @@ func SlowEtcdList(appName, appIp, key string, leaseID int64, searchUseTs int64, 
 	appName = strings.TrimSpace(appName)
 	appIp = strings.TrimSpace(appIp)
 	key = strings.TrimSpace(key)
-	return linkTrace_clickhouse.CHContext.TraceDetailEtcd.
-		WhereIf(appName != "", "app_name = ?", appName).
-		WhereIf(appIp != "", "app_ip = ?", appIp).
-		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(key != "", "key like ?", "%"+key+"%").
-		WhereIf(leaseID > 0, "leaseID = ?", leaseID).
-		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
-		Desc("start_ts").ToPageList(pageSize, pageIndex)
+
+	return linkTraceRepository.ToSlowEtcdList(appName, appIp, key, leaseID, searchUseTs, startMin, pageSize, pageIndex)
 }
 
 // SlowHandList 慢手动列表
 // @get slowHandList
-func SlowHandList(appName, appIp, name string, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTrace_clickhouse.TraceDetailHandPO] {
+func SlowHandList(appName, appIp, name string, searchUseTs int64, startMin int, pageSize, pageIndex int, linkTraceRepository linkTrace.Repository) collections.PageList[linkTraceCom.TraceDetailHand] {
 	if pageSize < 1 {
 		pageSize = 20
 	}
@@ -89,18 +70,13 @@ func SlowHandList(appName, appIp, name string, searchUseTs int64, startMin int, 
 	appName = strings.TrimSpace(appName)
 	appIp = strings.TrimSpace(appIp)
 	name = strings.TrimSpace(name)
-	return linkTrace_clickhouse.CHContext.TraceDetailHand.
-		WhereIf(appName != "", "app_name = ?", appName).
-		WhereIf(appIp != "", "app_ip = ?", appIp).
-		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(name != "", "name like ?", "%"+name+"%").
-		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
-		Desc("start_ts").ToPageList(pageSize, pageIndex)
+
+	return linkTraceRepository.ToSlowHandList(appName, appIp, name, searchUseTs, startMin, pageSize, pageIndex)
 }
 
 // SlowHttpList 慢Http列表
 // @get slowHttpList
-func SlowHttpList(appName, appIp, method, url, requestBody, responseBody string, statusCode int, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTrace_clickhouse.TraceDetailHttpPO] {
+func SlowHttpList(appName, appIp, method, url, requestBody, responseBody string, statusCode int, searchUseTs int64, startMin int, pageSize, pageIndex int, linkTraceRepository linkTrace.Repository) collections.PageList[linkTraceCom.TraceDetailHttp] {
 	if pageSize < 1 {
 		pageSize = 20
 	}
@@ -113,22 +89,13 @@ func SlowHttpList(appName, appIp, method, url, requestBody, responseBody string,
 	url = strings.TrimSpace(url)
 	requestBody = strings.TrimSpace(requestBody)
 	responseBody = strings.TrimSpace(responseBody)
-	return linkTrace_clickhouse.CHContext.TraceDetailHttp.
-		WhereIf(appName != "", "app_name = ?", appName).
-		WhereIf(appIp != "", "app_ip = ?", appIp).
-		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(method != "", "method like ?", "%"+method+"%").
-		WhereIf(url != "", "url like ?", "%"+url+"%").
-		WhereIf(requestBody != "", "request_body like ?", "%"+requestBody+"%").
-		WhereIf(responseBody != "", "response_body like ?", "%"+responseBody+"%").
-		WhereIf(statusCode > 0, "status_code >= ?", statusCode).
-		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
-		Desc("start_ts").ToPageList(pageSize, pageIndex)
+
+	return linkTraceRepository.ToSlowHttpList(appName, appIp, method, url, requestBody, responseBody, statusCode, searchUseTs, startMin, pageSize, pageIndex)
 }
 
 // SlowMqList 慢Mq列表
 // @get slowMqList
-func SlowMqList(appName, appIp, server, exchange, routingKey string, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTrace_clickhouse.TraceDetailMqPO] {
+func SlowMqList(appName, appIp, server, exchange, routingKey string, searchUseTs int64, startMin int, pageSize, pageIndex int, linkTraceRepository linkTrace.Repository) collections.PageList[linkTraceCom.TraceDetailMq] {
 	if pageSize < 1 {
 		pageSize = 20
 	}
@@ -140,20 +107,13 @@ func SlowMqList(appName, appIp, server, exchange, routingKey string, searchUseTs
 	server = strings.TrimSpace(server)
 	exchange = strings.TrimSpace(exchange)
 	routingKey = strings.TrimSpace(routingKey)
-	return linkTrace_clickhouse.CHContext.TraceDetailMq.
-		WhereIf(appName != "", "app_name = ?", appName).
-		WhereIf(appIp != "", "app_ip = ?", appIp).
-		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(server != "", "server like ?", "%"+server+"%").
-		WhereIf(exchange != "", "url like ?", "%"+exchange+"%").
-		WhereIf(routingKey != "", "url like ?", "%"+routingKey+"%").
-		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
-		Desc("start_ts").ToPageList(pageSize, pageIndex)
+
+	return linkTraceRepository.ToSlowMqList(appName, appIp, server, exchange, routingKey, searchUseTs, startMin, pageSize, pageIndex)
 }
 
 // SlowRedisList 慢Redis列表
 // @get slowRedisList
-func SlowRedisList(appName, appIp, key, field string, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTrace_clickhouse.TraceDetailRedisPO] {
+func SlowRedisList(appName, appIp, key, field string, searchUseTs int64, startMin int, pageSize, pageIndex int, linkTraceRepository linkTrace.Repository) collections.PageList[linkTraceCom.TraceDetailRedis] {
 	if pageSize < 1 {
 		pageSize = 20
 	}
@@ -164,12 +124,6 @@ func SlowRedisList(appName, appIp, key, field string, searchUseTs int64, startMi
 	appIp = strings.TrimSpace(appIp)
 	key = strings.TrimSpace(key)
 	field = strings.TrimSpace(field)
-	return linkTrace_clickhouse.CHContext.TraceDetailRedis.
-		WhereIf(appName != "", "app_name = ?", appName).
-		WhereIf(appIp != "", "app_ip = ?", appIp).
-		WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
-		WhereIf(key != "", "key like ?", "%"+key+"%").
-		WhereIf(field != "", "field like ?", "%"+field+"%").
-		WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
-		Desc("start_ts").ToPageList(pageSize, pageIndex)
+
+	return linkTraceRepository.ToSlowRedisList(appName, appIp, key, field, searchUseTs, startMin, pageSize, pageIndex)
 }
