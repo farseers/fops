@@ -82,56 +82,48 @@ func (receiver *linkTraceWarp) addEntry(po linkTraceCom.TraceContext) {
 // 服务所属的明细
 func (receiver *linkTraceWarp) addDetail(po linkTraceCom.TraceContext) {
 	for _, detail := range po.List {
-		m := detail.(map[string]any)
-		baseDetailPO := mapper.Single[trace.BaseTraceDetail](m)
+		m := mapper.ToMap[string, any](detail)
+		baseDetailPO := m["BaseTraceDetail"].(trace.BaseTraceDetail)
 		detailTrace := response.LinkTraceVO{
 			Rgba: response.RgbaList[receiver.rgbaIndex], AppId: po.AppId, AppIp: po.AppIp, AppName: po.AppName,
 			StartTs: baseDetailPO.StartTs - receiver.startTs,
 			UseTs:   baseDetailPO.UseTs.Microseconds(), UseDesc: baseDetailPO.UseTs.String()}
 
-		switch baseDetailPO.CallType {
-		case eumCallType.Database:
-			detailPO := mapper.Single[linkTraceCom.TraceDetailDatabase](m)
+		switch detailPO := detail.(type) {
+		case *linkTraceCom.TraceDetailDatabase:
 			if detailPO.TableName == "" && detailPO.Sql == "" {
 				detailTrace.Caption = fmt.Sprintf("打开数据库 => %s %s", detailPO.DbName, detailPO.ConnectionString)
 			} else {
 				detailTrace.Caption = fmt.Sprintf("执行数据库 => %s %s 影响%v行", detailPO.DbName, detailPO.TableName, detailPO.RowsAffected)
 			}
 			detailTrace.Desc = detailPO.Sql
-		case eumCallType.Http:
-			detailPO := mapper.Single[linkTraceCom.TraceDetailHttp](m)
+		case *linkTraceCom.TraceDetailHttp:
 			detailTrace.Caption = fmt.Sprintf("调用http => %v %s %s", detailPO.StatusCode, detailPO.Method, detailPO.Url)
 			lstHeader := collections.NewList[string]()
 			for k, v := range detailPO.Headers.ToMap() {
 				lstHeader.Add(fmt.Sprintf("%s=%v", k, v))
 			}
 			detailTrace.Desc = fmt.Sprintf("头部：%s 入参：%s 出参：%s", lstHeader.ToString(","), detailPO.RequestBody, detailPO.ResponseBody)
-		case eumCallType.Grpc:
-			detailPO := mapper.Single[linkTraceCom.TraceDetailGrpc](m)
+		case *linkTraceCom.TraceDetailGrpc:
 			detailTrace.Caption = fmt.Sprintf("调用http => %v %s %s", detailPO.StatusCode, detailPO.Method, detailPO.Url)
 			lstHeader := collections.NewList[string]()
 			for k, v := range detailPO.Headers.ToMap() {
 				lstHeader.Add(fmt.Sprintf("%s=%v", k, v))
 			}
 			detailTrace.Desc = fmt.Sprintf("头部：%s 入参：%s 出参：%s", lstHeader.ToString(","), detailPO.RequestBody, detailPO.ResponseBody)
-		case eumCallType.Redis:
-			detailPO := mapper.Single[linkTraceCom.TraceDetailRedis](m)
+		case *linkTraceCom.TraceDetailRedis:
 			detailTrace.Caption = fmt.Sprintf("执行Redis => %s %s %s", detailPO.MethodName, detailPO.Key, detailPO.Field)
 			detailTrace.Desc = fmt.Sprintf("%s %s", detailPO.Key, detailPO.Field)
-		case eumCallType.Mq:
-			detailPO := mapper.Single[linkTraceCom.TraceDetailMq](m)
+		case *linkTraceCom.TraceDetailMq:
 			detailTrace.Caption = fmt.Sprintf("发送MQ消息 => %s %s %s", detailPO.Server, detailPO.Exchange, detailPO.RoutingKey)
 			detailTrace.Desc = fmt.Sprintf("%s %s %s", detailPO.Server, detailPO.Exchange, detailPO.RoutingKey)
-		case eumCallType.Elasticsearch:
-			detailPO := mapper.Single[linkTraceCom.TraceDetailEs](m)
+		case *linkTraceCom.TraceDetailEs:
 			detailTrace.Caption = fmt.Sprintf("执行ES => %s %s", detailPO.IndexName, detailPO.AliasesName)
 			detailTrace.Desc = fmt.Sprintf("%s %s", detailPO.IndexName, detailPO.AliasesName)
-		case eumCallType.Etcd:
-			detailPO := mapper.Single[linkTraceCom.TraceDetailEtcd](m)
+		case *linkTraceCom.TraceDetailEtcd:
 			detailTrace.Caption = fmt.Sprintf("执行Etcd => %s %v", detailPO.Key, detailPO.LeaseID)
 			detailTrace.Desc = fmt.Sprintf("%s %v", detailPO.Key, detailPO.LeaseID)
-		case eumCallType.Hand:
-			detailPO := mapper.Single[linkTraceCom.TraceDetailHand](m)
+		case *linkTraceCom.TraceDetailHand:
 			detailTrace.Caption = fmt.Sprintf("手动埋点 => %s", detailPO.Name)
 			detailTrace.Desc = fmt.Sprintf("%s", detailPO.Name)
 		}

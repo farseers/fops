@@ -28,6 +28,7 @@ func (receiver *linkTraceRepository) ToEntity(traceId int64) collections.List[li
 
 	lstPO.Foreach(func(item *model.TraceContextPO) {
 		do := mapper.Single[linkTraceCom.TraceContext](item)
+		do.List = []any{}
 		for _, detail := range item.List {
 			switch eumCallType.Enum(parse.ToInt(detail.(map[string]any)["CallType"])) {
 			case eumCallType.Database:
