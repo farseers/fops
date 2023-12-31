@@ -274,43 +274,27 @@ func (receiver *linkTraceRepository) saveDetail(lst collections.List[model.Trace
 			switch baseDetailPO.CallType {
 			case eumCallType.Database:
 				detailPO := mapper.Single[model.TraceDetailDatabasePO](m)
-				// 额度的字段来自traceContext
-				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
 				lstTraceDetailDatabase.Add(detailPO)
 			case eumCallType.Http:
 				detailPO := mapper.Single[model.TraceDetailHttpPO](m)
-				// 额度的字段来自traceContext
-				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
 				lstTraceDetailHttp.Add(detailPO)
 			case eumCallType.Grpc:
 				detailPO := mapper.Single[model.TraceDetailGrpcPO](m)
-				// 额度的字段来自traceContext
-				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
 				lstTraceDetailGrpc.Add(detailPO)
 			case eumCallType.Redis:
 				detailPO := mapper.Single[model.TraceDetailRedisPO](m)
-				// 额度的字段来自traceContext
-				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
 				lstTraceDetailRedis.Add(detailPO)
 			case eumCallType.Mq:
 				detailPO := mapper.Single[model.TraceDetailMqPO](m)
-				// 额度的字段来自traceContext
-				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
 				lstTraceDetailMq.Add(detailPO)
 			case eumCallType.Elasticsearch:
 				detailPO := mapper.Single[model.TraceDetailEsPO](m)
-				// 额度的字段来自traceContext
-				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
 				lstTraceDetailEs.Add(detailPO)
 			case eumCallType.Etcd:
 				detailPO := mapper.Single[model.TraceDetailEtcdPO](m)
-				// 额度的字段来自traceContext
-				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
 				lstTraceDetailEtcd.Add(detailPO)
 			case eumCallType.Hand:
 				detailPO := mapper.Single[model.TraceDetailHandPO](m)
-				// 额度的字段来自traceContext
-				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
 				lstTraceDetailHand.Add(detailPO)
 			}
 		}
