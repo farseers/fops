@@ -3,6 +3,7 @@ package job
 import (
 	"fops/domain/apps"
 	"github.com/farseer-go/fs/container"
+	"github.com/farseer-go/fs/trace"
 	"github.com/farseer-go/tasks"
 )
 
@@ -11,6 +12,7 @@ func BuildingJob(*tasks.TaskContext) {
 	appsRepository := container.Resolve[apps.Repository]()
 	buildEO := appsRepository.GetUnBuildInfo()
 	if buildEO.IsNil() {
+		trace.CurTraceContext.Get().Ignore()
 		return
 	}
 

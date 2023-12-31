@@ -21,5 +21,5 @@ type Repository interface {
 	ToSlowHttpList(appName, appIp, method, url, requestBody, responseBody string, statusCode int, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailHttp]
 	ToSlowMqList(appName, appIp, server, exchange, routingKey string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailMq]
 	ToSlowRedisList(appName, appIp, key, field string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailRedis]
-	Save(lstEO collections.List[TraceContextEO]) error
+	Save(lstEO collections.List[linkTraceCom.TraceContext]) error
 }

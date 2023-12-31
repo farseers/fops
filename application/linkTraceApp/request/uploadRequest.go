@@ -1,10 +1,10 @@
 package request
 
 import (
-	"fops/domain/linkTrace"
 	"github.com/farseer-go/collections"
+	linkTraceCom "github.com/farseer-go/linkTrace"
 )
 
 type UploadRequest struct {
-	List collections.List[linkTrace.TraceContextEO]
+	List collections.List[linkTraceCom.TraceContext]
 }

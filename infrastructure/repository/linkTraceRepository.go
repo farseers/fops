@@ -20,42 +20,44 @@ type linkTraceRepository struct {
 }
 
 func (receiver *linkTraceRepository) ToEntity(traceId int64) collections.List[linkTraceCom.TraceContext] {
+	var lstPO collections.List[model.TraceContextPO]
 	lst := collections.NewList[linkTraceCom.TraceContext]()
 	if linkTrace.Config.Driver == "clickhouse" {
-		lstPO := context.LinkTraceCHContext.TraceContext.Where("trace_id", traceId).Asc("start_ts").ToList()
-		lstPO.Foreach(func(item *model.TraceContextPO) {
-			do := mapper.Single[linkTraceCom.TraceContext](item)
-			for _, detail := range item.List {
-				switch eumCallType.Enum(parse.ToInt(detail.(map[string]any)["CallType"])) {
-				case eumCallType.Database:
-					traceDetail := mapper.Single[linkTraceCom.TraceDetailDatabase](detail)
-					do.List = append(do.List, &traceDetail)
-				case eumCallType.Http:
-					traceDetail := mapper.Single[linkTraceCom.TraceDetailHttp](detail)
-					do.List = append(do.List, &traceDetail)
-				case eumCallType.Grpc:
-					traceDetail := mapper.Single[linkTraceCom.TraceDetailGrpc](detail)
-					do.List = append(do.List, &traceDetail)
-				case eumCallType.Redis:
-					traceDetail := mapper.Single[linkTraceCom.TraceDetailRedis](detail)
-					do.List = append(do.List, &traceDetail)
-				case eumCallType.Mq:
-					traceDetail := mapper.Single[linkTraceCom.TraceDetailMq](detail)
-					do.List = append(do.List, &traceDetail)
-				case eumCallType.Elasticsearch:
-					traceDetail := mapper.Single[linkTraceCom.TraceDetailEs](detail)
-					do.List = append(do.List, &traceDetail)
-				case eumCallType.Etcd:
-					traceDetail := mapper.Single[linkTraceCom.TraceDetailEtcd](detail)
-					do.List = append(do.List, &traceDetail)
-				case eumCallType.Hand:
-					traceDetail := mapper.Single[linkTraceCom.TraceDetailHand](detail)
-					do.List = append(do.List, &traceDetail)
-				}
-			}
-			lst.Add(do)
-		})
+		lstPO = context.LinkTraceCHContext.TraceContext.Where("trace_id", traceId).Asc("start_ts").ToList()
 	}
+
+	lstPO.Foreach(func(item *model.TraceContextPO) {
+		do := mapper.Single[linkTraceCom.TraceContext](item)
+		for _, detail := range item.List {
+			switch eumCallType.Enum(parse.ToInt(detail.(map[string]any)["CallType"])) {
+			case eumCallType.Database:
+				traceDetail := mapper.Single[linkTraceCom.TraceDetailDatabase](detail)
+				do.List = append(do.List, &traceDetail)
+			case eumCallType.Http:
+				traceDetail := mapper.Single[linkTraceCom.TraceDetailHttp](detail)
+				do.List = append(do.List, &traceDetail)
+			case eumCallType.Grpc:
+				traceDetail := mapper.Single[linkTraceCom.TraceDetailGrpc](detail)
+				do.List = append(do.List, &traceDetail)
+			case eumCallType.Redis:
+				traceDetail := mapper.Single[linkTraceCom.TraceDetailRedis](detail)
+				do.List = append(do.List, &traceDetail)
+			case eumCallType.Mq:
+				traceDetail := mapper.Single[linkTraceCom.TraceDetailMq](detail)
+				do.List = append(do.List, &traceDetail)
+			case eumCallType.Elasticsearch:
+				traceDetail := mapper.Single[linkTraceCom.TraceDetailEs](detail)
+				do.List = append(do.List, &traceDetail)
+			case eumCallType.Etcd:
+				traceDetail := mapper.Single[linkTraceCom.TraceDetailEtcd](detail)
+				do.List = append(do.List, &traceDetail)
+			case eumCallType.Hand:
+				traceDetail := mapper.Single[linkTraceCom.TraceDetailHand](detail)
+				do.List = append(do.List, &traceDetail)
+			}
+		}
+		lst.Add(do)
+	})
 	return lst
 }
 
@@ -226,12 +228,21 @@ func (receiver *linkTraceRepository) ToSlowRedisList(appName, appIp, key, field 
 	return collections.NewPageList[linkTraceCom.TraceDetailRedis](collections.NewList[linkTraceCom.TraceDetailRedis](), 0)
 }
 
-func (receiver *linkTraceRepository) Save(lstEO collections.List[linkTrace.TraceContextEO]) error {
+func (receiver *linkTraceRepository) Save(lstEO collections.List[linkTraceCom.TraceContext]) error {
 	lst := mapper.ToList[model.TraceContextPO](lstEO)
 	lst.Foreach(func(item *model.TraceContextPO) {
 		item.UseDesc = item.UseTs.String()
 		item.CreateAt = dateTime.NewUnixMicro(item.StartTs)
+
+		for index, detail := range item.List {
+			m := detail.(map[string]any)
+			baseDetailPO := mapper.Single[model.BaseTraceDetailPO](m)
+			m["UseDesc"] = baseDetailPO.UseTs.String()
+			m["CreateAt"] = dateTime.NewUnixMicro(baseDetailPO.StartTs)
+			item.List[index] = m
+		}
 	})
+
 	if linkTrace.Config.Driver == "clickhouse" {
 		// 写入上下文
 		_, err := context.LinkTraceCHContext.TraceContext.InsertList(lst, 2000)
@@ -264,57 +275,41 @@ func (receiver *linkTraceRepository) saveDetail(lst collections.List[model.Trace
 				detailPO := mapper.Single[model.TraceDetailDatabasePO](m)
 				// 额度的字段来自traceContext
 				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
-				detailPO.UseDesc = detailPO.UseTs.String()
-				detailPO.CreateAt = dateTime.NewUnixMicro(detailPO.StartTs)
 				lstTraceDetailDatabase.Add(detailPO)
 			case eumCallType.Http:
 				detailPO := mapper.Single[model.TraceDetailHttpPO](m)
 				// 额度的字段来自traceContext
 				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
-				detailPO.UseDesc = detailPO.UseTs.String()
-				detailPO.CreateAt = dateTime.NewUnixMicro(detailPO.StartTs)
 				lstTraceDetailHttp.Add(detailPO)
 			case eumCallType.Grpc:
 				detailPO := mapper.Single[model.TraceDetailGrpcPO](m)
 				// 额度的字段来自traceContext
 				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
-				detailPO.UseDesc = detailPO.UseTs.String()
-				detailPO.CreateAt = dateTime.NewUnixMicro(detailPO.StartTs)
 				lstTraceDetailGrpc.Add(detailPO)
 			case eumCallType.Redis:
 				detailPO := mapper.Single[model.TraceDetailRedisPO](m)
 				// 额度的字段来自traceContext
 				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
-				detailPO.UseDesc = detailPO.UseTs.String()
-				detailPO.CreateAt = dateTime.NewUnixMicro(detailPO.StartTs)
 				lstTraceDetailRedis.Add(detailPO)
 			case eumCallType.Mq:
 				detailPO := mapper.Single[model.TraceDetailMqPO](m)
 				// 额度的字段来自traceContext
 				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
-				detailPO.UseDesc = detailPO.UseTs.String()
-				detailPO.CreateAt = dateTime.NewUnixMicro(detailPO.StartTs)
 				lstTraceDetailMq.Add(detailPO)
 			case eumCallType.Elasticsearch:
 				detailPO := mapper.Single[model.TraceDetailEsPO](m)
 				// 额度的字段来自traceContext
 				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
-				detailPO.UseDesc = detailPO.UseTs.String()
-				detailPO.CreateAt = dateTime.NewUnixMicro(detailPO.StartTs)
 				lstTraceDetailEs.Add(detailPO)
 			case eumCallType.Etcd:
 				detailPO := mapper.Single[model.TraceDetailEtcdPO](m)
 				// 额度的字段来自traceContext
 				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
-				detailPO.UseDesc = detailPO.UseTs.String()
-				detailPO.CreateAt = dateTime.NewUnixMicro(detailPO.StartTs)
 				lstTraceDetailEtcd.Add(detailPO)
 			case eumCallType.Hand:
 				detailPO := mapper.Single[model.TraceDetailHandPO](m)
 				// 额度的字段来自traceContext
 				_ = mapper.Auto(traceContext, &detailPO.BaseTraceDetailPO)
-				detailPO.UseDesc = detailPO.UseTs.String()
-				detailPO.CreateAt = dateTime.NewUnixMicro(detailPO.StartTs)
 				lstTraceDetailHand.Add(detailPO)
 			}
 		}
