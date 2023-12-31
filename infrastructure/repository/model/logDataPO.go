@@ -6,6 +6,7 @@ import (
 )
 
 type LogDataPO struct {
+	Id        int64             `gorm:"not null;default:0;comment:主键ID"`
 	CreateAt  dateTime.DateTime `gorm:"type:DateTime64(3);not null;comment:发生时间"`
 	LogLevel  eumLogLevel.Enum  `gorm:"not null;comment:日志等级"`
 	Component string            `gorm:"not null;default:'';comment:组件名称"`
