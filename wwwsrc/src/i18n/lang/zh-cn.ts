@@ -104,7 +104,7 @@ export default {
 		webApi:'webApi列表',
 		taskApi:'task列表',
 		customerApi:'consumer列表',
-		fscheduleApi:'fsChedule列表',
+		fscheduleApi:'FSchedule列表',
 		Etcd:'Etcd',
 		Hand:'手动埋点',
 	},
