@@ -23,7 +23,7 @@ func (receiver *linkTraceRepository) ToEntity(traceId int64) collections.List[li
 	var lstPO collections.List[model.TraceContextPO]
 	lst := collections.NewList[linkTraceCom.TraceContext]()
 	if linkTrace.Config.Driver == "clickhouse" {
-		lstPO = context.LinkTraceCHContext.TraceContext.Where("trace_id", traceId).Asc("start_ts").ToList()
+		lstPO = context.CHContext.TraceContext.Where("trace_id", traceId).Asc("start_ts").ToList()
 	}
 
 	lstPO.Foreach(func(item *model.TraceContextPO) {
@@ -64,7 +64,7 @@ func (receiver *linkTraceRepository) ToEntity(traceId int64) collections.List[li
 
 func (receiver *linkTraceRepository) ToWebApiList(appName, appIp, requestIp, searchUrl string, statusCode int, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		lstPO := context.LinkTraceCHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,start_ts,end_ts,use_ts,web_domain,web_path,web_method,web_content_type,web_status_code,web_request_ip").
+		lstPO := context.CHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,start_ts,end_ts,use_ts,web_domain,web_path,web_method,web_content_type,web_status_code,web_request_ip").
 			Where("trace_type = ? and parent_app_name = ''", eumTraceType.WebApi).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
@@ -80,7 +80,7 @@ func (receiver *linkTraceRepository) ToWebApiList(appName, appIp, requestIp, sea
 }
 func (receiver *linkTraceRepository) ToTaskList(appName, appIp, taskName string, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		lstPO := context.LinkTraceCHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,start_ts,end_ts,use_ts,task_name").
+		lstPO := context.CHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,start_ts,end_ts,use_ts,task_name").
 			Where("trace_type = ? and parent_app_name = ''", eumTraceType.Task).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
@@ -94,7 +94,7 @@ func (receiver *linkTraceRepository) ToTaskList(appName, appIp, taskName string,
 }
 func (receiver *linkTraceRepository) ToFScheduleList(appName, appIp, taskName string, taskGroupId, taskId, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		lstPO := context.LinkTraceCHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,start_ts,end_ts,use_ts,task_name,task_group_id,task_id").
+		lstPO := context.CHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,start_ts,end_ts,use_ts,task_name,task_group_id,task_id").
 			Where("trace_type = ? and parent_app_name = ''", eumTraceType.FSchedule).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
@@ -110,7 +110,7 @@ func (receiver *linkTraceRepository) ToFScheduleList(appName, appIp, taskName st
 }
 func (receiver *linkTraceRepository) ToConsumerList(appName, appIp, server, queueName, routingKey string, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		lstPO := context.LinkTraceCHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,start_ts,end_ts,use_ts,consumer_server,consumer_queue_name,consumer_routing_key").
+		lstPO := context.CHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,start_ts,end_ts,use_ts,consumer_server,consumer_queue_name,consumer_routing_key").
 			Where("(trace_type = ? or trace_type = ?) and parent_app_name = ''", eumTraceType.MqConsumer, eumTraceType.QueueConsumer).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
@@ -127,7 +127,7 @@ func (receiver *linkTraceRepository) ToConsumerList(appName, appIp, server, queu
 
 func (receiver *linkTraceRepository) ToSlowDbList(appName, appIp, dbName, tableName string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailDatabase] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		lstPO := context.LinkTraceCHContext.TraceDetailDatabase.
+		lstPO := context.CHContext.TraceDetailDatabase.
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -142,7 +142,7 @@ func (receiver *linkTraceRepository) ToSlowDbList(appName, appIp, dbName, tableN
 }
 func (receiver *linkTraceRepository) ToSlowEsList(appName, appIp, indexName, aliasesName string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailEs] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		lstPO := context.LinkTraceCHContext.TraceDetailEs.
+		lstPO := context.CHContext.TraceDetailEs.
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -156,7 +156,7 @@ func (receiver *linkTraceRepository) ToSlowEsList(appName, appIp, indexName, ali
 }
 func (receiver *linkTraceRepository) ToSlowEtcdList(appName, appIp, key string, leaseID, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailEtcd] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		lstPO := context.LinkTraceCHContext.TraceDetailEtcd.
+		lstPO := context.CHContext.TraceDetailEtcd.
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -170,7 +170,7 @@ func (receiver *linkTraceRepository) ToSlowEtcdList(appName, appIp, key string, 
 }
 func (receiver *linkTraceRepository) ToSlowHandList(appName, appIp, name string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailHand] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		lstPO := context.LinkTraceCHContext.TraceDetailHand.
+		lstPO := context.CHContext.TraceDetailHand.
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -183,7 +183,7 @@ func (receiver *linkTraceRepository) ToSlowHandList(appName, appIp, name string,
 }
 func (receiver *linkTraceRepository) ToSlowHttpList(appName, appIp, method, url, requestBody, responseBody string, statusCode int, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailHttp] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		lstPO := context.LinkTraceCHContext.TraceDetailHttp.
+		lstPO := context.CHContext.TraceDetailHttp.
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -200,7 +200,7 @@ func (receiver *linkTraceRepository) ToSlowHttpList(appName, appIp, method, url,
 }
 func (receiver *linkTraceRepository) ToSlowMqList(appName, appIp, server, exchange, routingKey string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailMq] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		lstPO := context.LinkTraceCHContext.TraceDetailMq.
+		lstPO := context.CHContext.TraceDetailMq.
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -216,7 +216,7 @@ func (receiver *linkTraceRepository) ToSlowMqList(appName, appIp, server, exchan
 
 func (receiver *linkTraceRepository) ToSlowRedisList(appName, appIp, key, field string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailRedis] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		lstPO := context.LinkTraceCHContext.TraceDetailRedis.
+		lstPO := context.CHContext.TraceDetailRedis.
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -246,7 +246,7 @@ func (receiver *linkTraceRepository) Save(lstEO collections.List[linkTraceCom.Tr
 
 	if linkTrace.Config.Driver == "clickhouse" {
 		// 写入上下文
-		_, err := context.LinkTraceCHContext.TraceContext.InsertList(lst, 2000)
+		_, err := context.CHContext.TraceContext.InsertList(lst, 2000)
 		flog.ErrorIfExists(err)
 	} else {
 		return fmt.Errorf("不支持的链路追踪驱动：%s", linkTrace.Config.Driver)
@@ -319,42 +319,42 @@ func (receiver *linkTraceRepository) saveDetail(lst collections.List[model.Trace
 	if linkTrace.Config.Driver == "clickhouse" {
 		// 写入明细
 		if lstTraceDetailDatabase.Count() > 0 {
-			if _, err := context.LinkTraceCHContext.TraceDetailDatabase.InsertList(lstTraceDetailDatabase, 2000); err != nil {
+			if _, err := context.CHContext.TraceDetailDatabase.InsertList(lstTraceDetailDatabase, 2000); err != nil {
 				return err
 			}
 		}
 		if lstTraceDetailEs.Count() > 0 {
-			if _, err := context.LinkTraceCHContext.TraceDetailEs.InsertList(lstTraceDetailEs, 2000); err != nil {
+			if _, err := context.CHContext.TraceDetailEs.InsertList(lstTraceDetailEs, 2000); err != nil {
 				return err
 			}
 		}
 		if lstTraceDetailEtcd.Count() > 0 {
-			if _, err := context.LinkTraceCHContext.TraceDetailEtcd.InsertList(lstTraceDetailEtcd, 2000); err != nil {
+			if _, err := context.CHContext.TraceDetailEtcd.InsertList(lstTraceDetailEtcd, 2000); err != nil {
 				return err
 			}
 		}
 		if lstTraceDetailHand.Count() > 0 {
-			if _, err := context.LinkTraceCHContext.TraceDetailHand.InsertList(lstTraceDetailHand, 2000); err != nil {
+			if _, err := context.CHContext.TraceDetailHand.InsertList(lstTraceDetailHand, 2000); err != nil {
 				return err
 			}
 		}
 		if lstTraceDetailHttp.Count() > 0 {
-			if _, err := context.LinkTraceCHContext.TraceDetailHttp.InsertList(lstTraceDetailHttp, 2000); err != nil {
+			if _, err := context.CHContext.TraceDetailHttp.InsertList(lstTraceDetailHttp, 2000); err != nil {
 				return err
 			}
 		}
 		if lstTraceDetailGrpc.Count() > 0 {
-			if _, err := context.LinkTraceCHContext.TraceDetailGrpc.InsertList(lstTraceDetailGrpc, 2000); err != nil {
+			if _, err := context.CHContext.TraceDetailGrpc.InsertList(lstTraceDetailGrpc, 2000); err != nil {
 				return err
 			}
 		}
 		if lstTraceDetailMq.Count() > 0 {
-			if _, err := context.LinkTraceCHContext.TraceDetailMq.InsertList(lstTraceDetailMq, 2000); err != nil {
+			if _, err := context.CHContext.TraceDetailMq.InsertList(lstTraceDetailMq, 2000); err != nil {
 				return err
 			}
 		}
 		if lstTraceDetailRedis.Count() > 0 {
-			if _, err := context.LinkTraceCHContext.TraceDetailRedis.InsertList(lstTraceDetailRedis, 2000); err != nil {
+			if _, err := context.CHContext.TraceDetailRedis.InsertList(lstTraceDetailRedis, 2000); err != nil {
 				return err
 			}
 		}

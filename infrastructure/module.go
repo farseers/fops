@@ -45,6 +45,6 @@ func (module Module) PostInitialize() {
 	linkTrace.Config = configure.ParseConfig[linkTrace.ConfigEO]("FOPS.LinkTrace")
 	if linkTrace.Config.Driver == "clickhouse" {
 		data_clickhouse.Module{}.Initialize()
-		context.InitLinkTraceChContextContext()
+		context.InitChContextContext()
 	}
 }

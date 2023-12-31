@@ -6,10 +6,10 @@ import (
 	"github.com/farseer-go/elasticSearch"
 )
 
-var LinkTraceESContext *linkTraceEsContext
+var ESContext *esContext
 
 // EsContext 链路追踪上下文
-type linkTraceEsContext struct {
+type esContext struct {
 	TraceContext        elasticSearch.IndexSet[model.TraceContextPO]        `es:"index=link_trace_yyyy_MM;alias=link_trace;shards=1;replicas=0;refresh=3"`
 	TraceDetailDatabase elasticSearch.IndexSet[model.TraceDetailDatabasePO] `es:"index=trace_detail_database_yyyy_MM;alias=trace_detail_database;shards=1;replicas=0;refresh=3"`
 	TraceDetailEs       elasticSearch.IndexSet[model.TraceDetailEsPO]       `es:"index=trace_detail_es_yyyy_MM;alias=trace_detail_es;shards=1;replicas=0;refresh=3"`
@@ -19,13 +19,14 @@ type linkTraceEsContext struct {
 	TraceDetailGrpc     elasticSearch.IndexSet[model.TraceDetailGrpcPO]     `es:"index=trace_detail_grpc_yyyy_MM;alias=trace_detail_http;shards=1;replicas=0;refresh=3"`
 	TraceDetailMq       elasticSearch.IndexSet[model.TraceDetailMqPO]       `es:"index=trace_detail_mq_yyyy_MM;alias=trace_detail_mq;shards=1;replicas=0;refresh=3"`
 	TraceDetailRedis    elasticSearch.IndexSet[model.TraceDetailRedisPO]    `es:"index=trace_detail_redis_yyyy_MM;alias=trace_detail_redis;shards=1;replicas=0;refresh=3"`
+	LogData             elasticSearch.IndexSet[model.LogDataPO]             `es:"index=log_data_yyyy_MM;alias=log_data;shards=1;replicas=0;refresh=3"`
 }
 
-// initLinkTraceEsContext 初始化上下文
-func initLinkTraceEsContext() {
+// initEsContext 初始化上下文
+func initEsContext() {
 	if linkTrace.Config.ConnString == "" {
 		panic("[farseer.yaml]FOPS.LinkTrace.ConnString，配置不正确")
 	}
 	elasticSearch.RegisterInternalContext("LinkTrace", linkTrace.Config.ConnString)
-	LinkTraceESContext = elasticSearch.NewContext[linkTraceEsContext]("LinkTrace")
+	ESContext = elasticSearch.NewContext[esContext]("LinkTrace")
 }

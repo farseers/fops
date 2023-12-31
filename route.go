@@ -4,6 +4,7 @@ package main
 import (
 	"fops/application/appsApp"
 	"fops/application/clusterApp"
+	"fops/application/flogApp"
 	"fops/application/gitApp"
 	"fops/application/linkTraceApp"
 	"github.com/farseer-go/webapi"
@@ -23,6 +24,7 @@ var route = []webapi.Route{
 	{"POST", "/cluster/update", clusterApp.Update, "", []context.IFilter{}, []string{"req", ""}},
 	{"POST", "/cluster/list", clusterApp.List, "", []context.IFilter{}, []string{""}},
 	{"POST", "/cluster/delete", clusterApp.Delete, "", []context.IFilter{}, []string{"clusterId", ""}},
+	{"POST", "/flog/upload", flogApp.Upload, "", []context.IFilter{}, []string{"req", ""}},
 	{"POST", "/git/add", gitApp.Add, "", []context.IFilter{}, []string{"req", ""}},
 	{"POST", "/git/update", gitApp.Update, "", []context.IFilter{}, []string{"req", ""}},
 	{"POST", "/git/list", gitApp.List, "", []context.IFilter{}, []string{""}},
