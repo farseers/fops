@@ -10,4 +10,8 @@ type LogDataPO struct {
 	LogLevel  eumLogLevel.Enum  `gorm:"not null;comment:日志等级"`
 	Component string            `gorm:"not null;default:'';comment:组件名称"`
 	Content   string            `gorm:"not null;default:'';comment:日志内容"`
+	TraceId   int64             `gorm:"not null;default:0;comment:上下文ID"`
+	AppId     int64             `gorm:"not null;default:0;comment:应用ID"`
+	AppName   string            `gorm:"not null;default:'';comment:应用名称"`
+	AppIp     string            `gorm:"not null;default:'';comment:应用IP"`
 }
