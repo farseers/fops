@@ -36,6 +36,7 @@ func (receiver *logDataRepository) ToList(traceId int64, appName, appIp, logCont
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(logLevel > -1, "log_level = ?", logLevel).
 			WhereIf(logContent != "", "log_content like ?", "%"+logContent+"%").
+			Desc("create_at").
 			ToPageList(pageSize, pageIndex)
 		lst = mapper.ToPageList[flog.LogData](lstPO)
 	} else {
