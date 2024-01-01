@@ -8,7 +8,6 @@ WORKDIR /src/fops
 COPY ./fops/go.mod .
 # 下载依赖（支持docker缓存）
 RUN go mod download
-RUN go mod tidy
 # 将源代码复制到此
 COPY ./fops .
 # 删除go.work文件
