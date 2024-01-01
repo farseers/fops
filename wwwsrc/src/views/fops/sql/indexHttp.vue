@@ -35,27 +35,38 @@
 				</el-button>
 			</div>
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
-        <el-table-column width="250px" label="跟踪ID" show-overflow-tooltip>
+        <el-table-column width="180px" label="TraceID" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag>TraceId：{{scope.row.TraceId}}</el-tag><br>
-            <el-tag>AppId：{{scope.row.AppId}}</el-tag><br>
-            <el-tag>AppName：{{scope.row.AppName}}</el-tag>
+            <span @click="onDetail(scope.row)">{{scope.row.TraceId}}</span>
           </template>
         </el-table-column>
-        <el-table-column width="120px" prop="AppIp" label="应用IP" show-overflow-tooltip></el-table-column>
-        <el-table-column width="220px" label="时间（微秒）" show-overflow-tooltip>
+        <el-table-column width="250px" label="应用" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag>StartTs：{{scope.row.StartTs}}</el-tag><br>
-            <el-tag>EndTs：{{scope.row.EndTs}}</el-tag><br>
-            <el-tag>UseTs：{{scope.row.UseTs}}</el-tag><br>
-            <el-tag>UseDesc：{{scope.row.UseDesc}}</el-tag>
+            <el-tag>{{scope.row.AppName}}</el-tag><br>
+            <el-tag>{{scope.row.AppIp}}</el-tag><br>
+            <el-tag>{{scope.row.AppId}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="Method" label="方法" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="Url" label="连接地址" show-overflow-tooltip></el-table-column>
+        <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip></el-table-column>
+        <el-table-column label="请求内容" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag>{{scope.row.Method}}</el-tag>
+            <el-tag>{{scope.row.Url}}</el-tag><br>
+            <el-tag>{{scope.row.StatusCode}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column width="300px" label="异常" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">
+            <el-tag v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>
+            <el-tag v-else>无</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column width="180px" prop="CreateAt" label="执行时间" show-overflow-tooltip></el-table-column>
 				<el-table-column label="操作" width="100">
 					<template #default="scope">
-						<el-button size="small" text type="primary" @click="onDetail(scope.row)">追踪</el-button>
+            <el-button size="small" text type="primary" @click="onShow(scope.row)">查看报文</el-button>
+            <el-button size="small" text type="primary" @click="onDetail(scope.row)">追踪</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -74,6 +85,7 @@
 			</el-pagination>
 		</el-card>
     <detailDialog ref="detailDialogRef" @refresh="getTableData()" />
+    <showDialog ref="showDialogRef" @refresh="getTableData()" />
 	</div>
 </template>
 
@@ -87,10 +99,12 @@ import {friendlyJSONstringify} from "@intlify/shared";
 const serverApi = fopsApi();
 // 引入组件
 const detailDialog = defineAsyncComponent(() => import('/src/views/fops/linkTrace/detailV2Dialog.vue'));
+const showDialog = defineAsyncComponent(() => import('/src/views/fops/sql/httpDialog.vue'));
 
 
 // 定义变量内容
 const detailDialogRef = ref();
+const showDialogRef = ref();
 const state = reactive({
   appName:'',
   appIp:'',
@@ -140,6 +154,9 @@ const getTableData = () => {
 };
 const onDetail=(row: any)=>{
   detailDialogRef.value.openDialog(row);
+}
+const onShow=(row: any)=>{
+  showDialogRef.value.openDialog(row);
 }
 
 // 删除用户

@@ -25,7 +25,7 @@
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
         <el-table-column width="250px" label="跟踪ID" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag>TraceId：{{scope.row.TraceId}}</el-tag><br>
+            <el-tag @click="onDetail(scope.row)">TraceId：{{scope.row.TraceId}}</el-tag><br>
             <el-tag>AppId：{{scope.row.AppId}}</el-tag><br>
             <el-tag>AppName：{{scope.row.AppName}}</el-tag>
           </template>

@@ -26,7 +26,7 @@
 				</el-button>
 			</div>
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%" class="mytable">
-				<el-table-column prop="Id" label="序号" width="60" />
+				<el-table-column prop="Id" label="序号" width="100" />
 				<el-table-column label="名称" style="line-height: 45px;height: 45px">
                   <template #default="scope">
                     <div style="float: left;padding-right: 10px;padding-top: 5px">
@@ -75,7 +75,7 @@
                 <el-table-column label="客户端信息" width="180" show-overflow-tooltip>
                   <template #default="scope">
                     <div v-for="(item, index) in scope.row.Clients.slice(0, 3)" :key="index">
-                      <el-tag>{{item.Name}}</el-tag><br>
+                      <el-tag>{{item.Name}}</el-tag>
                       <el-tag>{{item.Ip}}:{{item.Port}}</el-tag>
                       <span v-if="scope.row.Clients.length>3">更多</span>
                     </div>

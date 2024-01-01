@@ -6,7 +6,13 @@
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20" v-if="state.tableData.length>0">
             <el-tag>Rgba:{{state.Rgba}}&nbsp;&nbsp;&nbsp;AppId:{{state.AppId}}&nbsp;&nbsp;&nbsp;AppName:{{state.AppName}}&nbsp;&nbsp;&nbsp;AppIp:{{state.AppIp}}</el-tag>
             <ul class="custom-list mt20">
-              <li v-for="(item, index) in state.tableData" :key="index">
+              <li style="float: left" v-for="(item, index) in state.tableData" :key="index">
+                <span :style="{'width':item.StartTs/state.totalTs+'%'}"></span>
+                <span :style="{'padding-left':item.StartTs/state.totalTs+'%'}" :title="item.Desc">({{item.StartTs}})微妙，({{item.UseTs}})微妙，{{item.Caption}}</span>
+                <span v-if="item.Exception!=null">异常：{{friendlyJSONstringify(item.Exception)}}</span>
+                <span v-else></span>
+              </li>
+              <li style="clear: both" v-for="(item, index) in state.tableData" :key="index">
                 <span :style="{'padding-left':item.StartTs/state.totalTs+'%'}" :title="item.Desc">({{item.StartTs}})微妙，({{item.UseTs}})微妙，{{item.Caption}}</span>
                 <span v-if="item.Exception!=null">异常：{{friendlyJSONstringify(item.Exception)}}</span>
                 <span v-else></span>
@@ -47,6 +53,7 @@ const state = reactive({
     UseTs:0,
     Caption:'',
     Desc:'',
+    UseDesc:'',
     Exception:'',
   }],
   TraceId:0,
@@ -146,5 +153,31 @@ textarea{
 .custom-list li:hover {
   background-color: #e0e0e0;
 }
+/* 基本样式，根据需要自定义样式 */
+.timeline {
+  position: relative;
+  padding: 20px 0;
+}
 
+.timeline-event {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.timeline-event-marker {
+  width: 20px;
+  height: 20px;
+  background-color: #333;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.timeline-event-content {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 </style>
