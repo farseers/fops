@@ -6,7 +6,7 @@ import (
 )
 
 type LogDataPO struct {
-	Id        int64             `gorm:"not null;default:0;comment:主键ID"`
+	LogId     int64             `gorm:"not null;default:0;comment:主键ID"`
 	AppName   string            `gorm:"not null;default:'';comment:应用名称"`
 	AppIp     string            `gorm:"not null;default:'';comment:应用IP"`
 	AppId     int64             `gorm:"not null;default:0;comment:应用ID"`
