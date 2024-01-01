@@ -48,7 +48,7 @@ func (receiver *logDataRepository) ToList(traceId int64, appName, appIp, logCont
 func (receiver *logDataRepository) ToInfo(id int64) flog.LogData {
 	var do flog.LogData
 	if linkTrace.Config.Driver == "clickhouse" {
-		po := context.CHContext.LogData.Where("id = ?", id).ToEntity()
+		po := context.CHContext.LogData.Where("log_id = ?", id).ToEntity()
 		do = mapper.Single[flog.LogData](po)
 	} else {
 		exception.ThrowRefuseExceptionf("不支持的链路追踪驱动：%s", linkTrace.Config.Driver)
