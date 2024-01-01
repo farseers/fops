@@ -29,7 +29,7 @@
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
         <el-table-column width="180px" label="TraceID" show-overflow-tooltip>
           <template #default="scope">
-            <span @click="onDetail(scope.row)">{{scope.row.TraceId}}</span>
+            <span @click="onDetail(scope.row)">{{scope.row.TraceIdN}}</span>
           </template>
         </el-table-column>
         <el-table-column width="250px" label="应用" show-overflow-tooltip>

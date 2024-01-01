@@ -117,11 +117,11 @@ export function fopsApi() {
 				method: 'post',
 				data:param,
 			});
-		},buildLog: (param: object) => {
-			return request({
-				url: '/apps/build/view',
+		},buildLog: (param: string) => {
+			return requestGet({
+				url: '/apps/build/view-'+param,
 				method: 'get',
-				data:param,
+				//data:param,
 			});
 		},taskGroupList: (param: string) => {
 			return requestFSGet({

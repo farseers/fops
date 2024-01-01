@@ -31,7 +31,7 @@
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
         <el-table-column width="180px" label="TraceID" show-overflow-tooltip>
           <template #default="scope">
-            <span @click="onDetail(scope.row)">{{scope.row.TraceId}}</span>
+            <span @click="onDetail(scope.row)">{{scope.row.TraceIdN}}</span>
           </template>
         </el-table-column>
         <el-table-column width="250px" label="应用" show-overflow-tooltip>
@@ -42,10 +42,10 @@
         </el-table-column>
         <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip></el-table-column>
         <el-table-column width="120px" prop="DbName" label="数据库名" show-overflow-tooltip></el-table-column>
-        <el-table-column width="200px" prop="TableName" label="表名" show-overflow-tooltip></el-table-column>
+        <el-table-column width="180px" prop="TableName" label="表名" show-overflow-tooltip></el-table-column>
         <el-table-column width="400px" prop="Sql" label="Sql语句" show-overflow-tooltip></el-table-column>
         <el-table-column width="100px" prop="RowsAffected" label="影响行数" show-overflow-tooltip></el-table-column>
-        <el-table-column width="300px" label="异常" show-overflow-tooltip>
+        <el-table-column width="250px" label="异常" show-overflow-tooltip>
           <template #default="scope">
             <el-tag v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">
             <el-tag v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>

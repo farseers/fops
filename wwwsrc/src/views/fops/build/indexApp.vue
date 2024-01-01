@@ -289,13 +289,13 @@ watch(() => state.logDialogIsShow, (newValue, oldValue) => {
 
 const showLog=(row:any)=>{
   state.logId=row.Id
-  serverApi.buildLog({"buildId":state.logId}).then(function (res){
+  serverApi.buildLog(state.logId.toString()).then(function (res){
     state.logContent=res
     state.logDialogIsShow=true
   })
 }
 const onShowLog=()=>{
-  serverApi.buildLog({"buildId":state.logId}).then(function (res){
+  serverApi.buildLog(state.logId.toString()).then(function (res){
     console.log(res)
     state.logContent=res
   })

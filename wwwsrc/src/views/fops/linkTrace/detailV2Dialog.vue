@@ -4,19 +4,21 @@
 			<el-form ref="gitDialogFormRef" size="default" label-width="100px">
 				<el-row :gutter="35">
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20" v-if="state.tableData.length>0">
-            <el-tag>Rgba:{{state.Rgba}}&nbsp;&nbsp;&nbsp;AppId:{{state.AppId}}&nbsp;&nbsp;&nbsp;AppName:{{state.AppName}}&nbsp;&nbsp;&nbsp;AppIp:{{state.AppIp}}</el-tag>
-            <div :style="{'width':(state.totalTs/100)*10+'px','overflow-x': 'auto','white-space': 'nowrap'}">
+            <div>应用名称：{{state.AppName}}， 应用ID：{{state.AppId}}， 应用IP：{{state.AppIp}}，整体耗时：{{state.totalTs/1000}} ms</div>
+            <div class="mt10"><el-tag>{{state.Desc}}</el-tag>{{state.Caption}}<el-button style="margin-left: 20px" type="primary">查看请求</el-button></div>
+            <div :style="{'width':getWidth(),'overflow-x': 'auto','white-space': 'nowrap'}">
             <ul class="custom-list mt20">
-              <li>
-                <span v-for="(item, index) in state.TsArray" :key="index" :style="{'float':'left'}">
-                  <span v-if="item.StartTs==0" style="width: 10px">{{item.StartTs/1000}}ms</span>
-                  <span :style="{'width':(item.StartTs/1000)*10+'px'}" v-else>{{item.StartTs/1000}}ms</span>
+              <li style="height: 35px;">
+                <span v-for="(item, index) in state.TsArray" :key="index" :style="{'width':200+'px','float':'left'}">
+                  {{item.StartTs/1000}}ms
                 </span>
               </li>
-              <li style="clear: both" v-for="(item, index) in state.tableData" :key="index">
-                <span :style="{'padding-left':item.StartTs/state.totalTs+'%'}" :title="item.Desc">({{item.StartTs}})微妙，({{item.UseTs}})微妙，{{item.Caption}}</span>
-                <span v-if="item.Exception!=null">异常：{{friendlyJSONstringify(item.Exception)}}</span>
-                <span v-else></span>
+              <li style="clear: both" v-for="(item, index) in state.TsArray" :key="index">
+                <div v-for="(info,i) in state.tableData.filter(t=>t.StartTs==item.StartTs)">
+                  <span :style="{'padding-left':index*200+'px'}" :title="info.Desc"><el-tag>{{info.AppName}}</el-tag>{{info.Caption}}，耗时：{{info.UseTs/1000}}ms</span>
+                  <span v-if="info.Exception!=null">异常：{{friendlyJSONstringify(info.Exception)}}</span>
+                  <span v-else></span>
+                </div>
               </li>
             </ul>
             </div>
@@ -27,13 +29,13 @@
 				</el-row>
 			</el-form>
 
-
+<!--      <showDialog ref="showDialogRef" @refresh="getTableData()" />-->
 		</el-dialog>
 	</div>
 </template>
 
 <script setup lang="ts" name="fopsLinkDetailV2Dialog">
-import { reactive, ref } from 'vue';
+import {defineAsyncComponent, reactive, ref} from 'vue';
 import {fopsApi} from "/@/api/fops";
 import { ElMessageBox, ElMessage } from 'element-plus';
 import {friendlyJSONstringify} from "@intlify/shared";
@@ -41,9 +43,10 @@ import {friendlyJSONstringify} from "@intlify/shared";
 const serverApi = fopsApi();
 // 定义子组件向父组件传值/事件
 const emit = defineEmits(['refresh']);
-
+const showDialog = defineAsyncComponent(() => import('/src/views/fops/sql/httpDialog.vue'));
 // 定义变量内容
 const gitDialogFormRef = ref();
+const showDialogRef = ref();
 const state = reactive({
 	ruleForm: {},
   tableData:[{
@@ -64,12 +67,14 @@ const state = reactive({
         DiffTs:0
       }
   ],
-  TraceId:0,
+  TraceId:'',
   totalTs:0,
   Rgba:'',
   AppId:0,
   AppIp:'',
   AppName:'',
+  Desc:'',
+  Caption:'',
 	dialog: {
 		isShowDialog: false,
 		type: '',
@@ -81,12 +86,12 @@ const state = reactive({
 // 打开弹窗
 const openDialog = (row2: any) => {
   //state.ruleForm = row;
-  state.dialog.title = '链路追踪详情(TraceId：'+row2.TraceId+')';
+  state.dialog.title = '链路追踪详情(TraceId：'+row2.TraceIdN+')';
   //state.dialog.submitTxt = '修 改';
   //console.log(row2)
-  state.TraceId=row2.TraceId
+  state.TraceId=row2.TraceIdN
   // 详情
-  serverApi.linkTraceInfo(row2.TraceId).then(function (res){
+  serverApi.linkTraceInfo(row2.TraceIdN).then(function (res){
     console.log(friendlyJSONstringify(res))
     if (res.Status){
       // 绑定数据
@@ -97,7 +102,9 @@ const openDialog = (row2: any) => {
         state.AppId=res.Data[0].AppId
         state.AppIp=res.Data[0].AppIp
         state.AppName=res.Data[0].AppName
-
+        state.Desc=res.Data[0].Desc
+        state.Caption=res.Data[0].Caption
+        state.TsArray=[]
         for (let i = 0; i < state.tableData.length; i++) {
           var item=state.tableData[i]
           var isContains=state.TsArray.filter(t=>t.StartTs==item.StartTs)
@@ -119,7 +126,9 @@ const openDialog = (row2: any) => {
 const closeDialog = () => {
 	state.dialog.isShowDialog = false;
 };
-
+const onShow=(row: any)=>{
+  showDialogRef.value.openDialog(row);
+}
 const getStatusDesc=(status:number)=>{
   switch (status){
     case 0:
@@ -141,6 +150,15 @@ const getStatusDesc=(status:number)=>{
 const onCancel = () => {
 	closeDialog();
 };
+
+const getWidth=()=>{
+  var str="100%"
+  var total=(state.TsArray.length+1)*200
+  if(total>1400){
+    return total+"px"
+  }
+  return str;
+}
 
 // 暴露变量
 defineExpose({
@@ -200,5 +218,8 @@ textarea{
   border-radius: 5px;
   background-color: #f9f9f9;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.el-dialog__body{
+  overflow:auto!important;
 }
 </style>

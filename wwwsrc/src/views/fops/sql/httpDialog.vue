@@ -45,7 +45,7 @@ const state = reactive({
     StatusCode:'',
     UseDesc:'',
   },
-  TraceId:0,
+  TraceId:'',
   totalTs:0,
   Rgba:'',
   AppId:0,
@@ -62,10 +62,10 @@ const state = reactive({
 // 打开弹窗
 const openDialog = (row: any) => {
   //state.ruleForm = row;
-  state.dialog.title = '请求报文(TraceId：'+row.TraceId+')';
+  state.dialog.title = '请求报文(TraceId：'+row.TraceIdN+')';
   //state.dialog.submitTxt = '修 改';
   //console.log(row2)
-  state.TraceId=row.TraceId
+  state.TraceId=row.TraceIdN
   state.ruleForm=row
 	state.dialog.isShowDialog = true;
 };

@@ -22,7 +22,7 @@
 				<el-table-column prop="Hub" label="托管地址" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="Branch" label="Git分支" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="UserName" label="账户名称" show-overflow-tooltip></el-table-column>
-				<el-table-column prop="UserPwd" label="账户密码" show-overflow-tooltip></el-table-column>
+<!--				<el-table-column prop="UserPwd" label="账户密码" show-overflow-tooltip></el-table-column>-->
         <el-table-column prop="Dir" label="存储目录" show-overflow-tooltip></el-table-column>
         <el-table-column prop="PullAt" label="拉取时间" show-overflow-tooltip></el-table-column>
 				<el-table-column label="操作" width="100">
