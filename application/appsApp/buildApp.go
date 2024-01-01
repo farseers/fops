@@ -44,7 +44,7 @@ func BuildList(appName string, pageSize int, pageIndex int, appsRepository apps.
 }
 
 // View 构建日志
-// @get build/view
+// @get build/view-{buildId}
 func View(buildId int64) action.IResult {
 	logQueue := apps.LogQueue{
 		BuildId: buildId,
