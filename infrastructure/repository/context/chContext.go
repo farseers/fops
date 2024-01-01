@@ -19,7 +19,7 @@ type chContext struct {
 	TraceDetailGrpc     data.TableSet[model.TraceDetailGrpcPO]     `data:"name=trace_detail_grpc;migrate=ReplacingMergeTree() ORDER BY (app_name,parent_app_name,app_ip,app_id,trace_id,method,url) PARTITION BY toYYYYMM(create_at)"`
 	TraceDetailMq       data.TableSet[model.TraceDetailMqPO]       `data:"name=trace_detail_mq;migrate=ReplacingMergeTree() ORDER BY (app_name,parent_app_name,app_ip,app_id,trace_id,server,exchange,routing_key) PARTITION BY toYYYYMM(create_at)"`
 	TraceDetailRedis    data.TableSet[model.TraceDetailRedisPO]    `data:"name=trace_detail_redis;migrate=ReplacingMergeTree() ORDER BY (app_name,parent_app_name,app_ip,app_id,trace_id,key,field) PARTITION BY toYYYYMM(create_at)"`
-	LogData             data.TableSet[model.LogDataPO]             `data:"name=log_data;migrate=ReplacingMergeTree() ORDER BY (component,log_level,create_at,id) PARTITION BY toYYYYMM(create_at)"`
+	LogData             data.TableSet[model.LogDataPO]             `data:"name=log_data;migrate=ReplacingMergeTree() ORDER BY (component,log_level,create_at) PARTITION BY toYYYYMM(create_at)"`
 }
 
 // InitChContextContext 初始化上下文
