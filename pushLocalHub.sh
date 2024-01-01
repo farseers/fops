@@ -22,4 +22,4 @@ docker service create --name fops --replicas 1 -d --network=net \
 -l "traefik.http.services.fops.loadbalancer.server.port=8889" \
 hub.fsgit.cc/fops:dev
 
-docker rmi $(docker images -f "dangling=true" -q)
+#docker rmi $(docker images -f "dangling=true" -q)
