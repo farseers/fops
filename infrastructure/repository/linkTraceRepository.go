@@ -9,7 +9,6 @@ import (
 	"github.com/farseer-go/fs/dateTime"
 	"github.com/farseer-go/fs/flog"
 	"github.com/farseer-go/fs/parse"
-	"github.com/farseer-go/fs/trace"
 	"github.com/farseer-go/fs/trace/eumCallType"
 	linkTraceCom "github.com/farseer-go/linkTrace"
 	"github.com/farseer-go/linkTrace/eumTraceType"
@@ -231,16 +230,6 @@ func (receiver *linkTraceRepository) ToSlowRedisList(appName, appIp, key, field 
 }
 
 func (receiver *linkTraceRepository) Save(lstEO collections.List[linkTraceCom.TraceContext]) error {
-	// 模拟异常
-	lstEO.Foreach(func(item *linkTraceCom.TraceContext) {
-		item.Exception = &trace.ExceptionStack{
-			ExceptionCallFile:     "1",
-			ExceptionCallLine:     2,
-			ExceptionCallFuncName: "3",
-			ExceptionIsException:  true,
-			ExceptionMessage:      "4",
-		}
-	})
 	lst := mapper.ToList[model.TraceContextPO](lstEO)
 	lst.Foreach(func(item *model.TraceContextPO) {
 		item.UseDesc = item.UseTs.String()
