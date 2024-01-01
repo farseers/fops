@@ -36,8 +36,7 @@
         </el-table-column>
         <el-table-column width="250px" label="应用" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag>{{scope.row.AppName}}</el-tag><br>
-            <el-tag>{{scope.row.AppIp}}</el-tag><br>
+            <el-tag>{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
             <el-tag>{{scope.row.AppId}}</el-tag>
           </template>
         </el-table-column>

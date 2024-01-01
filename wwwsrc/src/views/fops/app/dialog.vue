@@ -18,9 +18,9 @@
 							<el-input v-model="state.ruleForm.DockerVer" placeholder="请输入镜像版本" clearable></el-input>
 						</el-form-item>
 					</el-col>
-          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="集群版本">
-              <el-input v-model="state.ruleForm.ClusterVer" placeholder="请输入集群版本" clearable></el-input>
+              <el-tag>{{friendlyJSONstringify(state.ruleForm.ClusterVer)}}</el-tag>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
@@ -95,6 +95,7 @@
 import { reactive, ref,onMounted } from 'vue';
 import {fopsApi} from "/@/api/fops";
 import { ElMessageBox, ElMessage } from 'element-plus';
+import {friendlyJSONstringify} from "@intlify/shared";
 // 引入 api 请求接口
 const serverApi = fopsApi();
 // 定义子组件向父组件传值/事件

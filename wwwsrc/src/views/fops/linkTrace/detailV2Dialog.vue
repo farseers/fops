@@ -5,12 +5,13 @@
 				<el-row :gutter="35">
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20" v-if="state.tableData.length>0">
             <el-tag>Rgba:{{state.Rgba}}&nbsp;&nbsp;&nbsp;AppId:{{state.AppId}}&nbsp;&nbsp;&nbsp;AppName:{{state.AppName}}&nbsp;&nbsp;&nbsp;AppIp:{{state.AppIp}}</el-tag>
+            <div :style="{'width':(state.totalTs/100)*10+'px','overflow-x': 'auto','white-space': 'nowrap'}">
             <ul class="custom-list mt20">
-              <li style="float: left" v-for="(item, index) in state.tableData" :key="index">
-                <span :style="{'width':item.StartTs/state.totalTs+'%'}"></span>
-                <span :style="{'padding-left':item.StartTs/state.totalTs+'%'}" :title="item.Desc">({{item.StartTs}})微妙，({{item.UseTs}})微妙，{{item.Caption}}</span>
-                <span v-if="item.Exception!=null">异常：{{friendlyJSONstringify(item.Exception)}}</span>
-                <span v-else></span>
+              <li>
+                <span v-for="(item, index) in state.TsArray" :key="index" :style="{'float':'left'}">
+                  <span v-if="item.StartTs==0" style="width: 10px">{{item.StartTs/1000}}ms</span>
+                  <span :style="{'width':(item.StartTs/1000)*10+'px'}" v-else>{{item.StartTs/1000}}ms</span>
+                </span>
               </li>
               <li style="clear: both" v-for="(item, index) in state.tableData" :key="index">
                 <span :style="{'padding-left':item.StartTs/state.totalTs+'%'}" :title="item.Desc">({{item.StartTs}})微妙，({{item.UseTs}})微妙，{{item.Caption}}</span>
@@ -18,6 +19,7 @@
                 <span v-else></span>
               </li>
             </ul>
+            </div>
 					</el-col>
           <el-col style="text-align: center" v-else>
             <span style="width: 100%;">暂无数据</span>
@@ -56,6 +58,12 @@ const state = reactive({
     UseDesc:'',
     Exception:'',
   }],
+  TsArray:[
+      {
+        StartTs:0,
+        DiffTs:0
+      }
+  ],
   TraceId:0,
   totalTs:0,
   Rgba:'',
@@ -89,6 +97,19 @@ const openDialog = (row2: any) => {
         state.AppId=res.Data[0].AppId
         state.AppIp=res.Data[0].AppIp
         state.AppName=res.Data[0].AppName
+
+        for (let i = 0; i < state.tableData.length; i++) {
+          var item=state.tableData[i]
+          var isContains=state.TsArray.filter(t=>t.StartTs==item.StartTs)
+          if (isContains.length==0){
+            var diff=0
+            if(i>0){
+              diff=item.StartTs-state.tableData[i-1].StartTs
+            }
+            state.TsArray.push({StartTs:item.StartTs,DiffTs:diff})
+          }
+        }
+
       }
     }
   })

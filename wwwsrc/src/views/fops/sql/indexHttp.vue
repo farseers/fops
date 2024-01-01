@@ -50,9 +50,8 @@
         <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip></el-table-column>
         <el-table-column label="请求内容" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag>{{scope.row.Method}}</el-tag>
-            <el-tag>{{scope.row.Url}}</el-tag><br>
-            <el-tag>{{scope.row.StatusCode}}</el-tag>
+            <el-tag>{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
+            <el-tag>{{scope.row.AppId}}</el-tag>
           </template>
         </el-table-column>
         <el-table-column width="300px" label="异常" show-overflow-tooltip>

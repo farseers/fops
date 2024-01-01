@@ -18,26 +18,29 @@
 				</el-button>
 			</div>
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
-        <el-table-column width="250px" label="跟踪ID" show-overflow-tooltip>
+        <el-table-column width="180px" label="TraceID" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag @click="onDetail(scope.row)">TraceId：{{scope.row.TraceId}}</el-tag><br>
-            <el-tag>AppId：{{scope.row.AppId}}</el-tag><br>
-            <el-tag>AppName：{{scope.row.AppName}}</el-tag>
+            <span @click="onDetail(scope.row)">{{scope.row.TraceId}}</span>
           </template>
         </el-table-column>
-        <el-table-column width="120px" prop="AppIp" label="应用IP" show-overflow-tooltip></el-table-column>
-        <el-table-column width="220px" label="时间（微秒）" show-overflow-tooltip>
+        <el-table-column width="250px" label="应用" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag>StartTs：{{scope.row.StartTs}}</el-tag><br>
-            <el-tag>EndTs：{{scope.row.EndTs}}</el-tag><br>
-            <el-tag>UseTs：{{scope.row.UseTs}}</el-tag><br>
-            <el-tag>UseDesc：{{scope.row.UseDesc}}</el-tag>
+            <el-tag>{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
+            <el-tag>{{scope.row.AppId}}</el-tag>
           </template>
         </el-table-column>
+        <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip></el-table-column>
         <el-table-column prop="TaskName" label="任务名称" show-overflow-tooltip></el-table-column>
         <el-table-column prop="TaskGroupId" label="任务组ID" show-overflow-tooltip></el-table-column>
         <el-table-column prop="TaskId" label="任务ID" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="Exception.ExceptionMessage" label="异常信息" show-overflow-tooltip></el-table-column>
+        <el-table-column width="300px" label="异常" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">
+            <el-tag v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>
+            <el-tag v-else>无</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column width="180px" prop="CreateAt" label="请求时间" show-overflow-tooltip></el-table-column>
 				<el-table-column label="操作" width="100">
 					<template #default="scope">
 						<el-button size="small" text type="primary" @click="onDetail(scope.row)">追踪</el-button>
