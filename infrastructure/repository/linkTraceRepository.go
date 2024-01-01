@@ -28,32 +28,41 @@ func (receiver *linkTraceRepository) ToEntity(traceId int64) collections.List[li
 
 	lstPO.Foreach(func(item *model.TraceContextPO) {
 		do := mapper.Single[linkTraceCom.TraceContext](item)
+		do.SetTraceIdN()
 		do.List = []any{}
 		for _, detail := range item.List {
 			switch eumCallType.Enum(parse.ToInt(detail.(map[string]any)["CallType"])) {
 			case eumCallType.Database:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailDatabase](detail)
+				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			case eumCallType.Http:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailHttp](detail)
+				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			case eumCallType.Grpc:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailGrpc](detail)
+				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			case eumCallType.Redis:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailRedis](detail)
+				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			case eumCallType.Mq:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailMq](detail)
+				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			case eumCallType.Elasticsearch:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailEs](detail)
+				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			case eumCallType.Etcd:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailEtcd](detail)
+				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			case eumCallType.Hand:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailHand](detail)
+				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			}
 		}
@@ -74,7 +83,7 @@ func (receiver *linkTraceRepository) ToWebApiList(appName, appIp, requestIp, sea
 			WhereIf(statusCode > 0, "web_status_code = ?", statusCode).
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 			Desc("start_ts").ToPageList(pageSize, pageIndex)
-		return mapper.ToPageList[linkTraceCom.TraceContext](lstPO)
+		return receiver.setTraceIdN(lstPO)
 	}
 	return collections.NewPageList[linkTraceCom.TraceContext](collections.NewList[linkTraceCom.TraceContext](), 0)
 }
@@ -88,7 +97,7 @@ func (receiver *linkTraceRepository) ToTaskList(appName, appIp, taskName string,
 			WhereIf(taskName != "", "task_Name like ?", "%"+taskName+"%").
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 			Desc("start_ts").ToPageList(pageSize, pageIndex)
-		return mapper.ToPageList[linkTraceCom.TraceContext](lstPO)
+		return receiver.setTraceIdN(lstPO)
 	}
 	return collections.NewPageList[linkTraceCom.TraceContext](collections.NewList[linkTraceCom.TraceContext](), 0)
 }
@@ -104,7 +113,7 @@ func (receiver *linkTraceRepository) ToFScheduleList(appName, appIp, taskName st
 			WhereIf(taskId > 0, "task_id = ?", taskId).
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 			Desc("start_ts").ToPageList(pageSize, pageIndex)
-		return mapper.ToPageList[linkTraceCom.TraceContext](lstPO)
+		return receiver.setTraceIdN(lstPO)
 	}
 	return collections.NewPageList[linkTraceCom.TraceContext](collections.NewList[linkTraceCom.TraceContext](), 0)
 }
@@ -120,7 +129,7 @@ func (receiver *linkTraceRepository) ToConsumerList(appName, appIp, server, queu
 			WhereIf(routingKey != "", "consumer_routing_key like ?", "%"+routingKey+"%").
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 			Desc("start_ts").ToPageList(pageSize, pageIndex)
-		return mapper.ToPageList[linkTraceCom.TraceContext](lstPO)
+		return receiver.setTraceIdN(lstPO)
 	}
 	return collections.NewPageList[linkTraceCom.TraceContext](collections.NewList[linkTraceCom.TraceContext](), 0)
 }
@@ -135,8 +144,11 @@ func (receiver *linkTraceRepository) ToSlowDbList(appName, appIp, dbName, tableN
 			WhereIf(tableName != "", "table_name like ?", "%"+tableName+"%").
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 			Desc("start_ts").ToPageList(pageSize, pageIndex)
-
-		return mapper.ToPageList[linkTraceCom.TraceDetailDatabase](lstPO)
+		lst := mapper.ToPageList[linkTraceCom.TraceDetailDatabase](lstPO)
+		lst.List.Foreach(func(item *linkTraceCom.TraceDetailDatabase) {
+			item.SetTraceIdN()
+		})
+		return lst
 	}
 	return collections.NewPageList[linkTraceCom.TraceDetailDatabase](collections.NewList[linkTraceCom.TraceDetailDatabase](), 0)
 }
@@ -150,7 +162,11 @@ func (receiver *linkTraceRepository) ToSlowEsList(appName, appIp, indexName, ali
 			WhereIf(aliasesName != "", "aliases_name like ?", "%"+aliasesName+"%").
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 			Desc("start_ts").ToPageList(pageSize, pageIndex)
-		return mapper.ToPageList[linkTraceCom.TraceDetailEs](lstPO)
+		lst := mapper.ToPageList[linkTraceCom.TraceDetailEs](lstPO)
+		lst.List.Foreach(func(item *linkTraceCom.TraceDetailEs) {
+			item.SetTraceIdN()
+		})
+		return lst
 	}
 	return collections.NewPageList[linkTraceCom.TraceDetailEs](collections.NewList[linkTraceCom.TraceDetailEs](), 0)
 }
@@ -164,7 +180,11 @@ func (receiver *linkTraceRepository) ToSlowEtcdList(appName, appIp, key string, 
 			WhereIf(leaseID > 0, "leaseID = ?", leaseID).
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 			Desc("start_ts").ToPageList(pageSize, pageIndex)
-		return mapper.ToPageList[linkTraceCom.TraceDetailEtcd](lstPO)
+		lst := mapper.ToPageList[linkTraceCom.TraceDetailEtcd](lstPO)
+		lst.List.Foreach(func(item *linkTraceCom.TraceDetailEtcd) {
+			item.SetTraceIdN()
+		})
+		return lst
 	}
 	return collections.NewPageList[linkTraceCom.TraceDetailEtcd](collections.NewList[linkTraceCom.TraceDetailEtcd](), 0)
 }
@@ -177,7 +197,11 @@ func (receiver *linkTraceRepository) ToSlowHandList(appName, appIp, name string,
 			WhereIf(name != "", "name like ?", "%"+name+"%").
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 			Desc("start_ts").ToPageList(pageSize, pageIndex)
-		return mapper.ToPageList[linkTraceCom.TraceDetailHand](lstPO)
+		lst := mapper.ToPageList[linkTraceCom.TraceDetailHand](lstPO)
+		lst.List.Foreach(func(item *linkTraceCom.TraceDetailHand) {
+			item.SetTraceIdN()
+		})
+		return lst
 	}
 	return collections.NewPageList[linkTraceCom.TraceDetailHand](collections.NewList[linkTraceCom.TraceDetailHand](), 0)
 }
@@ -194,7 +218,11 @@ func (receiver *linkTraceRepository) ToSlowHttpList(appName, appIp, method, url,
 			WhereIf(statusCode > 0, "status_code >= ?", statusCode).
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 			Desc("start_ts").ToPageList(pageSize, pageIndex)
-		return mapper.ToPageList[linkTraceCom.TraceDetailHttp](lstPO)
+		lst := mapper.ToPageList[linkTraceCom.TraceDetailHttp](lstPO)
+		lst.List.Foreach(func(item *linkTraceCom.TraceDetailHttp) {
+			item.SetTraceIdN()
+		})
+		return lst
 	}
 	return collections.NewPageList[linkTraceCom.TraceDetailHttp](collections.NewList[linkTraceCom.TraceDetailHttp](), 0)
 }
@@ -209,7 +237,11 @@ func (receiver *linkTraceRepository) ToSlowMqList(appName, appIp, server, exchan
 			WhereIf(routingKey != "", "url like ?", "%"+routingKey+"%").
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 			Desc("start_ts").ToPageList(pageSize, pageIndex)
-		return mapper.ToPageList[linkTraceCom.TraceDetailMq](lstPO)
+		lst := mapper.ToPageList[linkTraceCom.TraceDetailMq](lstPO)
+		lst.List.Foreach(func(item *linkTraceCom.TraceDetailMq) {
+			item.SetTraceIdN()
+		})
+		return lst
 	}
 	return collections.NewPageList[linkTraceCom.TraceDetailMq](collections.NewList[linkTraceCom.TraceDetailMq](), 0)
 }
@@ -223,7 +255,11 @@ func (receiver *linkTraceRepository) ToSlowRedisList(appName, appIp, key, field 
 			WhereIf(field != "", "field like ?", "%"+field+"%").
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro()).
 			Desc("start_ts").ToPageList(pageSize, pageIndex)
-		return mapper.ToPageList[linkTraceCom.TraceDetailRedis](lstPO)
+		lst := mapper.ToPageList[linkTraceCom.TraceDetailRedis](lstPO)
+		lst.List.Foreach(func(item *linkTraceCom.TraceDetailRedis) {
+			item.SetTraceIdN()
+		})
+		return lst
 	}
 	return collections.NewPageList[linkTraceCom.TraceDetailRedis](collections.NewList[linkTraceCom.TraceDetailRedis](), 0)
 }
@@ -344,4 +380,12 @@ func (receiver *linkTraceRepository) saveDetail(lst collections.List[model.Trace
 	}
 
 	return nil
+}
+
+func (receiver *linkTraceRepository) setTraceIdN(lstPO collections.PageList[model.TraceContextPO]) collections.PageList[linkTraceCom.TraceContext] {
+	lst := mapper.ToPageList[linkTraceCom.TraceContext](lstPO)
+	lst.List.Foreach(func(item *linkTraceCom.TraceContext) {
+		item.SetTraceIdN()
+	})
+	return lst
 }
