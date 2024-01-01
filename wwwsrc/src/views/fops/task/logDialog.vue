@@ -22,7 +22,7 @@
             </el-button>
           </div>
           <el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
-            <el-table-column prop="Id" label="序号" width="100" />
+            <el-table-column prop="Id" label="序号" width="60" />
             <!--				<el-table-column prop="TaskGroupId" label="任务组ID" show-overflow-tooltip></el-table-column>-->
             <el-table-column label="名称" width="250">
               <template #default="scope">

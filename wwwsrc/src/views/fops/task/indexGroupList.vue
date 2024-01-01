@@ -26,7 +26,7 @@
 				</el-button>
 			</div>
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%" class="mytable">
-				<el-table-column prop="Id" label="序号" width="100" />
+				<el-table-column prop="Id" label="序号" width="60" />
 				<el-table-column label="名称" style="line-height: 45px;height: 45px">
                   <template #default="scope">
                     <div style="float: left;padding-right: 10px;padding-top: 5px">
