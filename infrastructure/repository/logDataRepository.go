@@ -38,6 +38,7 @@ func (receiver *logDataRepository) ToList(traceId int64, appName, appIp, logCont
 			WhereIf(logContent != "", "log_content like ?", "%"+logContent+"%").
 			Desc("create_at").
 			ToPageList(pageSize, pageIndex)
+		return receiver.setTraceIdN(lstPO)
 		lst = mapper.ToPageList[flog.LogData](lstPO)
 	} else {
 		exception.ThrowRefuseExceptionf("不支持的链路追踪驱动：%s", linkTrace.Config.Driver)
@@ -54,4 +55,12 @@ func (receiver *logDataRepository) ToInfo(id int64) flog.LogData {
 		exception.ThrowRefuseExceptionf("不支持的链路追踪驱动：%s", linkTrace.Config.Driver)
 	}
 	return do
+}
+
+func (receiver *logDataRepository) setTraceIdN(lstPO collections.PageList[model.LogDataPO]) collections.PageList[flog.LogData] {
+	lst := mapper.ToPageList[flog.LogData](lstPO)
+	lst.List.Foreach(func(item *flog.LogData) {
+		item.SetTraceIdN()
+	})
+	return lst
 }
