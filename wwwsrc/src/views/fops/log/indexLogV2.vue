@@ -9,9 +9,9 @@
         <label class="ml10">执行端IP</label>
         <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 120px;padding-left: 5px"> </el-input>
         <label class="ml10">日志内容</label>
-        <el-input size="default" v-model="state.logContent" placeholder="日志内容" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.logContent" placeholder="日志内容" style="max-width: 250px;padding-left: 5px"> </el-input>
         <label class="ml10">日志类型</label>
-        <el-select v-model="state.logLevel" placeholder="日志类型" clearable class="ml10">
+        <el-select v-model="state.logLevel" placeholder="日志类型" clearable class="ml10" style="max-width: 110px;">
           <el-option label="全部" :value="-1"></el-option>
           <el-option label="Trace" :value="0"></el-option>
           <el-option label="Debug" :value="1"></el-option>
@@ -33,20 +33,28 @@
             <span @click="onDetail(scope.row)">{{scope.row.LogIdN}}</span>
           </template>
         </el-table-column>
-        <el-table-column width="180px" label="TraceID" show-overflow-tooltip>
-          <template #default="scope">
-            <span @click="onDetail(scope.row)">{{scope.row.TraceId}}</span>
-          </template>
-        </el-table-column>
         <el-table-column width="200px" label="应用" show-overflow-tooltip>
           <template #default="scope">
             <el-tag size="mini">{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
-            <el-tag size="mini">{{scope.row.AppId}}</el-tag>
+            {{scope.row.AppId}}
           </template>
         </el-table-column>
-        <el-table-column width="120px" prop="LogLevel" label="日志类型" show-overflow-tooltip></el-table-column>
-        <el-table-column width="600" prop="Content" label="内容" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="Component" label="组件" show-overflow-tooltip></el-table-column>
+        <el-table-column width="100px" prop="LogLevel" label="日志类型" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag v-if="scope.row.LogLevel == 'Info'" size="mini">{{scope.row.LogLevel}}</el-tag>
+            <el-tag v-else-if="scope.row.LogLevel == 'Debug'" type="info" size="mini">{{scope.row.LogLevel}}</el-tag>
+            <el-tag v-else-if="scope.row.LogLevel == 'Warn'" type="warning" size="mini">{{scope.row.LogLevel}}</el-tag>
+            <el-tag v-else-if="scope.row.LogLevel == 'Error'" type="danger" size="mini">{{scope.row.LogLevel}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="内容" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag v-if="scope.row.TraceId > 0" type="info" size="mini">TraceID {{scope.row.TraceId}}</el-tag>
+            <br v-if="scope.row.TraceId > 0" type="info" size="mini" />
+            {{scope.row.Content}}
+          </template>
+        </el-table-column>
+        <el-table-column width="180px" prop="Component" label="组件" show-overflow-tooltip></el-table-column>
         <el-table-column width="180px" prop="CreateAt" label="请求时间" show-overflow-tooltip></el-table-column>
 				<el-table-column label="操作" width="100">
 					<template #default="scope">

@@ -5,47 +5,51 @@
 				<el-row :gutter="35">
           <el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="日志ID">
-              <el-input v-model="state.ruleForm.LogIdN" placeholder="日志ID" clearable></el-input>
+              <el-input v-model="state.ruleForm.LogIdN" placeholder="日志ID" clearable readonly></el-input>
             </el-form-item>
           </el-col>
 					<el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
 						<el-form-item label="跟踪ID">
-							<el-input v-model="state.ruleForm.TraceIdN" placeholder="跟踪ID" clearable></el-input>
+							<el-input v-model="state.ruleForm.TraceIdN" placeholder="跟踪ID" clearable readonly></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
 						<el-form-item label="应用ID">
-							<el-input v-model="state.ruleForm.AppId" placeholder="应用ID" clearable></el-input>
+							<el-input v-model="state.ruleForm.AppId" placeholder="应用ID" clearable readonly></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
 						<el-form-item label="应用名称">
-							<el-input v-model="state.ruleForm.AppName" placeholder="应用名称" clearable></el-input>
+							<el-input v-model="state.ruleForm.AppName" placeholder="应用名称" clearable readonly></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
 						<el-form-item label="应用IP">
-							<el-input v-model="state.ruleForm.AppIp" placeholder="应用IP" clearable></el-input>
+							<el-input v-model="state.ruleForm.AppIp" placeholder="应用IP" clearable readonly></el-input>
 						</el-form-item>
 					</el-col>
           <el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="日志类型">
-              <el-input v-model="state.ruleForm.LogLevel" placeholder="日志类型" clearable></el-input>
+              <el-tag v-if="state.ruleForm.LogLevel == 'Info'">{{state.ruleForm.LogLevel}}</el-tag>
+              <el-tag v-else-if="state.ruleForm.LogLevel == 'Debug'" type="info">{{state.ruleForm.LogLevel}}</el-tag>
+              <el-tag v-else-if="state.ruleForm.LogLevel == 'Warn'" type="warning">{{state.ruleForm.LogLevel}}</el-tag>
+              <el-tag v-else-if="state.ruleForm.LogLevel == 'Error'" type="danger">{{state.ruleForm.LogLevel}}</el-tag>
+              <span v-else>{{state.ruleForm.LogLevel}}</span>
             </el-form-item>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="内容">
-              <span>{{state.ruleForm.Content}}</span>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20" v-if="state.ruleForm.Component != ''">
             <el-form-item label="组件">
               <el-tag size="mini">{{state.ruleForm.Component}}</el-tag>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="创建时间">
-              <el-input v-model="state.ruleForm.CreateAt" placeholder="创建时间" clearable></el-input>
+            <el-form-item label="发生时间">
+              <el-input v-model="state.ruleForm.CreateAt" placeholder="发生时间" clearable readonly></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="内容">
+              <el-input type="textarea" maxlength="500" show-word-limit resize="none" :rows="5" class="textarea-box" v-model="state.ruleForm.Content"></el-input>
             </el-form-item>
           </el-col>
 				</el-row>
