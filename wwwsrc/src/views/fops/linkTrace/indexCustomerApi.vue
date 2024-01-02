@@ -12,6 +12,15 @@
         <el-input size="default" v-model="state.queueName" placeholder="队列名称" style="max-width: 180px;padding-left: 5px"> </el-input>
         <label class="ml10">路由key</label>
         <el-input size="default" v-model="state.routingKey" placeholder="路由key" style="max-width: 180px;padding-left: 5px"> </el-input>
+        <label class="ml10">往前推N分钟的数据</label>
+        <el-select v-model="state.startMin" placeholder="往前推N分钟的数据" clearable class="ml10" style="max-width: 150px;">
+          <el-option label="全部" :value="0"></el-option>
+          <el-option label="1小时耗时最高" :value="60"></el-option>
+          <el-option label="30分钟耗时最高" :value="30"></el-option>
+          <el-option label="10分钟耗时最高" :value="10"></el-option>
+          <el-option label="5分钟耗时最高" :value="5"></el-option>
+          <el-option label="1分钟耗时最高" :value="1"></el-option>
+        </el-select>
         <label class="ml10">执行时间</label>
         <el-input size="default" v-model="state.searchUseTs" placeholder="执行时间大于毫秒的记录" style="max-width: 80px;padding-left: 5px"> </el-input> ms
 
@@ -104,6 +113,7 @@ const state = reactive({
   queueName:'',
   routingKey:'',
   searchUseTs:0,
+  startMin:0,
 	tableData: {
 		data: [],
 		total: 0,
@@ -124,6 +134,7 @@ const getTableData = () => {
     appIp:state.appIp,
     server:state.server,
     queueName:state.queueName,
+    startMin:state.startMin.toString(),
     searchUseTs:state.searchUseTs.toString(),
     routingKey:state.routingKey,
     pageSize:state.tableData.param.pageSize.toString(),

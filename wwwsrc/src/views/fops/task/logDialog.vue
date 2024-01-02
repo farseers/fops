@@ -22,28 +22,24 @@
             </el-button>
           </div>
           <el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
-            <el-table-column prop="Id" label="序号" width="60" />
-            <!--				<el-table-column prop="TaskGroupId" label="任务组ID" show-overflow-tooltip></el-table-column>-->
-            <el-table-column label="名称" width="250">
+            <el-table-column prop="TaskId" label="序号" width="180" />
+            <el-table-column label="名称" width="230">
               <template #default="scope">
                 <span>{{scope.row.Caption}}</span><br>
                 <span>{{scope.row.Name}}（<span style="color:blue">Ver:{{scope.row.Ver}}</span>）</span>
               </template>
             </el-table-column>
-            <el-table-column prop="TaskId" width="220" label="任务ID" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="LogLevel" width="100" label="日志级别" show-overflow-tooltip>
+            <el-table-column label="日志内容">
               <template #default="scope">
-                <el-tag v-if="scope.row.LogLevel==0">Trace</el-tag>
-                <el-tag v-if="scope.row.LogLevel==1">Debug</el-tag>
-                <el-tag v-if="scope.row.LogLevel==2">Information</el-tag>
-                <el-tag v-if="scope.row.LogLevel==3">Warning</el-tag>
-                <el-tag v-if="scope.row.LogLevel==4">Error</el-tag>
-                <el-tag v-if="scope.row.LogLevel==5">Critical</el-tag>
-                <el-tag v-if="scope.row.LogLevel==6">NoneLevel</el-tag>
+                <el-tag v-if="scope.row.LogLevel == 'Info'">{{scope.row.LogLevel}}</el-tag>
+                <el-tag v-else-if="scope.row.LogLevel == 'Debug'" type="info" size="mini">{{scope.row.LogLevel}}</el-tag>
+                <el-tag v-else-if="scope.row.LogLevel == 'Warn'" type="warning" size="mini">{{scope.row.LogLevel}}</el-tag>
+                <el-tag v-else-if="scope.row.LogLevel == 'Error'" type="danger" size="mini">{{scope.row.LogLevel}}</el-tag>
+                <span v-else>{{scope.row.LogLevel}}</span>
+                {{scope.row.Content}}
               </template>
             </el-table-column>
-            <el-table-column prop="Content" label="日志内容"></el-table-column>
-            <el-table-column prop="CreateAt" width="200" label="日志时间" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="CreateAt" width="170" label="日志时间" show-overflow-tooltip></el-table-column>
             <!--				<el-table-column label="操作" width="100">-->
             <!--					<template #default="scope">-->
             <!--						<el-button size="small" text type="primary" @click="onDetail(scope.row)">详情信息</el-button>-->

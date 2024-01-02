@@ -10,7 +10,7 @@
 					</el-col>
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item label="版本">
-							<el-input v-model="state.ruleForm.Ver" placeholder="请输入版本" clearable></el-input>
+							<el-input v-model="state.ruleForm.Ver" placeholder="请输入版本" clearable readonly></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
@@ -20,7 +20,7 @@
 					</el-col>
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item label="参数">
-							<el-input v-model="state.ruleForm.Data" placeholder="请输入参数" clearable></el-input>
+							<el-input type="textarea" maxlength="500" show-word-limit resize="none" :rows="5" class="textarea-box" v-model="state.ruleForm.Data" placeholder="请输入参数" clearable></el-input>
 						</el-form-item>
 					</el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
