@@ -1,8 +1,9 @@
-package request
+package register
 
 import "github.com/farseer-go/fs/dateTime"
 
-type RegisterAppRequest struct {
+// DomainObject 注册应用
+type DomainObject struct {
 	AppName     string            // 应用名称
 	AppId       int64             // 应用ID
 	AppIp       string            // 应用IP

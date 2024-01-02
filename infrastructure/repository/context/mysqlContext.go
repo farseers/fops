@@ -3,6 +3,7 @@ package context
 import (
 	"fops/domain/apps"
 	"fops/domain/cluster"
+	"fops/domain/register"
 	"fops/infrastructure/repository/model"
 	"github.com/farseer-go/data"
 	"github.com/farseer-go/fs/core"
@@ -25,6 +26,8 @@ type mysqlContext struct {
 	Build data.DomainSet[model.BuildPO, apps.BuildEO] `data:"name=build;migrate;"`
 	// Git
 	Git data.DomainSet[model.GitPO, apps.GitEO] `data:"name=git;migrate;"`
+	// 注册
+	Register data.DomainSet[model.RegisterPO, register.DomainObject] `data:"name=register;migrate;"`
 }
 
 // InitMysqlContext 初始化上下文

@@ -5,6 +5,7 @@ import (
 	"fops/domain/cluster"
 	"fops/domain/linkTrace"
 	"fops/domain/logData"
+	"fops/domain/register"
 	"github.com/farseer-go/fs/container"
 )
 
@@ -18,4 +19,6 @@ func InitRepository() {
 	container.Register(func() linkTrace.Repository { return &linkTraceRepository{} })
 	// 日志
 	container.Register(func() logData.Repository { return &logDataRepository{} })
+	// 注册应用
+	container.Register(func() register.Repository { return &registerRepository{} })
 }

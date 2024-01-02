@@ -20,7 +20,7 @@ var route = []webapi.Route{
 	{"POST", "/apps/build/add", appsApp.BuildAdd, "", []context.IFilter{}, []string{"appName", "clusterId", ""}},
 	{"POST", "/apps/build/list", appsApp.BuildList, "", []context.IFilter{}, []string{"appName", "pageSize", "pageIndex", ""}},
 	{"GET", "/apps/build/view-{buildId}", appsApp.View, "", []context.IFilter{}, []string{"buildId"}},
-	{"POST", "/apps/register", appsApp.Register, "", []context.IFilter{}, []string{"req"}},
+	{"POST", "/apps/register", appsApp.Register, "", []context.IFilter{}, []string{"req", ""}},
 	{"POST", "/cluster/add", clusterApp.Add, "", []context.IFilter{}, []string{"req", ""}},
 	{"POST", "/cluster/update", clusterApp.Update, "", []context.IFilter{}, []string{"req", ""}},
 	{"POST", "/cluster/list", clusterApp.List, "", []context.IFilter{}, []string{""}},
