@@ -3,21 +3,21 @@
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
         <label>应用名称</label>
-        <el-input size="default" v-model="state.appName" placeholder="应用名称" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.appName" placeholder="应用名称" style="max-width: 150px;padding-left: 5px"> </el-input>
         <label class="ml10">执行端IP</label>
-        <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 120px;padding-left: 5px"> </el-input>
         <label class="ml10">请求方法</label>
-        <el-select v-model="state.method" placeholder="请求方法" clearable class="ml10">
+        <el-select v-model="state.method" placeholder="请求方法" clearable class="ml10" style="max-width: 110px;">
           <el-option label="全部" value=""></el-option>
           <el-option label="GET" value="GET"></el-option>
           <el-option label="POST" value="POST"></el-option>
           <el-option label="PUT" value="PUT"></el-option>
           <el-option label="DELETE" value="DELETE"></el-option>
         </el-select>
-        <label class="ml10">连接地址</label>
-        <el-input size="default" v-model="state.url" placeholder="连接" style="max-width: 180px"> </el-input>
+        <label class="ml10">请求地址</label>
+        <el-input size="default" v-model="state.url" placeholder="请求地址" style="max-width: 180px;padding-left: 5px"> </el-input>
         <label class="ml10">往前推N分钟的数据</label>
-        <el-select v-model="state.startMin" placeholder="往前推N分钟的数据" clearable class="ml10">
+        <el-select v-model="state.startMin" placeholder="往前推N分钟的数据" clearable class="ml10" style="max-width: 150px;">
           <el-option label="全部" :value="0"></el-option>
           <el-option label="1小时耗时最高" :value="60"></el-option>
           <el-option label="30分钟耗时最高" :value="30"></el-option>
@@ -25,8 +25,8 @@
           <el-option label="5分钟耗时最高" :value="5"></el-option>
           <el-option label="1分钟耗时最高" :value="1"></el-option>
         </el-select>
-        <label class="ml10">执行时间大于x毫秒的记录</label>
-        <el-input size="default" v-model="state.searchUseTs" placeholder="执行时间大于x毫秒的记录" style="max-width: 180px"> </el-input>
+        <label class="ml10">执行时间</label>
+        <el-input size="default" v-model="state.searchUseTs" placeholder="执行时间大于毫秒的记录" style="max-width: 80px;padding-left: 5px"> </el-input> ms
 				<el-button size="default" type="primary" class="ml10" @click="onQuery">
 					<el-icon>
 						<ele-Search />
@@ -42,16 +42,22 @@
         </el-table-column>
         <el-table-column width="200px" label="应用" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag size="mini">{{scope.row.AppName}}</el-tag><br>
-            <el-tag size="mini">{{scope.row.AppIp}}</el-tag><br>
-            <el-tag size="mini">{{scope.row.AppId}}</el-tag>
+            <el-tag size="mini">{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
+            {{scope.row.AppId}}
           </template>
         </el-table-column>
-        <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip></el-table-column>
+        <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag size="mini" v-if="scope.row.UseTs > 100000000" type="danger">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="mini" v-else-if="scope.row.UseTs > 50000000" type="warning">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="mini" v-else-if="scope.row.UseTs > 1000000">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="mini" v-else type="success">{{scope.row.UseDesc}}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="请求内容" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag size="mini">{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
-            <el-tag size="mini">{{scope.row.AppId}}</el-tag>
+            <el-tag size="mini">{{scope.row.StatusCode}}</el-tag> <el-tag type="success" size="mini">{{scope.row.Method}}</el-tag>
+            <br />{{scope.row.Url}}
           </template>
         </el-table-column>
         <el-table-column width="300px" label="异常" show-overflow-tooltip>

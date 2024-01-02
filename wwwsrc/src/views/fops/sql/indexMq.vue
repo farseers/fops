@@ -3,17 +3,17 @@
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
         <label>应用名称</label>
-        <el-input size="default" v-model="state.appName" placeholder="应用名称" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.appName" placeholder="应用名称" style="max-width: 150px;padding-left: 5px"> </el-input>
         <label class="ml10">执行端IP</label>
-        <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 120px;padding-left: 5px"> </el-input>
         <label class="ml10">服务地址</label>
-        <el-input size="default" v-model="state.server" placeholder="服务地址" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.server" placeholder="服务地址" style="max-width: 180px;padding-left: 5px"> </el-input>
         <label class="ml10">交换器</label>
-        <el-input size="default" v-model="state.exchange" placeholder="交换器" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.exchange" placeholder="交换器" style="max-width: 180px;padding-left: 5px"> </el-input>
         <label class="ml10">路由KEY</label>
-        <el-input size="default" v-model="state.routingKey" placeholder="路由KEY" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.routingKey" placeholder="路由KEY" style="max-width: 180px;padding-left: 5px"> </el-input>
         <label class="ml10">往前推N分钟的数据</label>
-        <el-select v-model="state.startMin" placeholder="往前推N分钟的数据" clearable class="ml10">
+        <el-select v-model="state.startMin" placeholder="往前推N分钟的数据" clearable class="ml10" style="max-width: 150px;">
           <el-option label="全部" :value="0"></el-option>
           <el-option label="1小时耗时最高" :value="60"></el-option>
           <el-option label="30分钟耗时最高" :value="30"></el-option>
@@ -21,8 +21,8 @@
           <el-option label="5分钟耗时最高" :value="5"></el-option>
           <el-option label="1分钟耗时最高" :value="1"></el-option>
         </el-select>
-        <label class="ml10">执行时间大于x毫秒的记录</label>
-        <el-input size="default" v-model="state.searchUseTs" placeholder="执行时间大于x毫秒的记录" style="max-width: 180px"> </el-input>
+        <label class="ml10">执行时间</label>
+        <el-input size="default" v-model="state.searchUseTs" placeholder="执行时间大于毫秒的记录" style="max-width: 80px;padding-left: 5px"> </el-input> ms
 				<el-button size="default" type="primary" class="ml10" @click="onQuery">
 					<el-icon>
 						<ele-Search />
@@ -39,10 +39,17 @@
         <el-table-column width="200px" label="应用" show-overflow-tooltip>
           <template #default="scope">
             <el-tag size="mini">{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
-            <el-tag size="mini">{{scope.row.AppId}}</el-tag>
+            {{scope.row.AppId}}
           </template>
         </el-table-column>
-        <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip></el-table-column>
+        <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag size="mini" v-if="scope.row.UseTs > 100000000" type="danger">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="mini" v-else-if="scope.row.UseTs > 50000000" type="warning">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="mini" v-else-if="scope.row.UseTs > 1000000">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="mini" v-else type="success">{{scope.row.UseDesc}}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="Server" label="服务器地址" show-overflow-tooltip></el-table-column>
         <el-table-column prop="Exchange" label="交换器" show-overflow-tooltip></el-table-column>
         <el-table-column prop="RoutingKey" label="路由KEY" show-overflow-tooltip></el-table-column>

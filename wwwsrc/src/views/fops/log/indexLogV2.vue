@@ -5,9 +5,9 @@
         <label>TraceId</label>
         <el-input size="default" v-model="state.traceId" placeholder="链路ID" style="max-width: 180px"> </el-input>
         <label class="ml10">应用名称</label>
-        <el-input size="default" v-model="state.appName" placeholder="应用名称" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.appName" placeholder="应用名称" style="max-width: 150px;padding-left: 5px"> </el-input>
         <label class="ml10">执行端IP</label>
-        <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 120px;padding-left: 5px"> </el-input>
         <label class="ml10">日志内容</label>
         <el-input size="default" v-model="state.logContent" placeholder="日志内容" style="max-width: 180px"> </el-input>
         <label class="ml10">日志类型</label>
