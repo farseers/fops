@@ -13,7 +13,7 @@ type RegisterPO struct {
 	HostName    string            `gorm:"size:32;not null;comment:主机名称"`
 	ProcessId   int               `gorm:"type:int;not null;default:0;comment:进程Id"`
 	StartupAt   dateTime.DateTime `gorm:"type:timestamp;size:6;not null;default:CURRENT_TIMESTAMP;comment:应用启动时间"`
-	ActivateAt  dateTime.DateTime `gorm:"type:timestamp;size:6;not null;default:CURRENT_TIMESTAMP;comment:活动时间"`
+	ActivateAt  dateTime.DateTime `gorm:"type:timestamp;size:6;index:idx_activate_at;not null;default:CURRENT_TIMESTAMP;comment:活动时间"`
 	CpuUsage    decimal.Decimal   `gorm:"type:Decimal(6,4);not null;default:0;comment:CPU百分比"`
 	MemoryUsage decimal.Decimal   `gorm:"type:Decimal(6,4);not null;default:0;comment:内存百分比"`
 }
