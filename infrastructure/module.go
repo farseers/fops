@@ -42,7 +42,7 @@ func (module Module) PostInitialize() {
 	eventBus.Subscribe(event.GitCloneOrPulledEventName, domainEvent.GitCloneOrPulledConsumer)
 
 	// 启用链路追踪写入CH
-	linkTrace.Config = configure.ParseConfig[linkTrace.ConfigEO]("FOPS.LinkTrace")
+	linkTrace.Config = configure.ParseConfig[linkTrace.ConfigEO]("Fops.LinkTrace")
 	if linkTrace.Config.Driver == "clickhouse" {
 		data_clickhouse.Module{}.Initialize()
 		context.InitChContextContext()
