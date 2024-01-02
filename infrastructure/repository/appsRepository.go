@@ -18,7 +18,7 @@ type appsRepository struct {
 
 func (receiver *appsRepository) UpdateApp(do apps.DomainObject) error {
 	po := mapper.Single[model.AppsPO](do)
-	_, err := context.MysqlContext.Apps.Where("app_name = ?", po.AppName).Omit("app_name", "docker_ver", "cluster_ver").Update(po)
+	_, err := context.MysqlContext.Apps.Where("app_name = ?", po.AppName).Omit("app_name", "docker_ver", "cluster_ver", "active_instance").Update(po)
 	return err
 }
 
@@ -31,4 +31,9 @@ func (receiver *appsRepository) UpdateDockerVer(appName string, dockerVer int) (
 func (receiver *appsRepository) UpdateClusterVer(appName string, dicClusterVer map[int64]*apps.ClusterVerVO) (int64, error) {
 	marshal, _ := json.Marshal(dicClusterVer)
 	return context.MysqlContext.Apps.Where("app_name = ?", appName).UpdateValue("cluster_ver", string(marshal))
+}
+
+func (receiver *appsRepository) UpdateActiveInstance(appName string, eo []apps.ActiveInstanceEO) (int64, error) {
+	marshal, _ := json.Marshal(eo)
+	return context.MysqlContext.Apps.Where("app_name = ?", appName).UpdateValue("active_instance", string(marshal))
 }

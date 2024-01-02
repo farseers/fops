@@ -56,8 +56,6 @@ func Info(appName string, appsRepository apps.Repository) response.AppsResponse 
 	do := appsRepository.ToEntity(appName)
 	exception.ThrowWebExceptionBool(do.IsNil(), 403, "应用不存在")
 	return doToAppsResponse(do)
-	//rsp := mapper.Single[response.AppsResponse](do)
-	//return rsp
 }
 
 func doToAppsResponse(do apps.DomainObject) response.AppsResponse {
@@ -67,6 +65,7 @@ func doToAppsResponse(do apps.DomainObject) response.AppsResponse {
 	}
 	return response.AppsResponse{
 		AppName:        do.AppName,
+		ActiveInstance: do.ActiveInstance,
 		DockerVer:      do.DockerVer,
 		ShellScript:    do.ShellScript,
 		ClusterVer:     clusterVers,

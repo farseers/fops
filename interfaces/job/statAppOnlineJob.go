@@ -24,7 +24,7 @@ func StatAppOnlineJob(*tasks.TaskContext) {
 			} else {
 				item.ActiveInstance = make([]apps.ActiveInstanceEO, 0)
 			}
-			_ = appsRepository.UpdateApp(*item)
+			_, _ = appsRepository.UpdateActiveInstance(item.AppName, item.ActiveInstance)
 		})
 	})
 }

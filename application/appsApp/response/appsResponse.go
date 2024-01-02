@@ -15,4 +15,5 @@ type AppsResponse struct {
 	FrameworkGits  collections.List[int64] // 依赖的框架源代码
 	Dockerfile     string                  // Dockerfile内容
 	DockerfilePath string                  // Dockerfile路径
+	ActiveInstance []apps.ActiveInstanceEO // 正在运行的实例
 }
