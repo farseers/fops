@@ -10,4 +10,6 @@ type Repository interface {
 	data.IRepository[DomainObject]
 	// StatRegisterApp 统计应用的在线实例
 	StatRegisterApp() map[string][]DomainObject
+	// ClearHistory 清除历史注册信息
+	ClearHistory()
 }

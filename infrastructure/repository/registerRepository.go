@@ -28,3 +28,7 @@ func (receiver *registerRepository) StatRegisterApp() map[string][]register.Doma
 	})
 	return group
 }
+
+func (receiver *registerRepository) ClearHistory() {
+	_, _ = context.MysqlContext.Register.Where("activate_at < (NOW() - INTERVAL 7 DAY)").Delete()
+}
