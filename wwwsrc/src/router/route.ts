@@ -452,6 +452,36 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 						icon: 'iconfont icon-zidingyibuju',
 					},
 				},]
+			},{
+				path: '/log',
+				name: 'log',
+				component: () => import('/@/views/fops/log/indexLogV2.vue'),
+				meta: {
+					title: 'message.router.Log',
+					isLink: '',
+					isHide: false,
+					isKeepAlive: true,
+					isAffix: true,
+					isIframe: false,
+					roles: ['admin', 'common'],
+					icon: 'iconfont icon-shuju',
+				},children: [
+					{
+						path: '/log/list',
+						name: 'logList',
+						component: () => import('/@/views/fops/log/indexLogV2.vue'),
+						meta: {
+							title: 'message.router.LogList',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: true,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin'],
+							icon: 'iconfont icon-zidingyibuju',
+						},
+					}
+				]
 			},
 		],
 	},

@@ -3,19 +3,24 @@
 		<el-dialog :title="state.dialog.title" v-model="state.dialog.isShowDialog" width="769px">
 			<el-form ref="gitDialogFormRef" :model="state.ruleForm" size="default" label-width="90px">
 				<el-row :gutter="35">
-					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
+					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item label="应用名称">
 							<el-input v-model="state.ruleForm.AppName" placeholder="请输入应用名称" clearable></el-input>
 						</el-form-item>
 					</el-col>
-					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
-						<el-form-item label="应用ID">
-							<el-input v-model="state.ruleForm.AppId" placeholder="请输入应用ID" clearable></el-input>
-						</el-form-item>
-					</el-col>
+<!--					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">-->
+<!--						<el-form-item label="应用ID">-->
+<!--							<el-input v-model="state.ruleForm.AppId" placeholder="请输入应用ID" clearable></el-input>-->
+<!--						</el-form-item>-->
+<!--					</el-col>-->
+          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
+            <el-form-item label="是否健康">
+              <el-tag>{{state.ruleForm.IsHealth}}</el-tag>
+            </el-form-item>
+          </el-col>
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
 						<el-form-item label="镜像版本">
-							<el-input v-model="state.ruleForm.DockerVer" placeholder="请输入镜像版本" clearable></el-input>
+              <el-tag>{{state.ruleForm.DockerVer}}</el-tag>
 						</el-form-item>
 					</el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
@@ -25,7 +30,8 @@
           </el-col>
           <el-col :xs="24" :sm="18" :md="18" :lg="18" :xl="18" class="mb20">
             <el-form-item label="Git源代码" style="float: left">
-              <el-input v-model="state.ruleForm.AppGit"  placeholder="请输入应用的源代码" clearable></el-input>
+              <el-tag>{{state.ruleForm.AppGitName}}</el-tag>
+<!--              <el-input v-model="state.ruleForm.AppGit"  placeholder="请输入应用的源代码" clearable></el-input>-->
             </el-form-item>
             <el-button type="primary" @click="onOpenGit(2)" size="default">添加Git</el-button>
           </el-col>
@@ -111,9 +117,11 @@ const state = reactive({
     ShellScript: '', // Shell脚本
     ClusterVer: '', // 集群版本
     AppGit: 0, // 应用的源代码
+    AppGitName: '', // 应用的源代码
     FrameworkGits:[], // 依赖的框架源代码
     Dockerfile: '', // Dockerfile内容
     DockerfilePath: '', // Dockerfile路径
+    IsHealth:false, // 是否健康
 	},
   gitList:[],
   SelectItem:[],
@@ -158,6 +166,8 @@ const openDialog = (type: string, row: any) => {
         state.ruleForm.Dockerfile=row.Dockerfile
         state.ruleForm.DockerfilePath=row.DockerfilePath
         state.SelectItem=row.FrameworkGits
+        state.ruleForm.IsHealth=row.IsHealth
+        loadGitInfo(row.AppGit)
         // 加载git数据
         loadGit(row.FrameworkGits)
       }
@@ -194,7 +204,15 @@ const loadGit=(lst:any)=>{
     })
   }
 }
-
+const loadGitInfo=(id:any)=>{
+    serverApi.gitInfo({"gitId":id}).then(function (res){
+      if (res.Status){
+        state.ruleForm.AppGitName= res.Data.Name
+      }else{
+        state.ruleForm.AppGitName=""
+      }
+    })
+}
 const delGit=(row:any)=>{
   state.ruleForm.FrameworkGits = state.ruleForm.FrameworkGits.filter(number => number !== parseInt(row.Id));
   loadGit(state.ruleForm.FrameworkGits)
@@ -294,6 +312,7 @@ const SureCheck=()=>{
     loadGit(state.ruleForm.FrameworkGits)
   }else{
     state.ruleForm.AppGit=state.SelectItem[0]
+    loadGitInfo(state.ruleForm.AppGit)
   }
   state.gitDialogIsShow=false
 }

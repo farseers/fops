@@ -29,8 +29,12 @@
           <el-col style="float: left;background: #ffffff;margin: 10px"  :xs="16" :sm="16" :md="16" :lg="16" :xl="16" class="mb15" v-if="state.tableData.data.length > 0">
             <div class="flex-warp-item" v-for="(v, k) in state.tableData.data" :key="k">
               <div class="flex-warp-item-box" @click="onShowBuildList(v)">
-                <div class="appItem">应用ID：{{ v.AppId }}</div>
+<!--                <div class="appItem">应用ID：{{ v.AppId }}</div>-->
                 <div class="appItem"><el-tag>{{ v.AppName }}</el-tag></div>
+                <div class="appItem">是否健康：
+                  <span v-if="v.IsHealth">是</span>
+                  <span v-else>否</span>
+                </div>
                 <div class="appItem">容器版本：{{ v.DockerVer }}</div>
                 <div class="appItem">集群版本：{{ v.ClusterVer }}</div>
 <!--                <div class="appItem">容器文件：{{ v.Dockerfile }}</div>-->

@@ -107,6 +107,8 @@ export default {
 		fscheduleApi:'FSchedule列表',
 		Etcd:'Etcd',
 		Hand:'手动埋点',
+		LogList:'查询列表',
+		Log:'日志'
 	},
 	staticRoutes: {
 		signIn: '登录',

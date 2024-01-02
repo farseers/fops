@@ -2,18 +2,24 @@
 	<div class="system-user-container layout-padding">
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
-        <label>应用名称</label>
+        <label>TraceId</label>
+        <el-input size="default" v-model="state.traceId" placeholder="链路ID" style="max-width: 180px"> </el-input>
+        <label class="ml10">应用名称</label>
         <el-input size="default" v-model="state.appName" placeholder="应用名称" style="max-width: 180px"> </el-input>
         <label class="ml10">执行端IP</label>
         <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 180px"> </el-input>
-        <label class="ml10">MQ服务端</label>
-        <el-input size="default" v-model="state.server" placeholder="MQ服务端" style="max-width: 180px"> </el-input>
-        <label class="ml10">队列名称</label>
-        <el-input size="default" v-model="state.queueName" placeholder="队列名称" style="max-width: 180px"> </el-input>
-        <label class="ml10">路由key</label>
-        <el-input size="default" v-model="state.routingKey" placeholder="路由key" style="max-width: 180px"> </el-input>
-        <label class="ml10">执行时间大于x毫秒的记录</label>
-        <el-input size="default" v-model="state.searchUseTs" placeholder="执行时间大于x毫秒的记录" style="max-width: 180px"> </el-input>
+        <label class="ml10">日志内容</label>
+        <el-input size="default" v-model="state.logContent" placeholder="日志内容" style="max-width: 180px"> </el-input>
+        <label class="ml10">日志类型</label>
+        <el-select v-model="state.logLevel" placeholder="日志类型" clearable class="ml10">
+          <el-option label="全部" :value="-1"></el-option>
+          <el-option label="Trace" :value="0"></el-option>
+          <el-option label="Debug" :value="1"></el-option>
+          <el-option label="Info" :value="2"></el-option>
+          <el-option label="Warning" :value="3"></el-option>
+          <el-option label="Error" :value="4"></el-option>
+          <el-option label="Critical" :value="5"></el-option>
+        </el-select>
 				<el-button size="default" type="primary" class="ml10" @click="onQuery">
 					<el-icon>
 						<ele-Search />
@@ -22,9 +28,14 @@
 				</el-button>
 			</div>
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
+        <el-table-column width="180px" label="LogID" show-overflow-tooltip>
+          <template #default="scope">
+            <span @click="onDetail(scope.row)">{{scope.row.LogIdN}}</span>
+          </template>
+        </el-table-column>
         <el-table-column width="180px" label="TraceID" show-overflow-tooltip>
           <template #default="scope">
-            <span @click="onDetail(scope.row)">{{scope.row.TraceIdN}}</span>
+            <span @click="onDetail(scope.row)">{{scope.row.TraceId}}</span>
           </template>
         </el-table-column>
         <el-table-column width="250px" label="应用" show-overflow-tooltip>
@@ -33,21 +44,13 @@
             <el-tag>{{scope.row.AppId}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip></el-table-column>
-        <el-table-column width="200px" prop="ConsumerServer" label="MQ服务端" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="ConsumerQueueName" label="队列名称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="ConsumerRoutingKey" label="路由key" show-overflow-tooltip></el-table-column>
-        <el-table-column width="300px" label="异常" show-overflow-tooltip>
-          <template #default="scope">
-            <el-tag v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">
-            <el-tag v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>
-            <el-tag v-else>无</el-tag>
-          </template>
-        </el-table-column>
+        <el-table-column width="120px" prop="LogLevel" label="日志类型" show-overflow-tooltip></el-table-column>
+        <el-table-column width="600" prop="Content" label="内容" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="Component" label="组件" show-overflow-tooltip></el-table-column>
         <el-table-column width="180px" prop="CreateAt" label="请求时间" show-overflow-tooltip></el-table-column>
 				<el-table-column label="操作" width="100">
 					<template #default="scope">
-						<el-button size="small" text type="primary" @click="onDetail(scope.row)">追踪</el-button>
+						<el-button size="small" text type="primary" @click="onDetail(scope.row)">详情</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -66,10 +69,11 @@
 			</el-pagination>
 		</el-card>
     <detailDialog ref="detailDialogRef" @refresh="getTableData()" />
+
 	</div>
 </template>
 
-<script setup lang="ts" name="fopsTaskRunning">
+<script setup lang="ts" name="fopsLogList">
 import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import {fopsApi} from "/@/api/fops";
@@ -78,19 +82,18 @@ import {friendlyJSONstringify} from "@intlify/shared";
 // 引入 api 请求接口
 const serverApi = fopsApi();
 // 引入组件
-const detailDialog = defineAsyncComponent(() => import('/src/views/fops/linkTrace/detailV2Dialog.vue'));
+const detailDialog = defineAsyncComponent(() => import('/src/views/fops/log/detailDialog.vue'));
 
 
 // 定义变量内容
 const detailDialogRef = ref();
+
 const state = reactive({
-  keyWord:'',
+  traceId:'',
   appName:'',
   appIp:'',
-  server:'',
-  queueName:'',
-  routingKey:'',
-  searchUseTs:0,
+  logContent:'',
+  logLevel:-1,
 	tableData: {
 		data: [],
 		total: 0,
@@ -109,16 +112,15 @@ const getTableData = () => {
   var data={
     appName:state.appName,
     appIp:state.appIp,
-    server:state.server,
-    queueName:state.queueName,
-    searchUseTs:state.searchUseTs.toString(),
-    routingKey:state.routingKey,
+    traceId:state.traceId,
+    logContent:state.logContent,
+    logLevel:state.logLevel.toString(),
     pageSize:state.tableData.param.pageSize.toString(),
     pageIndex:state.tableData.param.pageNum.toString(),
   }
   const params = new URLSearchParams(data).toString();
   // 请求接口
-  serverApi.linkTraceConsumerList(params).then(function (res){
+  serverApi.logList(params).then(function (res){
     if (res.Status){
       state.tableData.data = res.Data.List;
       state.tableData.total = res.Data.RecordCount;
@@ -127,7 +129,6 @@ const getTableData = () => {
       state.tableData.data=[]
       state.tableData.loading = false;
     }
-
   })
 
 };

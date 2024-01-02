@@ -278,6 +278,18 @@ export function fopsApi() {
 				method: 'get',
 				//data:param,
 			});
+		},logList:(param: string) => {
+			return requestGet({
+				url: '/flog/list?'+param,
+				method: 'get',
+				//data:param,
+			});
+		},logInfo:(param: string) => {
+			return requestGet({
+				url: '/flog/info-'+param,
+				method: 'get',
+				//data:param,
+			});
 		}
 	};
 }

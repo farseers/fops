@@ -28,8 +28,22 @@
           </el-col>
 				</el-row>
 			</el-form>
-
-<!--      <showDialog ref="showDialogRef" @refresh="getTableData()" />-->
+      <el-table :data="state.tableData" v-loading="state.loading" style="width: 100%">
+        <el-table-column prop="UseDesc" label="时间" show-overflow-tooltip></el-table-column>
+        <el-table-column width="250px" label="内容" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag>{{scope.row.AppName}}</el-tag><span>{{scope.row.Desc}} {{scope.row.Caption}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column width="120px" prop="AppIp" label="应用IP" show-overflow-tooltip></el-table-column>
+        <el-table-column width="300px" label="异常" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">
+            <el-tag v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>
+            <el-tag v-else>无</el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
 		</el-dialog>
 	</div>
 </template>
@@ -49,6 +63,7 @@ const gitDialogFormRef = ref();
 const showDialogRef = ref();
 const state = reactive({
 	ruleForm: {},
+  loading:false,
   tableData:[{
     Rgba:'',
     AppId:0,
@@ -85,6 +100,7 @@ const state = reactive({
 
 // 打开弹窗
 const openDialog = (row2: any) => {
+  state.loading=true
   //state.ruleForm = row;
   state.dialog.title = '链路追踪详情(TraceId：'+row2.TraceIdN+')';
   //state.dialog.submitTxt = '修 改';
@@ -93,6 +109,7 @@ const openDialog = (row2: any) => {
   // 详情
   serverApi.linkTraceInfo(row2.TraceIdN).then(function (res){
     console.log(friendlyJSONstringify(res))
+    state.loading=false
     if (res.Status){
       // 绑定数据
       state.tableData=res.Data
