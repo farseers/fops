@@ -7,8 +7,7 @@ import (
 
 // DomainObject 聚合
 type DomainObject struct {
-	AppName        string                  // 应用名称
-	AppId          string                  // 应用ID（链路追踪）
+	AppName        string                  // 应用名称（链路追踪）
 	DockerVer      int                     // 镜像版本
 	ShellScript    string                  // Shell脚本
 	ClusterVer     map[int64]*ClusterVerVO // 集群版本
@@ -16,10 +15,11 @@ type DomainObject struct {
 	FrameworkGits  collections.List[int64] // 依赖的框架源代码
 	Dockerfile     string                  // Dockerfile内容
 	DockerfilePath string                  // Dockerfile路径
+	ActiveInstance []ActiveInstanceEO      // 正在运行的实例
 }
 
 func (receiver *DomainObject) IsNil() bool {
-	return receiver.AppName == "" && receiver.AppId == ""
+	return receiver.AppName == ""
 }
 
 // ClusterVerVO 集群镜像版本及部署时间

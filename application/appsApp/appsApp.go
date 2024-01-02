@@ -67,7 +67,6 @@ func doToAppsResponse(do apps.DomainObject) response.AppsResponse {
 	}
 	return response.AppsResponse{
 		AppName:        do.AppName,
-		AppId:          do.AppId,
 		DockerVer:      do.DockerVer,
 		ShellScript:    do.ShellScript,
 		ClusterVer:     clusterVers,
