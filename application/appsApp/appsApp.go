@@ -7,6 +7,7 @@ import (
 	"fops/domain/apps"
 	"github.com/farseer-go/collections"
 	"github.com/farseer-go/fs/exception"
+	"github.com/farseer-go/fs/parse"
 	"github.com/farseer-go/mapper"
 	"strings"
 )
@@ -41,11 +42,17 @@ func Delete(appName string, appsRepository apps.Repository) {
 // @post list
 func List(appsRepository apps.Repository) collections.List[response.AppsResponse] {
 	lstDO := appsRepository.ToList()
+	lstGit := appsRepository.ToGitListAll()
+
 	lst := collections.NewList[response.AppsResponse]()
 	lstDO.Foreach(func(item *apps.DomainObject) {
 		item.ShellScript = ""
 		item.Dockerfile = ""
-		lst.Add(doToAppsResponse(*item))
+		appsResponse := doToAppsResponse(*item)
+		appsResponse.AppGitName = lstGit.Where(func(gitItem apps.GitEO) bool {
+			return item.AppGit == parse.ToInt64(gitItem.Id)
+		}).First().Name
+		lst.Add(appsResponse)
 	})
 	return lst
 }
@@ -55,7 +62,9 @@ func List(appsRepository apps.Repository) collections.List[response.AppsResponse
 func Info(appName string, appsRepository apps.Repository) response.AppsResponse {
 	do := appsRepository.ToEntity(appName)
 	exception.ThrowWebExceptionBool(do.IsNil(), 403, "应用不存在")
-	return doToAppsResponse(do)
+	rsp := doToAppsResponse(do)
+	rsp.AppGitName = appsRepository.ToGitEntity(do.AppGit).Name
+	return rsp
 }
 
 func doToAppsResponse(do apps.DomainObject) response.AppsResponse {
