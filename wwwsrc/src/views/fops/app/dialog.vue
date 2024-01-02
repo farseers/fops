@@ -1,21 +1,18 @@
 <template>
 	<div class="system-user-dialog-container">
-		<el-dialog :title="state.dialog.title" v-model="state.dialog.isShowDialog" width="769px">
-			<el-form ref="gitDialogFormRef" :model="state.ruleForm" size="default" label-width="90px">
+		<el-dialog :title="state.dialog.title" v-model="state.dialog.isShowDialog" width="900px">
+			<el-form ref="gitDialogFormRef" :model="state.ruleForm" size="default" label-width="120px">
 				<el-row :gutter="35">
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item label="应用名称">
-							<el-input v-model="state.ruleForm.AppName" placeholder="请输入应用名称" clearable></el-input>
+							<el-input v-model="state.ruleForm.AppName" placeholder="请输入应用名称" clearable style="max-width: 200px;margin-right: 5px"></el-input>
+              名称需要与应用的AppName完全一致，才能检查健康状态
 						</el-form-item>
 					</el-col>
-<!--					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">-->
-<!--						<el-form-item label="应用ID">-->
-<!--							<el-input v-model="state.ruleForm.AppId" placeholder="请输入应用ID" clearable></el-input>-->
-<!--						</el-form-item>-->
-<!--					</el-col>-->
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="是否健康">
-              <el-tag size="mini">{{state.ruleForm.IsHealth}}</el-tag>
+              <el-tag v-if="state.ruleForm.IsHealth" size="mini" type="success">健康</el-tag>
+              <el-tag v-else size="mini" type="warning">不健康</el-tag>
             </el-form-item>
           </el-col>
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
@@ -29,17 +26,18 @@
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="18" :md="18" :lg="18" :xl="18" class="mb20">
-            <el-form-item label="Git源代码" style="float: left">
+            <el-form-item label="Git主仓库" style="float: left">
               <el-tag size="mini">{{state.ruleForm.AppGitName}}</el-tag>
 <!--              <el-input v-model="state.ruleForm.AppGit"  placeholder="请输入应用的源代码" clearable></el-input>-->
             </el-form-item>
-            <el-button type="primary" @click="onOpenGit(2)" size="default">添加Git</el-button>
+            <el-button type="primary" @click="onOpenGit(2)" size="default" style="margin-left: 5px;">添加Git</el-button>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-tag size="mini">依赖的框架源代码</el-tag><el-button type="primary" @click="onOpenGit(1)" size="default">添加Git</el-button>
+            <el-form-item label="依赖仓库" style="float: left">
+            <el-button type="success" @click="onOpenGit(1)" size="default" style="margin-left: 5px;">添加依赖的仓库</el-button>
             <el-table :data="state.gitList" style="width: 100%">
               <el-table-column prop="Id" label="编号" width="60" />
-              <el-table-column prop="Name" label="Git名称" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="Name" label="Git名称" show-overflow-tooltip width="120"></el-table-column>
               <el-table-column prop="Hub" label="托管地址" show-overflow-tooltip></el-table-column>
               <el-table-column label="操作" width="100">
                 <template #default="scope">
@@ -47,6 +45,7 @@
                 </template>
               </el-table-column>
             </el-table>
+            </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="Shell脚本" >
@@ -59,7 +58,7 @@
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="Dockerfile路径">
+            <el-form-item label="Dockerfile">
               <el-input v-model="state.ruleForm.DockerfilePath" placeholder="请输入Dockerfile路径" clearable></el-input>
             </el-form-item>
           </el-col>

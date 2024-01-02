@@ -30,7 +30,11 @@
 				<el-table-column prop="Name" label="服务器节点名称" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="Ip" label="IP" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="Port" label="端口" show-overflow-tooltip></el-table-column>
-				<el-table-column prop="IsLeader" label="是否主节点" show-overflow-tooltip></el-table-column>
+				<el-table-column prop="IsLeader" label="是否主节点" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag size="mini" v-if="scope.row.IsLeader = true" type="danger">主节点</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="ActivateAt" label="激活时间" show-overflow-tooltip></el-table-column>
 <!--				<el-table-column label="操作" width="100" style="display: none">-->
 <!--					<template #default="scope">-->

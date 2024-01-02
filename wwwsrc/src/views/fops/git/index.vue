@@ -18,18 +18,16 @@
 			</div>
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
 				<el-table-column prop="Id" label="编号" width="60" />
-				<el-table-column prop="Name" label="Git名称" show-overflow-tooltip></el-table-column>
+				<el-table-column prop="Name" label="Git名称" width="180" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="Hub" label="托管地址" show-overflow-tooltip></el-table-column>
-				<el-table-column prop="Branch" label="Git分支" show-overflow-tooltip></el-table-column>
-				<el-table-column prop="UserName" label="账户名称" show-overflow-tooltip></el-table-column>
+				<el-table-column prop="Branch" label="Git分支" width="160" show-overflow-tooltip></el-table-column>
+				<el-table-column prop="UserName" label="账户名称" width="160" show-overflow-tooltip></el-table-column>
 <!--				<el-table-column prop="UserPwd" label="账户密码" show-overflow-tooltip></el-table-column>-->
         <el-table-column prop="Dir" label="存储目录" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="PullAt" label="拉取时间" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="PullAt" label="拉取时间" width="180" show-overflow-tooltip></el-table-column>
 				<el-table-column label="操作" width="100">
 					<template #default="scope">
-						<el-button size="small" text type="primary" @click="onOpenEdit('edit', scope.row)"
-							>修改</el-button
-						>
+						<el-button size="small" text type="primary" @click="onOpenEdit('edit', scope.row)">修改</el-button>
 						<el-button size="small" text type="primary" @click="onRowDel(scope.row)">删除</el-button>
 					</template>
 				</el-table-column>

@@ -2,13 +2,6 @@
 	<div class="system-user-container layout-padding">
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
-<!--				<el-input size="default" placeholder="请输入用户名称" style="max-width: 180px"> </el-input>-->
-<!--				<el-button size="default" type="primary" class="ml10">-->
-<!--					<el-icon>-->
-<!--						<ele-Search />-->
-<!--					</el-icon>-->
-<!--					查询-->
-<!--				</el-button>-->
 				<el-button size="default" type="success" class="ml10" @click="onOpenAdd('add')">
 					<el-icon>
 						<ele-FolderAdd />
@@ -21,10 +14,9 @@
 				<el-table-column prop="Name" label="集群名称" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="Ip" label="集群地址" show-overflow-tooltip></el-table-column>
 <!--				<el-table-column prop="K8sConnectConfig" label="K8s连接配置" show-overflow-tooltip></el-table-column>-->
-				<el-table-column prop="DockerName" label="仓库名称" show-overflow-tooltip></el-table-column>
-				<el-table-column prop="DockerHub" label="托管地址" show-overflow-tooltip></el-table-column>
+				<el-table-column prop="DockerName" label="DockerHub名称" show-overflow-tooltip></el-table-column>
+				<el-table-column prop="DockerHub" label="DockerHub地址" show-overflow-tooltip></el-table-column>
         <el-table-column prop="DockerUserName" label="账户名称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="DockerUserPwd" label="账户密码" show-overflow-tooltip></el-table-column>
 				<el-table-column label="操作" width="100">
 					<template #default="scope">
 						<el-button size="small" text type="primary" @click="onOpenEdit('edit', scope.row)"

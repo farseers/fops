@@ -28,59 +28,58 @@
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%" class="mytable">
 				<el-table-column prop="Id" label="序号" width="60" />
 				<el-table-column label="名称" style="line-height: 45px;height: 45px">
-                  <template #default="scope">
-                    <div style="float: left;padding-right: 10px;padding-top: 5px">
-                      <el-tag cursor="cursor" @click="onIsEnable(scope.row)" v-if="scope.row.IsEnable">启用</el-tag>
-                      <el-tag  style="color:#7a7a7a" cursor="cursor" @click="onIsEnable(scope.row)" v-else>停用</el-tag>
+          <template #default="scope">
+            <div style="float: left;padding-right: 10px;padding-top: 5px">
+              <el-tag size="mini" cursor="cursor" @click="onIsEnable(scope.row)" v-if="scope.row.IsEnable">启用</el-tag>
+              <el-tag size="mini" cursor="cursor" @click="onIsEnable(scope.row)" v-else type="info">停用</el-tag>
 <!--                      <el-switch v-model="scope.row.IsEnable" @click="onIsEnable(scope.row)" inline-prompt active-text="启用" inactive-text="停用"></el-switch>-->
-                    </div>
-                    <div style="float: left;padding-right: 10px;padding-top: 5px">
-                      <el-tag style="color:#7a7a7a" v-if="scope.row.Task.Status==0">未开始</el-tag>
-                      <el-tag v-if="scope.row.Task.Status==1">调度中</el-tag>
-                      <el-tag style="color:red" v-if="scope.row.Task.Status==2">调度失败</el-tag>
-                      <el-tag v-if="scope.row.Task.Status==3">执行中</el-tag>
-                      <el-tag v-if="scope.row.Task.Status==4">失败</el-tag>
-                      <el-tag style="color:green" v-if="scope.row.Task.Status==5">成功</el-tag>
-                    </div>
-                    <div @click="onTaskList(scope.row)" style="float: left">
-                      <span>{{scope.row.Caption}}</span><br>
-                      <span>{{scope.row.Name}}（<span style="color:#4eb8ff">Ver:{{scope.row.Ver}}</span>）</span>
-                    </div>
+            </div>
+            <div style="float: left;padding-right: 10px;padding-top: 5px">
+              <el-tag size="mini" v-if="scope.row.Task.Status==0" type="info">未开始</el-tag>
+              <el-tag size="mini" v-if="scope.row.Task.Status==1" type="success">调度中</el-tag>
+              <el-tag size="mini" style="color:red" v-if="scope.row.Task.Status==2" type="warning">调度失败</el-tag>
+              <el-tag size="mini" v-if="scope.row.Task.Status==3" type="success">执行中</el-tag>
+              <el-tag size="mini" v-if="scope.row.Task.Status==4" type="danger">失败</el-tag>
+              <el-tag size="mini" style="color:green" v-if="scope.row.Task.Status==5" type="success">成功</el-tag>
+            </div>
+            <div @click="onTaskList(scope.row)" style="float: left">
+              <span>{{scope.row.Caption}}</span><br>
+              <span>{{scope.row.Name}}（<span style="color:#4eb8ff">Ver:{{scope.row.Ver}}</span>）</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="StartAt" label="开始时间" width="170" show-overflow-tooltip>
+                  <template #default="scope">
+                    <span title="开始时间">{{scope.row.StartAt}}</span><br>
+                    <span title="上次运行时间">{{scope.row.LastRunAt}}</span>
                   </template>
+        </el-table-column>
+            <el-table-column label="下次运行时间" width="170" show-overflow-tooltip>
+              <template #default="scope">
+                <span title="Cron表达式" >{{scope.row.Cron}}</span><br>
+                <span style="color:red" title="下次运行时间" v-if="compareTime(scope.row.NextAt)" > {{scope.row.NextAt}}</span>
+                <span title="下次运行时间" v-else> {{scope.row.NextAt}}</span>
+              </template>
             </el-table-column>
-            <el-table-column prop="StartAt" label="开始时间" width="170" show-overflow-tooltip>
-                      <template #default="scope">
-                        <span title="开始时间">{{scope.row.StartAt}}</span><br>
-                        <span title="上次运行时间">{{scope.row.LastRunAt}}</span>
-                      </template>
+            <el-table-column label="运行情况" width="170" show-overflow-tooltip>
+              <template #default="scope">
+                <span>平均耗时: {{scope.row.RunSpeedAvg}}ms</span><br>
+                <span>运行次数: {{scope.row.RunCount}}</span>
+              </template>
             </el-table-column>
-                <el-table-column label="下次运行时间" width="170" show-overflow-tooltip>
-                  <template #default="scope">
-                    <span title="Cron表达式" >{{scope.row.Cron}}</span><br>
-                    <span style="color:red" title="下次运行时间" v-if="compareTime(scope.row.NextAt)" > {{scope.row.NextAt}}</span>
-                    <span title="下次运行时间" v-else> {{scope.row.NextAt}}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="运行情况" width="170" show-overflow-tooltip>
-                  <template #default="scope">
-                    <span>平均耗时: {{scope.row.RunSpeedAvg}}ms</span><br>
-                    <span>运行次数: {{scope.row.RunCount}}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="数据">
-                  <template #default="scope">
-                    <span>{{friendlyJSONstringify(scope.row.Data)}}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="客户端信息" width="180" show-overflow-tooltip>
-                  <template #default="scope">
-                    <div v-for="(item, index) in scope.row.Clients.slice(0, 3)" :key="index">
-                      <el-tag size="mini">{{item.Name}}</el-tag>
-                      <el-tag size="mini">{{item.Ip}}:{{item.Port}}</el-tag>
-                      <span v-if="scope.row.Clients.length>3">更多</span>
-                    </div>
-                  </template>
-                </el-table-column>
+            <el-table-column label="数据">
+              <template #default="scope">
+                <span>{{friendlyJSONstringify(scope.row.Data)}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="客户端信息" width="180" show-overflow-tooltip>
+              <template #default="scope">
+                <div v-for="(item, index) in scope.row.Clients.slice(0, 3)" :key="index">
+                  <el-tag size="mini">{{item.Name}} {{item.Ip}}:{{item.Port}}</el-tag>
+                  <span v-if="scope.row.Clients.length>3">更多</span>
+                </div>
+              </template>
+            </el-table-column>
 				<el-table-column label="操作" width="150">
 					<template #default="scope">
 						<el-button size="small" text type="primary" @click="onDetail(scope.row)">详情信息</el-button>

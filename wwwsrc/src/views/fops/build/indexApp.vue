@@ -29,21 +29,15 @@
           <el-col style="float: left;background: #ffffff;margin: 10px"  :xs="16" :sm="16" :md="16" :lg="16" :xl="16" class="mb15" v-if="state.tableData.data.length > 0">
             <div class="flex-warp-item" v-for="(v, k) in state.tableData.data" :key="k">
               <div class="flex-warp-item-box" @click="onShowBuildList(v)">
-<!--                <div class="appItem">应用ID：{{ v.AppId }}</div>-->
-                <div class="appItem"><el-tag size="mini">{{ v.AppName }}</el-tag></div>
-                <div class="appItem">是否健康：
-                  <span v-if="v.IsHealth">是</span>
-                  <span v-else>否</span>
+                <div class="appItem">
+                  <el-tag size="mini">{{ v.AppName }}</el-tag>
+                  <el-tag v-if="v.IsHealth" size="mini" type="success">健康</el-tag>
+                  <el-tag v-else size="mini" type="warning">不健康</el-tag>
                 </div>
                 <div class="appItem">容器版本：{{ v.DockerVer }}</div>
                 <div class="appItem">集群版本：{{ v.ClusterVer }}</div>
-<!--                <div class="appItem">容器文件：{{ v.Dockerfile }}</div>-->
-                <div class="appItem">AppGit：{{ v.AppGitName }}
-<!--                  <el-tag v-for="(item, k) in v.AppGitStr">{{item}}</el-tag>-->
+                <div class="appItem">仓库：{{ v.AppGitName }}
                 </div>
-<!--                <div class="appItem">Git框架：-->
-<!--                  <el-tag v-for="(item, k) in v.FrameworkGitsStr">{{item}}</el-tag>-->
-<!--                </div>-->
                 <div class="appItem">容器文件路径：{{ v.DockerfilePath }}</div>
                 <div class="appItem">
                   <el-button size="default" @click="onOpenEdit('edit', v)" type="warning">修改</el-button>
@@ -54,7 +48,7 @@
             </div>
           </el-col>
           <el-empty v-else description="暂无数据"></el-empty>
-          <el-col style="float: left;background: #ffffff;margin: 10px;margin-left: 0;padding:5px;" :xs="8" :sm="8" :md="8" :lg="8" :xl="8" class="mb15" v-if="state.tableLogData.data.length > 0">
+          <el-col style="float: left;background: #ffffff;margin: 10px 10px 10px 0;padding:5px;" :xs="8" :sm="8" :md="8" :lg="8" :xl="8" class="mb15" v-if="state.tableLogData.data.length > 0">
             <h3 style="padding: 5px;">构建队列</h3>
             <template v-if="state.tableLogData.data.length > 0">
               <el-table :data="state.tableLogData.data" v-loading="state.tableLogData.loading" style="min-width: 576px;">
@@ -62,9 +56,9 @@
                 <el-table-column prop="AppName" label="应用名称" ></el-table-column>
                 <el-table-column label="状态" width="100" show-overflow-tooltip>
                   <template #default="scope">
-                    <el-tag style="color:#7a7a7a" v-if="scope.row.Status==0">未开始</el-tag>
-                    <el-tag v-if="scope.row.Status==1">构建中</el-tag>
-                    <el-tag style="color:green" v-if="scope.row.Status==2">完成</el-tag>
+                    <el-tag v-if="scope.row.Status==0" size="mini" type="info">未开始</el-tag>
+                    <el-tag v-if="scope.row.Status==1" size="mini" type="success">构建中</el-tag>
+                    <el-tag v-if="scope.row.Status==2" size="mini">完成</el-tag>
                   </template>
                 </el-table-column>
                 <el-table-column prop="FinishAt" width="170" label="完成时间"></el-table-column>
@@ -92,12 +86,8 @@
           <el-empty v-else description="暂无数据"></el-empty>
         </el-row>
       </div>
-
-
 		</el-card>
 		<appDialog ref="appDialogRef" @refresh="getTableData()" />
-
-
     <el-dialog title="构建日志" v-model="state.logDialogIsShow" width="700px;" height="300px;">
       <el-card shadow="hover" class="layout-padding-auto">
         <div>
@@ -105,8 +95,6 @@
         </div>
       </el-card>
     </el-dialog>
-
-
 	</div>
 </template>
 
@@ -132,7 +120,7 @@ const state = reactive({
 		loading: false,
 		param: {
 			pageNum: 1,
-			pageSize: 10,
+			pageSize: 20,
 		},
 	},tableLogData: {
     data: [],
@@ -140,7 +128,7 @@ const state = reactive({
     loading: false,
     param: {
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 20,
     },
 
   },

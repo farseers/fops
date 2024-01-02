@@ -1,9 +1,9 @@
 <template>
 	<div class="system-user-dialog-container">
-		<el-dialog :title="state.dialog.title" v-model="state.dialog.isShowDialog" width="769px">
-			<el-form ref="gitDialogFormRef" :model="state.ruleForm" size="default" label-width="90px">
+		<el-dialog :title="state.dialog.title" v-model="state.dialog.isShowDialog" width="600px">
+			<el-form ref="gitDialogFormRef" :model="state.ruleForm" size="default" label-width="120px">
 				<el-row :gutter="35">
-					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb22">
 						<el-form-item label="集群名称">
 							<el-input v-model="state.ruleForm.Name" placeholder="请输入集群名称" clearable></el-input>
 						</el-form-item>
@@ -19,12 +19,12 @@
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-						<el-form-item label="仓库名称">
+						<el-form-item label="DockerHub名称">
 							<el-input v-model="state.ruleForm.DockerName" placeholder="请输入仓库名称" clearable></el-input>
 						</el-form-item>
 					</el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="托管地址">
+            <el-form-item label="DockerHub地址">
               <el-input v-model="state.ruleForm.DockerHub" placeholder="请输入托管地址" clearable></el-input>
             </el-form-item>
           </el-col>
