@@ -16,5 +16,5 @@ type AppsResponse struct {
 	Dockerfile     string                  // Dockerfile内容
 	DockerfilePath string                  // Dockerfile路径
 	ActiveInstance []apps.ActiveInstanceEO // 正在运行的实例
-	HealthInstance int                     // 健康的实例数量
+	IsHealth       bool                    // 应用是否健康
 }
