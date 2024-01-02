@@ -3,17 +3,18 @@
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
         <label>应用名称</label>
-        <el-input size="default" v-model="state.appName" placeholder="应用名称" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.appName" placeholder="应用名称" style="max-width: 150px;padding-left: 5px"> </el-input>
         <label class="ml10">执行端IP</label>
-        <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 120px;padding-left: 5px"> </el-input>
         <label class="ml10">MQ服务端</label>
-        <el-input size="default" v-model="state.server" placeholder="MQ服务端" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.server" placeholder="MQ服务端" style="max-width: 180px;padding-left: 5px"> </el-input>
         <label class="ml10">队列名称</label>
-        <el-input size="default" v-model="state.queueName" placeholder="队列名称" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.queueName" placeholder="队列名称" style="max-width: 180px;padding-left: 5px"> </el-input>
         <label class="ml10">路由key</label>
-        <el-input size="default" v-model="state.routingKey" placeholder="路由key" style="max-width: 180px"> </el-input>
-        <label class="ml10">执行时间大于x毫秒的记录</label>
-        <el-input size="default" v-model="state.searchUseTs" placeholder="执行时间大于x毫秒的记录" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.routingKey" placeholder="路由key" style="max-width: 180px;padding-left: 5px"> </el-input>
+        <label class="ml10">执行时间</label>
+        <el-input size="default" v-model="state.searchUseTs" placeholder="执行时间大于毫秒的记录" style="max-width: 80px;padding-left: 5px"> </el-input> ms
+
 				<el-button size="default" type="primary" class="ml10" @click="onQuery">
 					<el-icon>
 						<ele-Search />
@@ -30,18 +31,30 @@
         <el-table-column width="200px" label="应用" show-overflow-tooltip>
           <template #default="scope">
             <el-tag size="mini">{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
-            <el-tag size="mini">{{scope.row.AppId}}</el-tag>
+            {{scope.row.AppId}}
           </template>
         </el-table-column>
-        <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip></el-table-column>
-        <el-table-column width="200px" prop="ConsumerServer" label="MQ服务端" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="ConsumerQueueName" label="队列名称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="ConsumerRoutingKey" label="路由key" show-overflow-tooltip></el-table-column>
+        <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag size="mini" v-if="scope.row.UseTs > 100000000" type="danger">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="mini" v-else-if="scope.row.UseTs > 50000000" type="warning">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="mini" v-else-if="scope.row.UseTs > 1000000">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="mini" v-else type="success">{{scope.row.UseDesc}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="队列名称" show-overflow-tooltip>
+          <template #default="scope">
+            {{scope.row.ConsumerServer}}<br />
+            <el-tag v-if="scope.row.ConsumerRoutingKey !=''" size="mini">{{scope.row.ConsumerRoutingKey}}</el-tag><br v-if="scope.row.ConsumerRoutingKey !=''" />
+            {{scope.row.ConsumerQueueName}}
+
+          </template>
+        </el-table-column>
         <el-table-column width="300px" label="异常" show-overflow-tooltip>
           <template #default="scope">
             <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">
             <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>
-            <el-tag size="mini" v-else>无</el-tag>
+            <el-tag size="mini" v-else type="info">无</el-tag>
           </template>
         </el-table-column>
         <el-table-column width="180px" prop="CreateAt" label="请求时间" show-overflow-tooltip></el-table-column>

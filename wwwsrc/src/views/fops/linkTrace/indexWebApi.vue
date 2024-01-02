@@ -3,17 +3,18 @@
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
         <label>应用名称</label>
-        <el-input size="default" v-model="state.appName" placeholder="应用名称" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.appName" placeholder="应用名称" style="max-width: 150px;padding-left: 5px"> </el-input>
         <label class="ml10">执行端IP</label>
-        <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 120px;padding-left: 5px"> </el-input>
         <label class="ml10">请求IP</label>
-        <el-input size="default" v-model="state.requestIp" placeholder="请求IP" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.requestIp" placeholder="请求IP" style="max-width: 120px;padding-left: 5px"> </el-input>
         <label class="ml10">请求Url</label>
-        <el-input size="default" v-model="state.searchUrl" placeholder="请求Url" style="max-width: 180px"> </el-input>
-        <label class="ml10">执行时间大于x毫秒的记录</label>
-        <el-input size="default" v-model="state.searchUseTs" placeholder="执行时间大于x毫秒的记录" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.searchUrl" placeholder="请求Url" style="max-width: 300px;padding-left: 5px"> </el-input>
         <label class="ml10">状态码</label>
-        <el-input size="default" v-model="state.statusCode" placeholder="状态码" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.statusCode" placeholder="状态码" style="max-width: 60px;padding-left: 5px"> </el-input>
+        <label class="ml10">执行时间</label>
+        <el-input size="default" v-model="state.searchUseTs" placeholder="执行时间大于毫秒的记录" style="max-width: 80px;padding-left: 5px"> </el-input> ms
+
 				<el-button size="default" type="primary" class="ml10" @click="onQuery">
 					<el-icon>
 						<ele-Search />
@@ -36,23 +37,23 @@
         <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip>
           <template #default="scope">
             <el-tag size="mini" v-if="scope.row.UseTs > 100000000" type="danger">{{scope.row.UseDesc}}</el-tag>
-            <el-tag size="mini" v-if="scope.row.UseTs > 50000000" type="warning">{{scope.row.UseDesc}}</el-tag>
-            <el-tag size="mini" v-if="scope.row.UseTs > 1000000">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="mini" v-else-if="scope.row.UseTs > 50000000" type="warning">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="mini" v-else-if="scope.row.UseTs > 1000000">{{scope.row.UseDesc}}</el-tag>
             <el-tag size="mini" v-else type="success">{{scope.row.UseDesc}}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="请求内容" show-overflow-tooltip>
           <template #default="scope">
-            {{scope.row.WebRequestIp}} <el-tag type="success" size="mini">{{scope.row.WebMethod}}</el-tag>
+            <el-tag size="mini">{{scope.row.WebStatusCode}}</el-tag> {{scope.row.WebRequestIp}} <el-tag type="success" size="mini">{{scope.row.WebMethod}}</el-tag>
             <el-tag v-if="scope.row.WebContentType!=''" type="info" size="mini">{{scope.row.WebContentType}}</el-tag>
-            <br /><el-tag size="mini">{{scope.row.WebStatusCode}}</el-tag> {{scope.row.WebPath}}
+            <br />{{scope.row.WebPath}}
           </template>
         </el-table-column>
         <el-table-column width="300px" label="异常" show-overflow-tooltip>
           <template #default="scope">
             <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">
             <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>
-            <el-tag size="mini" v-else>无</el-tag>
+            <el-tag size="mini" v-else type="info">无</el-tag>
           </template>
         </el-table-column>
         <el-table-column width="180px" prop="CreateAt" label="请求时间" show-overflow-tooltip></el-table-column>

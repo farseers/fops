@@ -44,7 +44,7 @@
           <template #default="scope">
             <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">
             <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>
-            <el-tag size="mini" v-else>无</el-tag>
+            <el-tag size="mini" v-else type="info">无</el-tag>
           </template>
         </el-table-column>
         <el-table-column width="180px" prop="CreateAt" label="执行时间" show-overflow-tooltip></el-table-column>
