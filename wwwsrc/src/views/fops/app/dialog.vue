@@ -15,28 +15,28 @@
 <!--					</el-col>-->
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="是否健康">
-              <el-tag>{{state.ruleForm.IsHealth}}</el-tag>
+              <el-tag size="mini">{{state.ruleForm.IsHealth}}</el-tag>
             </el-form-item>
           </el-col>
 					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
 						<el-form-item label="镜像版本">
-              <el-tag>{{state.ruleForm.DockerVer}}</el-tag>
+              <el-tag size="mini">{{state.ruleForm.DockerVer}}</el-tag>
 						</el-form-item>
 					</el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="集群版本">
-              <el-tag>{{friendlyJSONstringify(state.ruleForm.ClusterVer)}}</el-tag>
+              <el-tag size="mini">{{friendlyJSONstringify(state.ruleForm.ClusterVer)}}</el-tag>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="18" :md="18" :lg="18" :xl="18" class="mb20">
             <el-form-item label="Git源代码" style="float: left">
-              <el-tag>{{state.ruleForm.AppGitName}}</el-tag>
+              <el-tag size="mini">{{state.ruleForm.AppGitName}}</el-tag>
 <!--              <el-input v-model="state.ruleForm.AppGit"  placeholder="请输入应用的源代码" clearable></el-input>-->
             </el-form-item>
             <el-button type="primary" @click="onOpenGit(2)" size="default">添加Git</el-button>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-tag>依赖的框架源代码</el-tag><el-button type="primary" @click="onOpenGit(1)" size="default">添加Git</el-button>
+            <el-tag size="mini">依赖的框架源代码</el-tag><el-button type="primary" @click="onOpenGit(1)" size="default">添加Git</el-button>
             <el-table :data="state.gitList" style="width: 100%">
               <el-table-column prop="Id" label="编号" width="60" />
               <el-table-column prop="Name" label="Git名称" show-overflow-tooltip></el-table-column>

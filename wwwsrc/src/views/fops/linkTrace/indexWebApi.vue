@@ -27,18 +27,25 @@
             <span @click="onDetail(scope.row)">{{scope.row.TraceIdN}}</span>
           </template>
         </el-table-column>
-        <el-table-column width="250px" label="应用" show-overflow-tooltip>
+        <el-table-column width="200px" label="应用" show-overflow-tooltip>
           <template #default="scope">
             <el-tag size="mini">{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
             {{scope.row.AppId}}
           </template>
         </el-table-column>
-        <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip></el-table-column>
+        <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag size="mini" v-if="scope.row.UseTs > 100000000" type="danger">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="mini" v-if="scope.row.UseTs > 50000000" type="warning">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="mini" v-if="scope.row.UseTs > 1000000">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="mini" v-else type="success">{{scope.row.UseDesc}}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="请求内容" show-overflow-tooltip>
           <template #default="scope">
-            {{scope.row.WebRequestIp}} => <el-tag type="success" size="mini">{{scope.row.WebMethod}}</el-tag>
-            {{scope.row.WebPath}}<br>
-            {{scope.row.WebContentType}}<el-tag size="mini">{{scope.row.WebStatusCode}}</el-tag>
+            {{scope.row.WebRequestIp}} <el-tag type="success" size="mini">{{scope.row.WebMethod}}</el-tag>
+            <el-tag v-if="scope.row.WebContentType!=''" type="info" size="mini">{{scope.row.WebContentType}}</el-tag>
+            <br /><el-tag size="mini">{{scope.row.WebStatusCode}}</el-tag> {{scope.row.WebPath}}
           </template>
         </el-table-column>
         <el-table-column width="300px" label="异常" show-overflow-tooltip>

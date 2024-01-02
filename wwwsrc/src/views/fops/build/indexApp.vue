@@ -30,7 +30,7 @@
             <div class="flex-warp-item" v-for="(v, k) in state.tableData.data" :key="k">
               <div class="flex-warp-item-box" @click="onShowBuildList(v)">
 <!--                <div class="appItem">应用ID：{{ v.AppId }}</div>-->
-                <div class="appItem"><el-tag>{{ v.AppName }}</el-tag></div>
+                <div class="appItem"><el-tag size="mini">{{ v.AppName }}</el-tag></div>
                 <div class="appItem">是否健康：
                   <span v-if="v.IsHealth">是</span>
                   <span v-else>否</span>

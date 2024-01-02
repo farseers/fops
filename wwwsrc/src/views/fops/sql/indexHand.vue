@@ -32,19 +32,19 @@
             <span @click="onDetail(scope.row)">{{scope.row.TraceIdN}}</span>
           </template>
         </el-table-column>
-        <el-table-column width="250px" label="应用" show-overflow-tooltip>
+        <el-table-column width="200px" label="应用" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag>{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
-            <el-tag>{{scope.row.AppId}}</el-tag>
+            <el-tag size="mini">{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
+            <el-tag size="mini">{{scope.row.AppId}}</el-tag>
           </template>
         </el-table-column>
         <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip></el-table-column>
         <el-table-column prop="Name" label="名称" show-overflow-tooltip></el-table-column>
         <el-table-column width="300px" label="异常" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">
-            <el-tag v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>
-            <el-tag v-else>无</el-tag>
+            <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">
+            <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>
+            <el-tag size="mini" v-else>无</el-tag>
           </template>
         </el-table-column>
         <el-table-column width="180px" prop="CreateAt" label="执行时间" show-overflow-tooltip></el-table-column>

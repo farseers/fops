@@ -51,11 +51,11 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="异常信息">
-              <el-tag>ExceptionCallFile:{{state.ruleForm.Exception.ExceptionCallFile}}</el-tag>
-              <el-tag>ExceptionCallLine:{{state.ruleForm.Exception.ExceptionCallLine}}</el-tag>
-              <el-tag>ExceptionCallFuncName:{{state.ruleForm.Exception.ExceptionCallFuncName}}</el-tag>
-              <el-tag>ExceptionIsException:{{state.ruleForm.Exception.ExceptionIsException}}</el-tag>
-              <el-tag>ExceptionMessage:{{state.ruleForm.Exception.ExceptionMessage}}</el-tag>
+              <el-tag size="mini">ExceptionCallFile:{{state.ruleForm.Exception.ExceptionCallFile}}</el-tag>
+              <el-tag size="mini">ExceptionCallLine:{{state.ruleForm.Exception.ExceptionCallLine}}</el-tag>
+              <el-tag size="mini">ExceptionCallFuncName:{{state.ruleForm.Exception.ExceptionCallFuncName}}</el-tag>
+              <el-tag size="mini">ExceptionIsException:{{state.ruleForm.Exception.ExceptionIsException}}</el-tag>
+              <el-tag size="mini">ExceptionMessage:{{state.ruleForm.Exception.ExceptionMessage}}</el-tag>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
@@ -90,7 +90,7 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="header">
-              <el-tag>{{friendlyJSONstringify(state.ruleForm.WebHeaders)}}</el-tag>
+              <el-tag size="mini">{{friendlyJSONstringify(state.ruleForm.WebHeaders)}}</el-tag>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
