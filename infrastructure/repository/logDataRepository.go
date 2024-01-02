@@ -39,7 +39,6 @@ func (receiver *logDataRepository) ToList(traceId int64, appName, appIp, logCont
 			Desc("create_at").
 			ToPageList(pageSize, pageIndex)
 		return receiver.setTraceIdN(lstPO)
-		lst = mapper.ToPageList[flog.LogData](lstPO)
 	} else {
 		exception.ThrowRefuseExceptionf("不支持的链路追踪驱动：%s", linkTrace.Config.Driver)
 	}
@@ -51,6 +50,7 @@ func (receiver *logDataRepository) ToInfo(id int64) flog.LogData {
 	if linkTrace.Config.Driver == "clickhouse" {
 		po := context.CHContext.LogData.Where("log_id = ?", id).ToEntity()
 		do = mapper.Single[flog.LogData](po)
+		do.SetTraceIdN()
 	} else {
 		exception.ThrowRefuseExceptionf("不支持的链路追踪驱动：%s", linkTrace.Config.Driver)
 	}
