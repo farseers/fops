@@ -16,4 +16,5 @@ type AppsPO struct {
 	Dockerfile     string                       `gorm:"type:text;not null;comment:Dockerfile内容"`
 	DockerfilePath string                       `gorm:"size:256;not null;comment:Dockerfile路径"`
 	ActiveInstance []apps.ActiveInstanceEO      `gorm:"size:1024;json;not null;comment:正在运行的实例"`
+	HealthInstance int                          `gorm:"type:int;not null;comment:健康的实例数量"`
 }

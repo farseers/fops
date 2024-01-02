@@ -16,6 +16,7 @@ type DomainObject struct {
 	Dockerfile     string                  // Dockerfile内容
 	DockerfilePath string                  // Dockerfile路径
 	ActiveInstance []ActiveInstanceEO      // 正在运行的实例
+	HealthInstance int                     // 健康的实例数量
 }
 
 func (receiver *DomainObject) IsNil() bool {
