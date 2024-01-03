@@ -16,8 +16,6 @@ docker service create --name fops --replicas 1 -d --network=net \
 --mount type=bind,src=/etc/localtime,dst=/etc/localtime \
 --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
 --mount type=bind,src=/home/nfs/fops,dst=/var/lib/fops \
--e "Database_default=DataType=mysql,PoolMaxSize=25,PoolMinSize=1,ConnectionString=root:steden@123@tcp(192.168.1.8:3306)/fops2?charset=utf8&parseTime=True&loc=Local" \
--e "Redis_default=Server=192.168.1.8:6379,DB=13,Password=steden@123,ConnectTimeout=600000,SyncTimeout=10000,ResponseTimeout=10000" \
 -l "traefik.http.routers.fops.rule=Host(\`fops.fsgit.cc\`)" \
 -l "traefik.http.routers.fops.entrypoints=websecure" \
 -l "traefik.http.routers.fops.tls=true" \

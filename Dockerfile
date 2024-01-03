@@ -22,7 +22,7 @@ WORKDIR /src/fops
 # 编译
 RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o /app/fops-server -ldflags="-w -s" .
 
-FROM alpine:latest AS base
+FROM steden88/cicd:1.0 AS base
 WORKDIR /app
 COPY --from=build /app .
 # 复制配置（没有配置需要注释掉）
