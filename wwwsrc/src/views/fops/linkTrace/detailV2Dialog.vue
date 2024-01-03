@@ -19,7 +19,7 @@
               <el-tag size="mini">{{state.WebStatusCode}}</el-tag> {{state.WebRequestIp}} <el-tag type="success" size="mini">{{state.WebMethod}}</el-tag>
               <el-tag v-if="state.WebContentType!=''" type="info" size="mini">{{state.WebContentType}}</el-tag>{{state.WebPath}}
               <el-button style="margin-left: 20px" type="primary" size="small">查看报文</el-button>
-              <el-button style="margin-left: 20px" size="small" type="success">查看日志</el-button>
+              <el-button style="margin-left: 20px" size="small" type="success" @click="showLog()">查看日志</el-button>
             </div>
             <!--MqConsumer--> <!--QueueConsumer-->
             <div class="mt10" v-else-if="state.TraceType == 1 || state.TraceType == 2">
@@ -79,6 +79,9 @@
 <!--        </el-table-column>-->
 <!--      </el-table>-->
 		</el-dialog>
+
+    <logDialog ref="logDialogRef"  />
+
 	</div>
 </template>
 
@@ -92,9 +95,11 @@ const serverApi = fopsApi();
 // 定义子组件向父组件传值/事件
 const emit = defineEmits(['refresh']);
 const showDialog = defineAsyncComponent(() => import('/src/views/fops/sql/httpDialog.vue'));
+const logDialog = defineAsyncComponent(() => import('/src/views/fops/log/logV2Dialog.vue'));
 // 定义变量内容
 const gitDialogFormRef = ref();
 const showDialogRef = ref();
+const logDialogRef = ref();
 const state = reactive({
 	ruleForm: {},
   loading:false,
@@ -146,6 +151,7 @@ const state = reactive({
 		title: '',
 		submitTxt: '',
 	},
+  traceInfo:{},
 });
 
 // 打开弹窗
@@ -153,6 +159,7 @@ const openDialog = (row2: any) => {
   state.loading=true
   //state.ruleForm = row;
   state.dialog.title = '链路追踪详情(TraceId：'+row2.TraceIdN+')';
+  state.traceInfo=row2
   //state.dialog.submitTxt = '修 改';
   //console.log(row2)
   state.TraceId=row2.TraceIdN
@@ -209,7 +216,10 @@ const closeDialog = () => {
 	state.dialog.isShowDialog = false;
 };
 const onShow=(row: any)=>{
-  showDialogRef.value.openDialog(row);
+  logDialogRef.value.openDialog(row);
+}
+const showLog=()=>{
+  logDialogRef.value.openDialog(state.traceInfo);
 }
 const getStatusDesc=(status:number)=>{
   switch (status){

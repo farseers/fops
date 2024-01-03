@@ -1,5 +1,6 @@
 <template>
 	<div class="system-user-container layout-padding">
+    <el-dialog :title="state.dialog.title" v-model="state.dialog.isShowDialog" width="80%">
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
         <label>TraceId</label>
@@ -77,7 +78,7 @@
 			</el-pagination>
 		</el-card>
     <detailDialog ref="detailDialogRef" @refresh="getTableData()" />
-
+    </el-dialog>
 	</div>
 </template>
 
@@ -111,6 +112,12 @@ const state = reactive({
 			pageSize: 10,
 		},
 	},
+    dialog: {
+    isShowDialog: false,
+        type: '',
+        title: '',
+        submitTxt: '',
+  },
 });
 // 监听 state.startMin 的变化
 watch(() => state.logLevel, (newValue, oldValue) => {
@@ -148,9 +155,13 @@ const onDetail=(row: any)=>{
   detailDialogRef.value.openDialog(row);
 }
 const openDialog = (row: any) => {
+  state.dialog.isShowDialog = true;
   state.traceId=row.TraceIdN
   getTableData()
 }
+const closeDialog = () => {
+  state.dialog.isShowDialog = false;
+};
 // 删除用户
 const onDel = (row: any) => {
 	ElMessageBox.confirm(`此操作将永久删除：“${row.Name}”，是否继续?`, '提示', {
@@ -184,9 +195,14 @@ const onHandleCurrentChange = (val: number) => {
 const onQuery=()=>{
   getTableData();
 }
+
 // 页面加载时
 onMounted(() => {
 	getTableData();
+});
+// 暴露变量
+defineExpose({
+  openDialog,
 });
 </script>
 
