@@ -91,7 +91,7 @@
 		</el-card>
 		<appDialog ref="appDialogRef" @refresh="getTableData()" />
     <el-dialog title="构建日志" v-model="state.logDialogIsShow" style="width: 80%;height: 70%;top:20px;">
-      <el-card shadow="hover" class="layout-padding-auto" style="background-color:#393d49;">
+      <el-card shadow="hover" class="layout-padding-auto" style="background-color:#393d49;height: 87%">
         <pre style="color: #fff;background-color:#393d49;height: 100%;" v-html="state.logContent"></pre>
       </el-card>
     </el-dialog>
@@ -341,7 +341,7 @@ onUnmounted(()=>{
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .system-user-container {
 	:deep(.el-card__body) {
 		display: flex;
@@ -441,5 +441,8 @@ onUnmounted(()=>{
 .flex-warp-item{
   float: left;
   margin: 5px;
+}
+.el-dialog__body{
+  height: 100%!important;
 }
 </style>
