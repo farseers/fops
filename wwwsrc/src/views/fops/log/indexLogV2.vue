@@ -42,7 +42,7 @@
         <el-table-column width="100px" prop="LogLevel" label="日志类型" show-overflow-tooltip>
           <template #default="scope">
             <el-tag v-if="scope.row.LogLevel == 'Info'" size="mini">{{scope.row.LogLevel}}</el-tag>
-            <el-tag v-else-if="scope.row.LogLevel == 'Debug'" type="info" size="mini" size="mini">{{scope.row.LogLevel}}</el-tag>
+            <el-tag v-else-if="scope.row.LogLevel == 'Debug'" type="info" size="mini">{{scope.row.LogLevel}}</el-tag>
             <el-tag v-else-if="scope.row.LogLevel == 'Warn'" type="warning" size="mini">{{scope.row.LogLevel}}</el-tag>
             <el-tag v-else-if="scope.row.LogLevel == 'Error'" type="danger" size="mini">{{scope.row.LogLevel}}</el-tag>
           </template>
