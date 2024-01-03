@@ -2,7 +2,9 @@ package apps
 
 import (
 	"github.com/farseer-go/fs/dateTime"
+	"github.com/farseer-go/fs/exception"
 	"github.com/farseer-go/utils/str"
+	"net/url"
 	"path/filepath"
 	"strings"
 )
@@ -42,4 +44,15 @@ func (receiver *GitEO) GetRelativePath() string {
 func (receiver *GitEO) GetName() string {
 	git := filepath.Base(receiver.Hub)
 	return str.CutRight(git, ".git")
+}
+
+// GetAuthHub 获取带账号密码的地址
+func (receiver *GitEO) GetAuthHub() string {
+	parsedURL, err := url.Parse(receiver.Hub)
+	exception.ThrowRefuseExceptionfBool(err != nil, "解析 URL 失败:%s", err)
+
+	// 设置用户名和密码
+	parsedURL.User = url.UserPassword(receiver.UserName, receiver.UserPwd)
+
+	return parsedURL.String()
 }

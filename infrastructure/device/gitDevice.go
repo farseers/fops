@@ -74,7 +74,7 @@ func (device *gitDevice) CloneOrPull(git apps.GitEO, progress chan string, ctx c
 		execSuccess = pull(gitPath, progress, ctx)
 	} else {
 		//progress <- "开始克隆git " + git.Name + " 分支：" + git.Branch + " 仓库：" + git.Hub + "。"
-		execSuccess = device.clone(gitPath, git.Hub, git.Branch, progress, ctx)
+		execSuccess = device.clone(gitPath, git.GetAuthHub(), git.Branch, progress, ctx)
 	}
 
 	if execSuccess {
@@ -88,10 +88,10 @@ func (device *gitDevice) CloneOrPull(git apps.GitEO, progress chan string, ctx c
 
 func (device *gitDevice) CloneOrPullAndDependent(lstGit []apps.GitEO, progress chan string, ctx context.Context) bool {
 	progress <- "---------------------------------------------------------"
+	progress <- "开始拉取git代码"
 	var sw sync.WaitGroup
 	result := true
 	for _, git := range lstGit {
-		progress <- "开始拉取git " + git.Name + " 分支：" + git.Branch + " 仓库：" + git.Hub + "。"
 		sw.Add(1)
 		g := git
 		go func() {
