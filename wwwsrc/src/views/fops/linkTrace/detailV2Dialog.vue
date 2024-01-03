@@ -4,7 +4,12 @@
 			<el-form ref="gitDialogFormRef" size="default" label-width="100px">
 				<el-row :gutter="35">
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20" v-if="state.tableData.length>0">
-            <div>应用名称：{{state.AppName}}， 应用ID：{{state.AppId}}， 应用IP：{{state.AppIp}}，整体耗时：{{state.totalTs/1000}} ms</div>
+            <div>
+              应用名称：<el-tag size="mini">{{state.AppName}}</el-tag>，
+              应用ID：{{state.AppId}}，
+              应用IP：{{state.AppIp}}，
+              整体耗时：{{state.totalTs/1000}} ms
+            </div>
             <div class="mt10"><el-tag size="mini">{{state.Desc}}</el-tag>{{state.Caption}}<el-button style="margin-left: 20px" type="primary">查看请求</el-button></div>
             <div :style="{'width':getWidth(),'overflow-x': 'auto','white-space': 'nowrap'}">
             <ul class="custom-list mt20">
