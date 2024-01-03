@@ -1,6 +1,7 @@
 package job
 
 import (
+	"encoding/json"
 	"fops/domain/apps"
 	"fops/domain/register"
 	"github.com/farseer-go/fs/container"
@@ -19,12 +20,19 @@ func StatAppOnlineJob(*tasks.TaskContext) {
 	container.Resolve[core.ITransaction]("default").Transaction(func() {
 		lstApps := appsRepository.ToList()
 		lstApps.Foreach(func(item *apps.DomainObject) {
+			// 设置之前的数据，用于比较是否有变化
+			setBefore, _ := json.Marshal(item.ActiveInstance)
 			if lstRegisterDO, exists := lstGroupBy[item.AppName]; exists {
 				item.ActiveInstance = mapper.Array[apps.ActiveInstanceEO](lstRegisterDO)
 			} else {
 				item.ActiveInstance = make([]apps.ActiveInstanceEO, 0)
 			}
-			_, _ = appsRepository.UpdateActiveInstance(item.AppName, item.ActiveInstance)
+
+			// 有变化，才需用更新数据库
+			setAfter, _ := json.Marshal(item.ActiveInstance)
+			if string(setBefore) != string(setAfter) {
+				_, _ = appsRepository.UpdateActiveInstance(item.AppName, item.ActiveInstance)
+			}
 		})
 	})
 }
