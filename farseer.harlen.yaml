@@ -8,7 +8,7 @@ WebApi:
     Store: "Redis"
     StoreConfigName: "default"
     Age: 1800
-FOPS:
+Fops:
   LinkTrace:
     Driver: "clickhouse"
     ConnString: "DataType=clickhouse,PoolMaxSize=50,PoolMinSize=1,ConnectionString=clickhouse://default:@localhost:9000/linkTrace?dial_timeout=10s&read_timeout=20s"
