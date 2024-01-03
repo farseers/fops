@@ -18,7 +18,7 @@
             <div class="mt10" v-if="state.TraceType == 0">
               <el-tag size="mini">{{state.WebStatusCode}}</el-tag> {{state.WebRequestIp}} <el-tag type="success" size="mini">{{state.WebMethod}}</el-tag>
               <el-tag v-if="state.WebContentType!=''" type="info" size="mini">{{state.WebContentType}}</el-tag>{{state.WebPath}}
-              <el-button style="margin-left: 20px" type="primary">查看请求</el-button>
+              <el-button style="margin-left: 20px" type="primary">查看报文</el-button>
             </div>
             <!--MqConsumer--> <!--QueueConsumer-->
             <div class="mt10" v-else-if="state.TraceType == 1 || state.TraceType == 2">
@@ -126,6 +126,9 @@ const state = reactive({
   WebMethod:'',
   WebContentType:'',
   WebPath:'',
+  WebHeaders:'',
+  WebRequestBody:'',
+  WebResponseBody:'',
   TaskGroupId:0,
   TaskId:0,
   TaskName:'',
@@ -156,6 +159,9 @@ const openDialog = (row2: any) => {
   state.WebMethod=row2.WebMethod
   state.WebContentType=row2.WebContentType
   state.WebPath=row2.WebPath
+  state.WebHeaders=row2.WebHeaders
+  state.WebRequestBody=row2.WebRequestBody
+  state.WebResponseBody=row2.WebResponseBody
   state.TaskGroupId=row2.TaskGroupId
   state.TaskId=row2.TaskId
   state.TaskName=row2.TaskName
