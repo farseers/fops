@@ -8,9 +8,17 @@
               应用名称：<el-tag size="mini">{{state.AppName}}</el-tag>，
               应用ID：{{state.AppId}}，
               应用IP：{{state.AppIp}}，
-              整体耗时：{{state.totalTs/1000}} ms
+              整体耗时：
+                <el-tag size="mini" v-if="state.UseTs > 100000000" type="danger">{{state.UseDesc}}</el-tag>
+                <el-tag size="mini" v-else-if="state.UseTs > 50000000" type="warning">{{state.UseDesc}}</el-tag>
+                <el-tag size="mini" v-else-if="state.UseTs > 1000000">{{state.UseDesc}}</el-tag>
+                <el-tag size="mini" v-else type="success">{{state.UseDesc}}</el-tag>
             </div>
-            <div class="mt10"><el-tag size="mini">{{state.Desc}}</el-tag>{{state.Caption}}<el-button style="margin-left: 20px" type="primary">查看请求</el-button></div>
+            <div class="mt10" v-if="state.TraceType == 0"> <!--webapi-->
+              <el-tag size="mini">{{state.WebStatusCode}}</el-tag> {{state.WebRequestIp}} <el-tag type="success" size="mini">{{state.WebMethod}}</el-tag>
+              <el-tag v-if="state.WebContentType!=''" type="info" size="mini">{{state.WebContentType}}</el-tag>{{state.WebPath}}
+              <el-button style="margin-left: 20px" type="primary">查看请求</el-button>
+            </div>
             <div :style="{'width':getWidth(),'overflow-x': 'auto','white-space': 'nowrap'}">
             <ul class="custom-list mt20">
               <li style="height: 35px;">
@@ -33,22 +41,22 @@
           </el-col>
 				</el-row>
 			</el-form>
-      <el-table :data="state.tableData" v-loading="state.loading" style="width: 100%">
-        <el-table-column prop="UseDesc" label="时间" show-overflow-tooltip></el-table-column>
-        <el-table-column width="250px" label="内容" show-overflow-tooltip>
-          <template #default="scope">
-            <el-tag size="mini">{{scope.row.AppName}}</el-tag><span>{{scope.row.Desc}} {{scope.row.Caption}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="120px" prop="AppIp" label="应用IP" show-overflow-tooltip></el-table-column>
-        <el-table-column width="300px" label="异常" show-overflow-tooltip>
-          <template #default="scope">
-            <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">
-            <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>
-            <el-tag size="mini" v-else type="info">无</el-tag>
-          </template>
-        </el-table-column>
-      </el-table>
+<!--      <el-table :data="state.tableData" v-loading="state.loading" style="width: 100%">-->
+<!--        <el-table-column prop="UseDesc" label="时间" show-overflow-tooltip></el-table-column>-->
+<!--        <el-table-column width="250px" label="内容" show-overflow-tooltip>-->
+<!--          <template #default="scope">-->
+<!--            <el-tag size="mini">{{scope.row.AppName}}</el-tag><span>{{scope.row.Desc}} {{scope.row.Caption}}</span>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column width="120px" prop="AppIp" label="应用IP" show-overflow-tooltip></el-table-column>-->
+<!--        <el-table-column width="300px" label="异常" show-overflow-tooltip>-->
+<!--          <template #default="scope">-->
+<!--            <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">-->
+<!--            <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>-->
+<!--            <el-tag size="mini" v-else type="info">无</el-tag>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--      </el-table>-->
 		</el-dialog>
 	</div>
 </template>
@@ -88,13 +96,20 @@ const state = reactive({
       }
   ],
   TraceId:'',
-  totalTs:0,
   Rgba:'',
   AppId:0,
   AppIp:'',
   AppName:'',
   Desc:'',
   Caption:'',
+  UseDesc:'',
+  UseTs:0,
+  TraceType:0,
+  WebStatusCode:0,
+  WebRequestIp:'',
+  WebMethod:'',
+  WebContentType:'',
+  WebPath:'',
 	dialog: {
 		isShowDialog: false,
 		type: '',
@@ -111,6 +126,14 @@ const openDialog = (row2: any) => {
   //state.dialog.submitTxt = '修 改';
   //console.log(row2)
   state.TraceId=row2.TraceIdN
+  state.UseTs=row2.UseTs
+  state.UseDesc=row2.UseDesc
+  state.TraceType=row2.TraceType
+  state.WebStatusCode=row2.WebStatusCode
+  state.WebRequestIp=row2.WebRequestIp
+  state.WebMethod=row2.WebMethod
+  state.WebContentType=row2.WebContentType
+  state.WebPath=row2.WebPath
   // 详情
   serverApi.linkTraceInfo(row2.TraceIdN).then(function (res){
     console.log(friendlyJSONstringify(res))
@@ -119,7 +142,6 @@ const openDialog = (row2: any) => {
       // 绑定数据
       state.tableData=res.Data
       if (res.Data.length>0){
-        state.totalTs=res.Data[0].UseTs
         state.Rgba=res.Data[0].Rgba
         state.AppId=res.Data[0].AppId
         state.AppIp=res.Data[0].AppIp
