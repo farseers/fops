@@ -73,7 +73,7 @@ func (receiver *linkTraceRepository) ToEntity(traceId int64) collections.List[li
 
 func (receiver *linkTraceRepository) ToWebApiList(appName, appIp, requestIp, searchUrl string, statusCode int, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		ts := context.CHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,start_ts,end_ts,use_ts,use_desc,create_at,web_domain,web_path,web_method,web_content_type,web_status_code,web_request_ip").
+		ts := context.CHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,trace_type,start_ts,end_ts,use_ts,use_desc,create_at,web_domain,web_path,web_method,web_content_type,web_status_code,web_request_ip").
 			Where("trace_type = ? and parent_app_name = ''", eumTraceType.WebApi).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
@@ -90,7 +90,7 @@ func (receiver *linkTraceRepository) ToWebApiList(appName, appIp, requestIp, sea
 }
 func (receiver *linkTraceRepository) ToTaskList(appName, appIp, taskName string, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		ts := context.CHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,start_ts,end_ts,use_ts,use_desc,create_at,task_name").
+		ts := context.CHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,trace_type,start_ts,end_ts,use_ts,use_desc,create_at,task_name").
 			Where("trace_type = ? and parent_app_name = ''", eumTraceType.Task).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
@@ -105,7 +105,7 @@ func (receiver *linkTraceRepository) ToTaskList(appName, appIp, taskName string,
 }
 func (receiver *linkTraceRepository) ToFScheduleList(appName, appIp, taskName string, taskGroupId, taskId, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		ts := context.CHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,start_ts,end_ts,use_ts,use_desc,create_at,task_name,task_group_id,task_id").
+		ts := context.CHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,trace_type,start_ts,end_ts,use_ts,use_desc,create_at,task_name,task_group_id,task_id").
 			Where("trace_type = ? and parent_app_name = ''", eumTraceType.FSchedule).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
@@ -122,7 +122,7 @@ func (receiver *linkTraceRepository) ToFScheduleList(appName, appIp, taskName st
 }
 func (receiver *linkTraceRepository) ToConsumerList(appName, appIp, server, queueName, routingKey string, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
 	if linkTrace.Config.Driver == "clickhouse" {
-		ts := context.CHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,start_ts,end_ts,use_ts,use_desc,create_at,consumer_server,consumer_queue_name,consumer_routing_key").
+		ts := context.CHContext.TraceContext.Select("trace_id,app_id,app_name,app_ip,parent_app_name,trace_type,start_ts,end_ts,use_ts,use_desc,create_at,consumer_server,consumer_queue_name,consumer_routing_key").
 			Where("(trace_type = ? or trace_type = ?) and parent_app_name = ''", eumTraceType.MqConsumer, eumTraceType.QueueConsumer).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
