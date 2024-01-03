@@ -13,7 +13,7 @@
         <label class="ml10">任务ID</label>
         <el-input size="default" v-model="state.taskId" placeholder="任务ID" style="max-width: 180px;padding-left: 5px"> </el-input>
         <label class="ml10">往前推N分钟的数据</label>
-        <el-select v-model="state.startMin" placeholder="往前推N分钟的数据" clearable class="ml10" style="max-width: 150px;">
+        <el-select v-model="state.startMin" placeholder="往前推N分钟的数据" class="ml10" style="max-width: 150px;" size="mini">
           <el-option label="全部" :value="0"></el-option>
           <el-option label="1小时耗时最高" :value="60"></el-option>
           <el-option label="30分钟耗时最高" :value="30"></el-option>

@@ -267,6 +267,77 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 					},
 				]
 			},{
+				path: '/linkTrace',
+				name: 'linkTrace',
+				component: () => import('/@/views/home/index.vue'),
+				meta: {
+					title: 'message.router.linkTrace',
+					isLink: '',
+					isHide: false,
+					isKeepAlive: true,
+					isAffix: true,
+					isIframe: false,
+					roles: ['admin', 'common'],
+					icon: 'iconfont icon-shuju',
+				},children: [
+					{
+						path: '/linkTrace/webApi',
+						name: 'webApi',
+						component: () => import('/@/views/fops/linkTrace/indexWebApi.vue'),
+						meta: {
+							title: 'message.router.webApi',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: true,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin'],
+							icon: 'iconfont icon-zidingyibuju',
+						},
+					},{
+						path: '/linkTrace/taskApi',
+						name: 'taskApi',
+						component: () => import('/@/views/fops/linkTrace/indexTaskApi.vue'),
+						meta: {
+							title: 'message.router.taskApi',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: true,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin'],
+							icon: 'iconfont icon-zidingyibuju',
+						},
+					},{
+						path: '/linkTrace/customerApi',
+						name: 'customerApi',
+						component: () => import('/@/views/fops/linkTrace/indexCustomerApi.vue'),
+						meta: {
+							title: 'message.router.customerApi',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: true,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin'],
+							icon: 'iconfont icon-zidingyibuju',
+						},
+					},{
+						path: '/linkTrace/fscheduleApi',
+						name: 'fscheduleApi',
+						component: () => import('/@/views/fops/linkTrace/indexFsScheduleApi.vue'),
+						meta: {
+							title: 'message.router.fscheduleApi',
+							isLink: '',
+							isHide: false,
+							isKeepAlive: true,
+							isAffix: false,
+							isIframe: false,
+							roles: ['admin'],
+							icon: 'iconfont icon-zidingyibuju',
+						},
+					},]
+			},{
 				path: '/slowQuery',
 				name: 'slowQuery',
 				component: () => import('/@/views/home/index.vue'),
@@ -381,77 +452,6 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 					}
 				]
 
-			},{
-			path: '/linkTrace',
-			name: 'linkTrace',
-			component: () => import('/@/views/home/index.vue'),
-			meta: {
-			title: 'message.router.linkTrace',
-				isLink: '',
-				isHide: false,
-				isKeepAlive: true,
-				isAffix: true,
-				isIframe: false,
-				roles: ['admin', 'common'],
-				icon: 'iconfont icon-shuju',
-				},children: [
-					{
-					path: '/linkTrace/webApi',
-					name: 'webApi',
-					component: () => import('/@/views/fops/linkTrace/indexWebApi.vue'),
-					meta: {
-						title: 'message.router.webApi',
-						isLink: '',
-						isHide: false,
-						isKeepAlive: true,
-						isAffix: false,
-						isIframe: false,
-						roles: ['admin'],
-						icon: 'iconfont icon-zidingyibuju',
-					},
-				},{
-					path: '/linkTrace/taskApi',
-					name: 'taskApi',
-					component: () => import('/@/views/fops/linkTrace/indexTaskApi.vue'),
-					meta: {
-						title: 'message.router.taskApi',
-						isLink: '',
-						isHide: false,
-						isKeepAlive: true,
-						isAffix: false,
-						isIframe: false,
-						roles: ['admin'],
-						icon: 'iconfont icon-zidingyibuju',
-					},
-				},{
-					path: '/linkTrace/customerApi',
-					name: 'customerApi',
-					component: () => import('/@/views/fops/linkTrace/indexCustomerApi.vue'),
-					meta: {
-						title: 'message.router.customerApi',
-						isLink: '',
-						isHide: false,
-						isKeepAlive: true,
-						isAffix: false,
-						isIframe: false,
-						roles: ['admin'],
-						icon: 'iconfont icon-zidingyibuju',
-					},
-				},{
-					path: '/linkTrace/fscheduleApi',
-					name: 'fscheduleApi',
-					component: () => import('/@/views/fops/linkTrace/indexFsScheduleApi.vue'),
-					meta: {
-						title: 'message.router.fscheduleApi',
-						isLink: '',
-						isHide: false,
-						isKeepAlive: true,
-						isAffix: false,
-						isIframe: false,
-						roles: ['admin'],
-						icon: 'iconfont icon-zidingyibuju',
-					},
-				},]
 			},{
 				path: '/log',
 				name: 'log',

@@ -11,7 +11,7 @@
         <label class="ml10">日志内容</label>
         <el-input size="default" v-model="state.logContent" placeholder="日志内容" style="max-width: 250px;padding-left: 5px"> </el-input>
         <label class="ml10">日志类型</label>
-        <el-select v-model="state.logLevel" placeholder="日志类型" clearable class="ml10" style="max-width: 110px;">
+        <el-select v-model="state.logLevel" placeholder="日志类型" class="ml10" style="max-width: 110px;" size="mini">
           <el-option label="全部" :value="-1"></el-option>
           <el-option label="Trace" :value="0"></el-option>
           <el-option label="Debug" :value="1"></el-option>

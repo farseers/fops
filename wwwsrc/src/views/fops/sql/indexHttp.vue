@@ -7,7 +7,7 @@
         <label class="ml10">执行端IP</label>
         <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 120px;padding-left: 5px"> </el-input>
         <label class="ml10">请求方法</label>
-        <el-select v-model="state.method" placeholder="请求方法" clearable class="ml10" style="max-width: 110px;">
+        <el-select v-model="state.method" placeholder="请求方法" class="ml10" style="max-width: 110px;" size="mini">
           <el-option label="全部" value=""></el-option>
           <el-option label="GET" value="GET"></el-option>
           <el-option label="POST" value="POST"></el-option>
@@ -17,7 +17,7 @@
         <label class="ml10">请求地址</label>
         <el-input size="default" v-model="state.url" placeholder="请求地址" style="max-width: 180px;padding-left: 5px"> </el-input>
         <label class="ml10">往前推N分钟的数据</label>
-        <el-select v-model="state.startMin" placeholder="往前推N分钟的数据" clearable class="ml10" style="max-width: 150px;">
+        <el-select v-model="state.startMin" placeholder="往前推N分钟的数据" class="ml10" style="max-width: 150px;" size="mini">
           <el-option label="全部" :value="0"></el-option>
           <el-option label="1小时耗时最高" :value="60"></el-option>
           <el-option label="30分钟耗时最高" :value="30"></el-option>
