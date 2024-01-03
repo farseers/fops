@@ -26,7 +26,7 @@
 			</div>
       <div class="flex-warp" style="background: #e0e0e0">
         <el-row>
-          <el-col style="float: left;background: #ffffff;margin: 10px"  :xs="16" :sm="16" :md="16" :lg="16" :xl="16" class="mb15" v-if="state.tableData.data.length > 0">
+          <el-col style="float: left;background: #ffffff;margin: 10px;width: 1266px"  :xs="16" :sm="16" :md="16" :lg="16" :xl="16" class="mb15" v-if="state.tableData.data.length > 0">
             <div class="flex-warp-item" v-for="(v, k) in state.tableData.data" :key="k">
               <div class="flex-warp-item-box" @click="onShowBuildList(v)">
                 <div class="appItem">
