@@ -90,9 +90,9 @@
       </div>
 		</el-card>
 		<appDialog ref="appDialogRef" @refresh="getTableData()" />
-    <el-dialog title="构建日志" v-model="state.logDialogIsShow" style="width: 80%;height: 70%;">
+    <el-dialog title="构建日志" v-model="state.logDialogIsShow" style="width: 80%;height: 70%;top:20px;">
       <el-card shadow="hover" class="layout-padding-auto" style="background-color:#393d49;">
-        <pre style="color: #fff;background-color:#393d49;">{{state.logContent}}</pre>
+        <pre style="color: #fff;background-color:#393d49;height: 100%;" v-html="state.logContent"></pre>
       </el-card>
     </el-dialog>
 	</div>
