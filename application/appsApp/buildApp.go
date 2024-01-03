@@ -49,5 +49,7 @@ func View(buildId int64) action.IResult {
 	logQueue := apps.LogQueue{
 		BuildId: buildId,
 	}
-	return action.Content(strings.Join(logQueue.View(), "\r\n"))
+	logContent := logQueue.View()
+	content := strings.ReplaceAll(strings.Join(logContent, "\n"), "git -C", "<span style='color:red'>git -C</span>")
+	return action.Content(content)
 }
