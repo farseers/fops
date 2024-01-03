@@ -132,6 +132,10 @@ watch(() => state.startMin, (newValue, oldValue) => {
   console.log(`count 从 ${oldValue} 变为 ${newValue}`);
   getTableData()
 });
+watch(() => state.method, (newValue, oldValue) => {
+  console.log(`count 从 ${oldValue} 变为 ${newValue}`);
+  getTableData()
+});
 
 // 初始化表格数据
 const getTableData = () => {
