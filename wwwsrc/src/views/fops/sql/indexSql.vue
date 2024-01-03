@@ -85,7 +85,7 @@
 </template>
 
 <script setup lang="ts" name="fopsTaskRunning">
-import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
+import { defineAsyncComponent, reactive, onMounted, ref, watch } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import {fopsApi} from "/@/api/fops";
 import {friendlyJSONstringify} from "@intlify/shared";
@@ -114,6 +114,11 @@ const state = reactive({
 			pageSize: 10,
 		},
 	},
+});
+// 监听 state.startMin 的变化
+watch(() => state.startMin, (newValue, oldValue) => {
+  console.log(`count 从 ${oldValue} 变为 ${newValue}`);
+  getTableData()
 });
 
 // 初始化表格数据
