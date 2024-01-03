@@ -88,11 +88,9 @@
       </div>
 		</el-card>
 		<appDialog ref="appDialogRef" @refresh="getTableData()" />
-    <el-dialog title="构建日志" v-model="state.logDialogIsShow" width="700px;" height="300px;">
-      <el-card shadow="hover" class="layout-padding-auto">
-        <div>
-          {{state.logContent}}
-        </div>
+    <el-dialog title="构建日志" v-model="state.logDialogIsShow">
+      <el-card shadow="hover" class="layout-padding-auto" style="background-color:#393d49;line-height: 26px">
+        <pre style="color: #fff;background-color:#393d49;line-height: 26px">{{state.logContent}}</pre>
       </el-card>
     </el-dialog>
 	</div>
@@ -145,7 +143,6 @@ const getTableData = () => {
   // 请求接口
   serverApi.appsList({}).then(function (res){
     if (res.Status){
-
       for (let i = 0; i < res.Data.length; i++) {
         var item=res.Data[i]
         item.FrameworkGitsStr=getGitArray(item.FrameworkGits)
