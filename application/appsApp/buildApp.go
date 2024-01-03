@@ -47,7 +47,7 @@ func BuildList(appName string, pageSize int, pageIndex int, appsRepository apps.
 
 // 语法高亮
 var chineseTips = collections.NewList(
-	"环境变量：", "前置检查。", "先删除之前编译的目标文件。", "自动创建目录。", "前置检查通过。", "已经是最新的。", "拉取完成。", "登陆镜像仓库。", "登陆成功。",
+	"环境变量：", "前置检查。", "先删除之前编译的目标文件。", "自动创建目录。", "前置检查通过。", "已经是最新的。", "拉取完成。", "登陆镜像仓库。", "镜像仓库登陆成功。",
 	"开始镜像打包。", "镜像打包完成。", "开始上传镜像。", "镜像上传完成。", "开始更新K8S POD的镜像版本。", "更新镜像版本完成。")
 
 // （黄色）
@@ -86,8 +86,11 @@ func View(buildId int64) action.IResult {
 	}
 	logContent := logQueue.View()
 	for i := 0; i < len(logContent); i++ {
-		dateTimePart := logContent[i][0:19] // 提取日期时间部分
-		logPart := logContent[i][20:]       // 提取日志内容部分
+		if len(logContent[i]) < 20 {
+			continue
+		}
+		dateTimePart := logContent[i][:19] // 提取日期时间部分
+		logPart := logContent[i][20:]      // 提取日志内容部分
 		dateTimePart = fmt.Sprintf("<span style=\"color:#9caf62\">%s</span>", dateTimePart)
 
 		if chineseTips.Contains(logPart) {
@@ -114,10 +117,9 @@ func View(buildId int64) action.IResult {
 				logPart = fmt.Sprintf("<span style=\"color:#6a6964\">%s</span>", logPart)
 			}
 		}
-		logContent[i] = dateTimePart + logPart
+		logContent[i] = dateTimePart + " " + logPart
 	}
-	content := strings.ReplaceAll(strings.Join(logContent, "\n"), "git -C", "<span style='color:red'>git -C</span>")
-	return action.Content(content)
+	return action.Content(strings.Join(logContent, "\n"))
 }
 
 // 检查字符串是否以指定字符串切片中的任意字符串开头
