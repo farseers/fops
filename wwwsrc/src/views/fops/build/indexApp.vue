@@ -91,7 +91,7 @@
 		</el-card>
 		<appDialog ref="appDialogRef" @refresh="getTableData()" />
     <el-dialog title="构建日志" v-model="state.logDialogIsShow" style="width: 80%;height: 85%;top:20px;margin-bottom: 50px">
-      <el-card shadow="hover" class="layout-padding-auto" style="background-color:#393d49;">
+      <el-card shadow="hover" class="layout-padding-auto" style="background-color:#393d49;overflow: auto;">
         <pre style="color: #fff;background-color:#393d49;height: 100%;" v-html="state.logContent"></pre>
       </el-card>
     </el-dialog>
