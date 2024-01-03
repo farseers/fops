@@ -59,14 +59,14 @@
                 <el-table-column label="状态" width="90" show-overflow-tooltip>
                   <template #default="scope">
                     <el-tag v-if="scope.row.Status==0" size="mini" type="info">未开始</el-tag>
-                    <el-tag v-if="scope.row.Status==1" size="mini" type="success">构建中</el-tag>
-                    <el-tag v-if="scope.row.Status==2" size="mini">完成</el-tag>
+                    <el-tag v-else-if="scope.row.Status==1" size="mini" type="success">构建中</el-tag>
+                    <el-tag v-else-if="scope.row.Status==2" size="mini">完成</el-tag>
                   </template>
                 </el-table-column>
                 <el-table-column prop="FinishAt" width="170" label="完成时间"></el-table-column>
                 <el-table-column label="操作" width="80">
                   <template #default="scope">
-                    <el-button size="small" type="success" @click="showLog(scope.row)">日志</el-button>
+                    <el-button v-if="scope.row.Status!=0" size="small" type="success" @click="showLog(scope.row)">日志</el-button>
                   </template>
                 </el-table-column>
               </el-table>
