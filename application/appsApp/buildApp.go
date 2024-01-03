@@ -132,6 +132,6 @@ func startsWithAny(lst collections.List[string], str string) bool {
 // 检查字符串切片中是否包含指定子字符串
 func containsAny(lst collections.List[string], substr string) bool {
 	return lst.Where(func(item string) bool {
-		return strings.Contains(substr, item)
+		return strings.Contains(substr, strings.ToLower(item))
 	}).Any()
 }
