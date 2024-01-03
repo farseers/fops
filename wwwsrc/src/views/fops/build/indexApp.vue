@@ -25,7 +25,7 @@
 				</el-button>
 			</div>
       <div class="flex-warp" style="background: #e0e0e0">
-        <el-row style="float:left;width: 66%">
+        <el-row style="float:left;width: 65%">
           <el-col style="float: left;margin: 10px;"  :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb15" v-if="state.tableData.data.length > 0">
             <div  style="background: #ffffff;width: 24%"  class="flex-warp-item" v-for="(v, k) in state.tableData.data" :key="k">
               <div class="flex-warp-item-box" @click="onShowBuildList(v)">
@@ -49,14 +49,14 @@
           </el-col>
           <el-empty v-else description="暂无数据"></el-empty>
         </el-row>
-        <el-row style="width: 34%;float:left;">
+        <el-row style="width: 35%;float:left;">
           <el-col style="float: left;background: #ffffff;margin: 15px 10px 10px 0;padding:5px;width: 98%" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb15" v-if="state.tableLogData.data.length > 0">
             <h3 style="padding: 5px;">构建队列</h3>
             <template v-if="state.tableLogData.data.length > 0">
               <el-table  :data="state.tableLogData.data" v-loading="state.tableLogData.loading" style="width: 100%;background: #ffffff;">
-                <el-table-column prop="Id" label="编号" width="60" />
+                <el-table-column prop="Id" label="编号" width="70" />
                 <el-table-column prop="AppName" label="应用名称" ></el-table-column>
-                <el-table-column label="状态" width="100" show-overflow-tooltip>
+                <el-table-column label="状态" width="90" show-overflow-tooltip>
                   <template #default="scope">
                     <el-tag v-if="scope.row.Status==0" size="mini" type="info">未开始</el-tag>
                     <el-tag v-if="scope.row.Status==1" size="mini" type="success">构建中</el-tag>
@@ -64,9 +64,9 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="FinishAt" width="170" label="完成时间"></el-table-column>
-                <el-table-column label="操作" width="100">
+                <el-table-column label="操作" width="80">
                   <template #default="scope">
-                    <el-button size="small" text type="primary" @click="showLog(scope.row)">构建日志</el-button>
+                    <el-button size="small" type="success" @click="showLog(scope.row)">日志</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -120,7 +120,7 @@ const state = reactive({
 		loading: false,
 		param: {
 			pageNum: 1,
-			pageSize: 20,
+			pageSize: 12,
 		},
 	},tableLogData: {
     data: [],
@@ -128,7 +128,7 @@ const state = reactive({
     loading: false,
     param: {
       pageNum: 1,
-      pageSize: 20,
+      pageSize: 12,
     },
 
   },
