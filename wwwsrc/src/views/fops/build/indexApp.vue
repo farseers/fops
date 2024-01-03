@@ -25,9 +25,9 @@
 				</el-button>
 			</div>
       <div class="flex-warp" style="background: #e0e0e0">
-        <el-row>
-          <el-col style="float: left;background: #ffffff;margin: 10px;width: 1266px"  :xs="16" :sm="16" :md="16" :lg="16" :xl="16" class="mb15" v-if="state.tableData.data.length > 0">
-            <div class="flex-warp-item" v-for="(v, k) in state.tableData.data" :key="k">
+        <el-row style="float:left;width: 66%">
+          <el-col style="float: left;margin: 10px;"  :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb15" v-if="state.tableData.data.length > 0">
+            <div  style="background: #ffffff;width: 24%"  class="flex-warp-item" v-for="(v, k) in state.tableData.data" :key="k">
               <div class="flex-warp-item-box" @click="onShowBuildList(v)">
                 <div class="appItem">
                   <el-tag size="mini">{{ v.AppName }}</el-tag>
@@ -48,10 +48,12 @@
             </div>
           </el-col>
           <el-empty v-else description="暂无数据"></el-empty>
-          <el-col style="float: left;background: #ffffff;margin: 10px 10px 10px 0;padding:5px;" :xs="8" :sm="8" :md="8" :lg="8" :xl="8" class="mb15" v-if="state.tableLogData.data.length > 0">
+        </el-row>
+        <el-row style="width: 34%;float:left;">
+          <el-col style="float: left;background: #ffffff;margin: 15px 10px 10px 0;padding:5px;width: 98%" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb15" v-if="state.tableLogData.data.length > 0">
             <h3 style="padding: 5px;">构建队列</h3>
             <template v-if="state.tableLogData.data.length > 0">
-              <el-table :data="state.tableLogData.data" v-loading="state.tableLogData.loading" style="min-width: 576px;">
+              <el-table  :data="state.tableLogData.data" v-loading="state.tableLogData.loading" style="width: 100%;background: #ffffff;">
                 <el-table-column prop="Id" label="编号" width="60" />
                 <el-table-column prop="AppName" label="应用名称" ></el-table-column>
                 <el-table-column label="状态" width="100" show-overflow-tooltip>
@@ -360,7 +362,7 @@ onUnmounted(()=>{
     padding: 5px;
     width: 298px;
     min-height: 360px;
-    border: #666 1px solid;
+    //border: #666 1px solid;
     .flex-warp-item-box {
       border: 1px solid var(--next-border-color-light);
       width: 100%;
