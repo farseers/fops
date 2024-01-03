@@ -262,7 +262,7 @@ textarea{
 
 /* 每个列表项的样式 */
 .custom-list li {
-  padding: 10px 15px;
+  padding: 2px 15px;
   margin-bottom: 8px;
   border-radius: 5px;
   background-color: #f2f2f2;
