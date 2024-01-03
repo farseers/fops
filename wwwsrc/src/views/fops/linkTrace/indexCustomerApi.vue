@@ -56,7 +56,6 @@
             {{scope.row.ConsumerServer}}<br />
             <el-tag v-if="scope.row.ConsumerRoutingKey !=''" size="mini">{{scope.row.ConsumerRoutingKey}}</el-tag><br v-if="scope.row.ConsumerRoutingKey !=''" />
             {{scope.row.ConsumerQueueName}}
-
           </template>
         </el-table-column>
         <el-table-column width="300px" label="异常" show-overflow-tooltip>

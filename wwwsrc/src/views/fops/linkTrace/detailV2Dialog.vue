@@ -14,10 +14,26 @@
                 <el-tag size="mini" v-else-if="state.UseTs > 1000000">{{state.UseDesc}}</el-tag>
                 <el-tag size="mini" v-else type="success">{{state.UseDesc}}</el-tag>
             </div>
-            <div class="mt10" v-if="state.TraceType == 0"> <!--webapi-->
+            <!--webapi-->
+            <div class="mt10" v-if="state.TraceType == 0">
               <el-tag size="mini">{{state.WebStatusCode}}</el-tag> {{state.WebRequestIp}} <el-tag type="success" size="mini">{{state.WebMethod}}</el-tag>
               <el-tag v-if="state.WebContentType!=''" type="info" size="mini">{{state.WebContentType}}</el-tag>{{state.WebPath}}
               <el-button style="margin-left: 20px" type="primary">查看请求</el-button>
+            </div>
+            <!--MqConsumer--> <!--QueueConsumer-->
+            <div class="mt10" v-else-if="state.TraceType == 1 || state.TraceType == 2">
+              {{state.ConsumerServer}}
+              <el-tag v-if="state.ConsumerRoutingKey !=''" size="mini">{{state.ConsumerRoutingKey}}</el-tag><br v-if="state.ConsumerRoutingKey !=''" />
+              {{state.ConsumerQueueName}}
+            </div>
+            <!--FSchedule--> <!--Task-->
+            <div class="mt10" v-else-if="state.TraceType == 3 || state.TraceType == 4">
+              <el-tag v-if="state.TaskGroupId >0" size="mini">任务组Id：{{state.TaskGroupId}}</el-tag>
+              <el-tag v-if="state.TaskId >0" size="mini" type="success">任务Id：{{state.TaskId}}</el-tag>
+              {{state.TaskName}}
+            </div>
+            <!--WatchKey-->
+            <div class="mt10" v-else-if="state.TraceType == 5">
             </div>
             <div :style="{'width':getWidth(),'overflow-x': 'auto','white-space': 'nowrap'}">
             <ul class="custom-list mt20">
@@ -110,6 +126,12 @@ const state = reactive({
   WebMethod:'',
   WebContentType:'',
   WebPath:'',
+  TaskGroupId:0,
+  TaskId:0,
+  TaskName:'',
+  ConsumerServer:'',
+  ConsumerRoutingKey:'',
+  ConsumerQueueName:'',
 	dialog: {
 		isShowDialog: false,
 		type: '',
@@ -134,9 +156,14 @@ const openDialog = (row2: any) => {
   state.WebMethod=row2.WebMethod
   state.WebContentType=row2.WebContentType
   state.WebPath=row2.WebPath
+  state.TaskGroupId=row2.TaskGroupId
+  state.TaskId=row2.TaskId
+  state.TaskName=row2.TaskName
+  state.ConsumerServer=row2.ConsumerServer
+  state.ConsumerRoutingKey=row2.ConsumerRoutingKey
+  state.ConsumerQueueName=row2.ConsumerQueueName
   // 详情
   serverApi.linkTraceInfo(row2.TraceIdN).then(function (res){
-    console.log(friendlyJSONstringify(res))
     state.loading=false
     if (res.Status){
       // 绑定数据
