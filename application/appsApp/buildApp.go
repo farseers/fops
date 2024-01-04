@@ -55,10 +55,7 @@ func BuildList(appName string, pageSize int, pageIndex int, appsRepository apps.
 // @post build/clearDockerImage
 func ClearDockerImage(device apps.IDockerDevice) {
 	c := make(chan string, 100)
-	if !device.ClearImages(c) {
-		lstLog := collections.NewListFromChan(c)
-		exception.ThrowWebExceptionf(403, "无用镜像清除失败:<br />%s", lstLog.ToString("<br />"))
-	}
+	device.ClearImages(c)
 }
 
 // 语法高亮
