@@ -51,7 +51,7 @@ func (repository *buildRepository) SetBuilding(id int64) {
 
 // SetSuccess 任务完成
 func (repository *buildRepository) SetSuccess(id int64) {
-	_, _ = context.MysqlContext.Build.Where("id = ?", id).Select("status", "is_success", "create_at").Update(model.BuildPO{
+	_, _ = context.MysqlContext.Build.Where("id = ?", id).Select("status", "is_success", "finish_at").Update(model.BuildPO{
 		Status:    eumBuildStatus.Finish,
 		IsSuccess: true,
 		FinishAt:  time.Now(),
