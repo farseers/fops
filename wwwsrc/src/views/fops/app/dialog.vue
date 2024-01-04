@@ -321,6 +321,7 @@ const onSubmit = () => {
 };
 
 const getTableData = (type:any) => {
+  state.SelectItem=[] // 清空
   const data = [];
   if (type==1){
     state.isApp=0

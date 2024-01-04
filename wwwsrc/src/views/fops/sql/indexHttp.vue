@@ -170,7 +170,7 @@ const onDetail=(row: any)=>{
   detailDialogRef.value.openDialog(row);
 }
 const onShow=(row: any)=>{
-  showDialogRef.value.openDialog(row);
+  showDialogRef.value.openDialog(1,row);
 }
 
 // 删除用户

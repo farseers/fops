@@ -60,13 +60,25 @@ const state = reactive({
 });
 
 // 打开弹窗
-const openDialog = (row: any) => {
+const openDialog = (type:number,row: any) => {
   //state.ruleForm = row;
   state.dialog.title = '请求报文(TraceId：'+row.TraceIdN+')';
   //state.dialog.submitTxt = '修 改';
   //console.log(row2)
-  state.TraceId=row.TraceIdN
-  state.ruleForm=row
+  if(type==1){
+    state.TraceId=row.TraceIdN
+    state.ruleForm=row
+  }else{
+    state.TraceId=row.TraceIdN
+    state.ruleForm.CreateAt=row.CreateAt
+    state.ruleForm.Url=row.WebPath
+    state.ruleForm.Method=row.WebMethod
+    state.ruleForm.Headers=row.WebHeaders
+    state.ruleForm.RequestBody=row.WebRequestBody
+    state.ruleForm.ResponseBody=row.WebResponseBody
+    state.ruleForm.StatusCode=row.WebStatusCode
+    state.ruleForm.UseDesc=row.UseDesc
+  }
 	state.dialog.isShowDialog = true;
 };
 // 关闭弹窗

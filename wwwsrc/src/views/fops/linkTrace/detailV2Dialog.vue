@@ -18,7 +18,7 @@
             <div class="mt10" v-if="state.TraceType == 0">
               <el-tag size="mini">{{state.WebStatusCode}}</el-tag> {{state.WebRequestIp}} <el-tag type="success" size="mini">{{state.WebMethod}}</el-tag>
               <el-tag v-if="state.WebContentType!=''" type="info" size="mini">{{state.WebContentType}}</el-tag>{{state.WebPath}}
-              <el-button style="margin-left: 20px" type="primary" size="small">查看报文</el-button>
+              <el-button style="margin-left: 20px" type="primary" @click="onShow()" size="small">查看报文</el-button>
               <el-button style="margin-left: 20px" size="small" type="success" @click="showLog()">查看日志</el-button>
             </div>
             <!--MqConsumer--> <!--QueueConsumer-->
@@ -81,6 +81,7 @@
 		</el-dialog>
 
     <logDialog ref="logDialogRef"  />
+    <showDialog ref="showDialogRef"  />
 
 	</div>
 </template>
@@ -122,6 +123,7 @@ const state = reactive({
       }
   ],
   TraceId:'',
+  TraceIdN:'',
   Rgba:'',
   AppId:0,
   AppIp:'',
@@ -145,6 +147,7 @@ const state = reactive({
   ConsumerServer:'',
   ConsumerRoutingKey:'',
   ConsumerQueueName:'',
+  CreateAt:'',
 	dialog: {
 		isShowDialog: false,
 		type: '',
@@ -180,6 +183,9 @@ const openDialog = (row2: any) => {
   state.ConsumerServer=row2.ConsumerServer
   state.ConsumerRoutingKey=row2.ConsumerRoutingKey
   state.ConsumerQueueName=row2.ConsumerQueueName
+  state.CreateAt=row2.CreateAt
+  state.TraceIdN=row2.TraceIdN
+
   // 详情
   serverApi.linkTraceInfo(row2.TraceIdN).then(function (res){
     state.loading=false
@@ -215,8 +221,8 @@ const openDialog = (row2: any) => {
 const closeDialog = () => {
 	state.dialog.isShowDialog = false;
 };
-const onShow=(row: any)=>{
-  logDialogRef.value.openDialog(row);
+const onShow=()=>{
+  showDialogRef.value.openDialog(2,state);
 }
 const showLog=()=>{
   logDialogRef.value.openDialog(state.traceInfo);
