@@ -129,19 +129,19 @@ func (dockerDevice) ExistsDocker(cluster cluster.DomainObject, appName string) b
 
 func (dockerDevice) CreateService(appName, dockerNodeRole, additionalScripts, dockerNetwork string, dockerReplicas int, dockerImages string, progress chan string, ctx context.Context) bool {
 	shell := fmt.Sprintf("docker service create --name %s --replicas %v -d --network=%s --constraint node.role==%s --mount type=bind,src=/etc/localtime,dst=/etc/localtime %s %s", appName, dockerReplicas, dockerNetwork, dockerNodeRole, additionalScripts, dockerImages)
-	// docker service inspect fops
 	var exitCode = exec.RunShellContext(ctx, shell, progress, nil, "")
 	if exitCode != 0 {
-		exception.ThrowWebException(403, "创建容器失败。")
+		progress <- "创建容器失败了。"
 		return false
 	}
 	return true
 }
 
 func (dockerDevice) DeleteService(appName string, progress chan string) bool {
+	// docker service rm fops
 	var exitCode = exec.RunShell(fmt.Sprintf("docker service rm %s", appName), progress, nil, "")
 	if exitCode != 0 {
-		exception.ThrowWebException(403, "创建删除失败。")
+		progress <- "删除容器失败了。"
 		return false
 	}
 	return true
