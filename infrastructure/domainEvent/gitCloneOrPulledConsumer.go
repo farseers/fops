@@ -13,5 +13,5 @@ func GitCloneOrPulledConsumer(message any, ea core.EventArgs) {
 	gitCloneOrPulledEvent := message.(event.GitCloneOrPulledEvent)
 
 	// 更新git拉取时间
-	_, _ = appsRepository.UpdateForTime(gitCloneOrPulledEvent.GitId, time.UnixMicro(ea.CreateAt))
+	_, _ = appsRepository.UpdateForTime(gitCloneOrPulledEvent.GitId, time.UnixMilli(ea.CreateAt))
 }

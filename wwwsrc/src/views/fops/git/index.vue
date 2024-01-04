@@ -138,7 +138,7 @@ const onRowClear = (row: any) => {
             getTableData();
             ElMessage.success('清除成功');
           }else{
-            ElMessage.error(res.StatusMessage)
+            ElMessageBox.alert(res.StatusMessage,'Warning',{ type: 'warning',})
           }
         })
       })
@@ -150,9 +150,9 @@ const onRowPull = (row: any) => {
   serverApi.gitPull({"GitId":row.Id}).then(function (res){
     if (res.Status){
       getTableData();
-      ElMessage.success('拉取成功');
+      ElMessageBox.alert('拉取成功')
     }else{
-      ElMessage.error(res.StatusMessage)
+      ElMessageBox.alert(res.StatusMessage,'Warning',{ type: 'warning',})
     }
   })
 };
