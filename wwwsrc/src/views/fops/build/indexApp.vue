@@ -38,7 +38,7 @@
                 <div class="appItem">
                   <el-tag size="small">{{ v.AppName }}</el-tag>
                   <el-tag v-if="v.IsHealth" size="small" type="success">健康</el-tag>
-                  <el-tag v-else-if="length(v.ActiveInstance) > 0" size="small" type="warning">不健康</el-tag>
+                  <el-tag v-else-if="v.ActiveInstance!=null && v.ActiveInstance.length > 0" size="small" type="warning">不健康</el-tag>
                   <el-tag v-else size="small" type="danger">未运行</el-tag>
                 </div>
                 <div class="appItem">容器版本：{{ v.DockerVer }}</div>

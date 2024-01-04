@@ -13,7 +13,7 @@
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="是否健康">
               <el-tag v-if="state.ruleForm.IsHealth" size="small" type="success">健康</el-tag>
-              <el-tag v-else-if="length(state.ruleForm.ActiveInstance) > 0" size="small" type="warning">不健康</el-tag>
+              <el-tag v-else-if="state.ruleForm.ActiveInstance!=null && state.ruleForm.ActiveInstance.length > 0" size="small" type="warning">不健康</el-tag>
               <el-tag v-else size="small" type="danger">未运行</el-tag>
             </el-form-item>
           </el-col>
@@ -221,7 +221,6 @@ const openDialog = (type: string, row: any) => {
 const loadGit=(lst:any)=>{
   state.gitList=[]
   for (let i = 0; i < lst.length; i++) {
-    console.log(lst[i])
     serverApi.gitInfo({"gitId":lst[i]}).then(function (res){
       if (res.Status){
         state.gitList.push(res.Data)
