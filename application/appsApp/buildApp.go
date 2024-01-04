@@ -4,6 +4,7 @@ package appsApp
 import (
 	"fmt"
 	"fops/domain/apps"
+	"fops/domain/cluster"
 	"github.com/farseer-go/collections"
 	"github.com/farseer-go/fs/dateTime"
 	"github.com/farseer-go/fs/exception"
@@ -14,9 +15,14 @@ import (
 
 // BuildAdd 添加构建
 // @post build/add
-func BuildAdd(appName string, clusterId int64, appsRepository apps.Repository) {
+func BuildAdd(appName string, clusterId int64, appsRepository apps.Repository, clusterRepository cluster.Repository) {
 	appDO := appsRepository.ToEntity(appName)
 	exception.ThrowWebExceptionfBool(appDO.IsNil(), 403, "应用不存在")
+	exception.ThrowWebExceptionfBool(appDO.DockerNodeRole == "", 403, "应用的容器节点角色未设置")
+
+	clusterDO := clusterRepository.ToEntity(clusterId)
+	exception.ThrowWebExceptionfBool(clusterDO.IsNil(), 403, "集群不存在")
+	exception.ThrowWebExceptionfBool(clusterDO.DockerNetwork == "", 403, "集群的容器网络未配置")
 
 	buildNumber := appsRepository.GetBuildNumber(appName) + 1
 	buildDO := apps.BuildEO{
@@ -107,9 +113,9 @@ func View(buildId int64) action.IResult {
 			logPart = fmt.Sprintf("<span style=\"color:#cfbbfc\">%s</span>", logPart)
 		} else if cmdResultTips.Contains(logPart) || strings.HasPrefix(logPart, "The push refers to repository ") || regexp.MustCompile(`\w+\.apps/\w+ image updated`).MatchString(logPart) {
 			logPart = fmt.Sprintf("<span style=\"color:#fff\">%s</span>", logPart)
-		} else if startsWithAny(cmdPrefix, logPart) {
+		} else if cmdPrefix.ContainsPrefix(logPart) {
 			logPart = fmt.Sprintf("<span style=\"color:#ffe127\">%s</span>", logPart)
-		} else if containsAny(errorTips, strings.ToLower(logPart)) {
+		} else if errorTips.ContainsAny(strings.ToLower(logPart)) {
 			logPart = fmt.Sprintf("<span style=\"color:#ff5b5b\">%s</span>", logPart)
 		} else {
 			dockerLogMatch := regexp.MustCompile(`#\d+ \[.+ \d+/\d+\] (?P<cmd>.+)`).FindStringSubmatch(logPart)
@@ -130,18 +136,4 @@ func View(buildId int64) action.IResult {
 		logContent[i] = dateTimePart + " " + logPart
 	}
 	return action.Content(strings.Join(logContent, "\n"))
-}
-
-// 检查字符串是否以指定字符串切片中的任意字符串开头
-func startsWithAny(lst collections.List[string], str string) bool {
-	return lst.Where(func(item string) bool {
-		return strings.HasPrefix(str, item)
-	}).Any()
-}
-
-// 检查字符串切片中是否包含指定子字符串
-func containsAny(lst collections.List[string], substr string) bool {
-	return lst.Where(func(item string) bool {
-		return strings.Contains(substr, strings.ToLower(item))
-	}).Any()
 }

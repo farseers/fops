@@ -6,7 +6,9 @@ import (
 	"fops/domain/apps"
 	"fops/domain/apps/event"
 	"fops/domain/cluster"
+	"github.com/farseer-go/collections"
 	"github.com/farseer-go/fs/container"
+	"github.com/farseer-go/fs/exception"
 	"github.com/farseer-go/utils/exec"
 	"github.com/farseer-go/utils/file"
 	"github.com/farseer-go/utils/str"
@@ -107,6 +109,41 @@ func (dockerDevice) SetImages(cluster cluster.DomainObject, appName string, dock
 		return false
 	}
 	progress <- "Docker Swarm更新镜像版本完成。"
+	return true
+}
+
+func (dockerDevice) ExistsDocker(cluster cluster.DomainObject, appName string) bool {
+	progress := make(chan string, 1000)
+	// docker service inspect fops
+	var exitCode = exec.RunShell(fmt.Sprintf("docker service inspect %s", appName), progress, nil, "")
+	if exitCode != 0 {
+		exception.ThrowWebException(403, "获取应用信息时失败。")
+		return false
+	}
+	lst := collections.NewListFromChan(progress)
+	if lst.Contains("[]") && lst.ContainsPrefix("Status: Error: no such service:") {
+		return false
+	}
+	return lst.ContainsAny("\"Name\": \"fops\"")
+}
+
+func (dockerDevice) CreateService(appName, dockerNodeRole, additionalScripts, dockerNetwork string, dockerReplicas int, dockerImages string, progress chan string, ctx context.Context) bool {
+	shell := fmt.Sprintf("docker service create --name %s --replicas %v -d --network=%s --constraint node.role==%s --mount type=bind,src=/etc/localtime,dst=/etc/localtime %s %s", appName, dockerReplicas, dockerNetwork, dockerNodeRole, additionalScripts, dockerImages)
+	// docker service inspect fops
+	var exitCode = exec.RunShellContext(ctx, shell, progress, nil, "")
+	if exitCode != 0 {
+		exception.ThrowWebException(403, "创建容器失败。")
+		return false
+	}
+	return true
+}
+
+func (dockerDevice) DeleteService(appName string, progress chan string) bool {
+	var exitCode = exec.RunShell(fmt.Sprintf("docker service rm %s", appName), progress, nil, "")
+	if exitCode != 0 {
+		exception.ThrowWebException(403, "创建删除失败。")
+		return false
+	}
 	return true
 }
 

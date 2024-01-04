@@ -13,11 +13,11 @@ import (
 
 var route = []webapi.Route{
 	{"POST", "/apps/add", appsApp.Add, "", []context.IFilter{}, []string{"req", ""}},
-	{"POST", "/apps/update", appsApp.Update, "", []context.IFilter{}, []string{"req", ""}},
+	{"POST", "/apps/update", appsApp.Update, "", []context.IFilter{}, []string{"req", "", ""}},
 	{"POST", "/apps/delete", appsApp.Delete, "", []context.IFilter{}, []string{"appName", ""}},
 	{"POST", "/apps/list", appsApp.List, "", []context.IFilter{}, []string{""}},
 	{"POST", "/apps/info", appsApp.Info, "", []context.IFilter{}, []string{"appName", ""}},
-	{"POST", "/apps/build/add", appsApp.BuildAdd, "", []context.IFilter{}, []string{"appName", "clusterId", ""}},
+	{"POST", "/apps/build/add", appsApp.BuildAdd, "", []context.IFilter{}, []string{"appName", "clusterId", "", ""}},
 	{"POST", "/apps/build/list", appsApp.BuildList, "", []context.IFilter{}, []string{"appName", "pageSize", "pageIndex", ""}},
 	{"POST", "/apps/build/clearDockerImage", appsApp.ClearDockerImage, "", []context.IFilter{}, []string{""}},
 	{"GET", "/apps/build/view-{buildId}", appsApp.View, "", []context.IFilter{}, []string{"buildId"}},
