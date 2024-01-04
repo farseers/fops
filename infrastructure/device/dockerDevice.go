@@ -116,11 +116,14 @@ func (dockerDevice) ExistsDocker(cluster cluster.DomainObject, appName string) b
 	progress := make(chan string, 1000)
 	// docker service inspect fops
 	var exitCode = exec.RunShell(fmt.Sprintf("docker service inspect %s", appName), progress, nil, "")
+	lst := collections.NewListFromChan(progress)
 	if exitCode != 0 {
+		if lst.Contains("[]") && lst.ContainsPrefix("Status: Error: no such service:") {
+			return false
+		}
 		exception.ThrowWebException(403, "获取应用信息时失败。")
 		return false
 	}
-	lst := collections.NewListFromChan(progress)
 	if lst.Contains("[]") && lst.ContainsPrefix("Status: Error: no such service:") {
 		return false
 	}
