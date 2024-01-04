@@ -22,8 +22,8 @@ func (receiver *gitRepository) ToGitList(lstIds collections.List[int64]) collect
 	return mapper.ToList[apps.GitEO](lst)
 }
 
-func (receiver *gitRepository) ToGitListAll() collections.List[apps.GitEO] {
-	lst := context.MysqlContext.Git.ToList()
+func (receiver *gitRepository) ToGitListAll(isApp int) collections.List[apps.GitEO] {
+	lst := context.MysqlContext.Git.WhereIf(isApp > -1, "is_app = ?", isApp).ToList()
 	return mapper.ToList[apps.GitEO](lst)
 }
 

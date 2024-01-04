@@ -11,4 +11,5 @@ type GitPO struct {
 	UserPwd  string    `gorm:"size:64;not null;comment:账户密码"`
 	Dir      string    `gorm:"size:64;not null;comment:存储目录"`
 	PullAt   time.Time `gorm:"type:timestamp;size:6;not null;default:CURRENT_TIMESTAMP;comment:拉取时间"`
+	IsApp    bool      `gorm:"size:1;not null;default:0;comment:是否为应用"`
 }

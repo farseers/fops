@@ -32,7 +32,7 @@ type buildRepository interface {
 type gitRepository interface {
 	ToGitEntity(id int64) GitEO
 	ToGitList(lstIds collections.List[int64]) collections.List[GitEO]
-	ToGitListAll() collections.List[GitEO]
+	ToGitListAll(isApp int) collections.List[GitEO]
 	AddGit(eo GitEO) error
 	UpdateGit(eo GitEO) (int64, error)
 	DeleteGit(id int64) (int64, error)

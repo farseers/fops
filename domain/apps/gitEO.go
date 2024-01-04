@@ -19,6 +19,7 @@ type GitEO struct {
 	UserPwd  string            // 账户密码
 	Dir      string            // 存储目录
 	PullAt   dateTime.DateTime // 拉取时间
+	IsApp    bool              // 是否为应用
 }
 
 func (receiver *GitEO) IsNil() bool {

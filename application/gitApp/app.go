@@ -41,8 +41,8 @@ func Update(req request.UpdateRequest, appsRepository apps.Repository) {
 
 // List Git列表
 // @post list
-func List(appsRepository apps.Repository, appsIGitDevice apps.IGitDevice) collections.List[apps.GitEO] {
-	return appsRepository.ToGitListAll()
+func List(isApp int, appsRepository apps.Repository, appsIGitDevice apps.IGitDevice) collections.List[apps.GitEO] {
+	return appsRepository.ToGitListAll(isApp)
 }
 
 // Delete 删除Git

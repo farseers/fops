@@ -8,4 +8,5 @@ type UpdateRequest struct {
 	UserName string // 账户名称
 	UserPwd  string // 账户密码
 	Dir      string // 存储目录
+	IsApp    bool   // 是否为应用
 }
