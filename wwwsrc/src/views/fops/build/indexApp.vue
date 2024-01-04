@@ -350,7 +350,7 @@ onMounted(() => {
 	getTableData();
   getTableLogData();
   getTableClusterData();
-  intervalLogId = setInterval(getTableLogData, 1000);
+  intervalLogId = setInterval(getTableLogData, 3000);
 });
 // 页面注销的时候
 onUnmounted(()=>{
