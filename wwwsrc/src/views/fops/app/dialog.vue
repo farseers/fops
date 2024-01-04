@@ -10,22 +10,39 @@
               <el-button v-if="state.dialog.type=='edit'" @click="onDelete" size="default" type="danger" style="margin-left: 5px;">删 除</el-button>
 						</el-form-item>
 					</el-col>
-          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="是否健康">
               <el-tag v-if="state.ruleForm.IsHealth" size="mini" type="success">健康</el-tag>
               <el-tag v-else size="mini" type="warning">不健康</el-tag>
             </el-form-item>
           </el-col>
-					<el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
-						<el-form-item label="镜像版本">
+					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+						<el-form-item style="float: left" label="镜像版本">
               <el-tag size="mini">{{state.ruleForm.DockerVer}}</el-tag>
 						</el-form-item>
-					</el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="集群版本">
+            <el-form-item style="float: left" label="集群版本">
               <el-tag size="mini">{{friendlyJSONstringify(state.ruleForm.ClusterVer)}}</el-tag>
             </el-form-item>
+					</el-col>
+          <el-col style="clear:both;" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="副本数量">
+              <el-input v-model="state.ruleForm.DockerReplicas" type="number" placeholder="请输入副本数量" clearable></el-input>
+            </el-form-item>
           </el-col>
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="容器节点角色">
+              <el-select v-model="state.ruleForm.DockerNodeRoleInt" placeholder="请输入容器节点角色" class="ml10" style="max-width: 150px;" size="mini">
+                <el-option label="manager" :value="0"></el-option>
+                <el-option label="worker" :value="1"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="附加脚本">
+              <el-input v-model="state.ruleForm.AdditionalScripts" type="textarea" placeholder="请输入附加脚本" clearable></el-input>
+            </el-form-item>
+          </el-col>
+
           <el-col :xs="24" :sm="18" :md="18" :lg="18" :xl="18" class="mb20">
             <el-form-item label="Git主仓库" style="float: left">
               <el-tag size="mini">{{state.ruleForm.AppGitName}}</el-tag>
@@ -63,24 +80,7 @@
               <el-input v-model="state.ruleForm.DockerfilePath" placeholder="请输入Dockerfile路径" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="副本数量">
-              <el-input v-model="state.ruleForm.DockerReplicas" type="number" placeholder="请输入副本数量" clearable></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="容器节点角色">
-              <el-select v-model="state.ruleForm.DockerNodeRoleInt" placeholder="请输入容器节点角色" class="ml10" style="max-width: 150px;" size="mini">
-                <el-option label="manager" :value="0"></el-option>
-                <el-option label="worker" :value="1"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="附加脚本">
-              <el-input v-model="state.ruleForm.AdditionalScripts" type="textarea" placeholder="请输入附加脚本" clearable></el-input>
-            </el-form-item>
-          </el-col>
+
 				</el-row>
 			</el-form>
 			<template #footer>
