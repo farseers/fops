@@ -38,7 +38,7 @@ RUN npm -i
 RUN npm run build
 
 # 前端文件移到静态目录
-MV ./dest/* /app/wwwroot
+RUN mv ./dest/* /app/wwwroot
 
 #设置时区
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai    /etc/localtime
