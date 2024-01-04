@@ -138,7 +138,7 @@ const onRowClear = (row: any) => {
             getTableData();
             ElMessage.success('清除成功');
           }else{
-            ElMessageBox.alert(res.StatusMessage,'Warning',{ type: 'warning',})
+            ElMessageBox.alert(res.StatusMessage,'Warning',{ type: 'warning',dangerouslyUseHTMLString: true})
           }
         })
       })
@@ -152,7 +152,7 @@ const onRowPull = (row: any) => {
       getTableData();
       ElMessageBox.alert('拉取成功')
     }else{
-      ElMessageBox.alert(res.StatusMessage,'Warning',{ type: 'warning',})
+      ElMessageBox.alert(res.StatusMessage,'Warning',{ type: 'warning',dangerouslyUseHTMLString: true})
     }
   })
 };

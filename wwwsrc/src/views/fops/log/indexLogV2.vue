@@ -3,7 +3,7 @@
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
         <label>TraceId</label>
-        <el-input size="default" v-model="state.traceId" placeholder="链路ID" style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.traceId" placeholder="链路ID" style="max-width: 180px;padding-left: 5px"> </el-input>
         <label class="ml10">应用名称</label>
         <el-input size="default" v-model="state.appName" placeholder="应用名称" style="max-width: 150px;padding-left: 5px"> </el-input>
         <label class="ml10">执行端IP</label>
