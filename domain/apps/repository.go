@@ -35,7 +35,7 @@ type gitRepository interface {
 	ToGitListAll() collections.List[GitEO]
 	AddGit(eo GitEO) error
 	UpdateGit(eo GitEO) (int64, error)
-	DeleteGit(id int) (int64, error)
-	ExistsGit(id int) bool
+	DeleteGit(id int64) (int64, error)
+	ExistsGit(id int64) bool
 	UpdateForTime(id int, pullAt time.Time) (int64, error) // 修改GIT的拉取时间
 }

@@ -37,11 +37,11 @@ func (receiver *gitRepository) UpdateGit(eo apps.GitEO) (int64, error) {
 	return context.MysqlContext.Git.Where("id = ?", eo.Id).Omit("pull_at").Update(po)
 }
 
-func (receiver *gitRepository) DeleteGit(id int) (int64, error) {
+func (receiver *gitRepository) DeleteGit(id int64) (int64, error) {
 	return context.MysqlContext.Git.Where("id = ?", id).Delete()
 }
 
-func (receiver *gitRepository) ExistsGit(id int) bool {
+func (receiver *gitRepository) ExistsGit(id int64) bool {
 	return context.MysqlContext.Git.Where("id = ?", id).IsExists()
 }
 

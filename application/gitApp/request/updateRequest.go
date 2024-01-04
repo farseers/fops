@@ -1,7 +1,7 @@
 package request
 
 type UpdateRequest struct {
-	Id       int    // 主键
+	Id       int64  // 主键
 	Name     string // Git名称
 	Hub      string // git地址
 	Branch   string // Git分支
