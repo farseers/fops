@@ -96,6 +96,6 @@ func doToAppsResponse(do apps.DomainObject) response.AppsResponse {
 		FrameworkGits:  do.FrameworkGits,
 		Dockerfile:     do.Dockerfile,
 		DockerfilePath: do.DockerfilePath,
-		IsHealth:       len(do.ActiveInstance) >= do.HealthInstance,
+		IsHealth:       len(do.ActiveInstance) >= do.DockerReplicas,
 	}
 }
