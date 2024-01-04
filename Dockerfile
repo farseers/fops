@@ -36,6 +36,7 @@ WORKDIR /app/wwwsrc
 # 构建npm
 RUN npm -i
 RUN npm run build
+
 # 前端文件移到静态目录
 MV ./dest/* /app/wwwroot
 
