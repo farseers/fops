@@ -5,8 +5,9 @@
 				<el-row :gutter="35">
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item label="应用名称">
-							<el-input v-model="state.ruleForm.AppName" placeholder="请输入应用名称" clearable style="max-width: 200px;margin-right: 5px"></el-input>
+							<el-input v-model="state.ruleForm.AppName" placeholder="请输入应用名称" style="max-width: 200px;margin-right: 5px"></el-input>
               名称需要与应用的AppName完全一致，才能检查健康状态
+              <el-button v-if="state.dialog.type=='edit'" @click="onDelete" size="default" type="danger" style="margin-left: 5px;">删 除</el-button>
 						</el-form-item>
 					</el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
@@ -170,9 +171,7 @@ const openDialog = (type: string, row: any) => {
         // 加载git数据
         loadGit(row.FrameworkGits)
       }
-
     })
-
 	} else {
 		state.dialog.title = '新增应用';
 		state.dialog.submitTxt = '新 增';
@@ -224,6 +223,27 @@ const closeDialog = () => {
 // 取消
 const onCancel = () => {
 	closeDialog();
+};
+
+// 删除
+const onDelete = () => {
+  ElMessageBox.confirm(`此操作将永久删除应用：“${state.ruleForm.AppName}”，是否继续?`, '提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+      .then(() => {
+        // 删除逻辑
+        serverApi.appsDel({"appName":state.ruleForm.AppName}).then(function (res){
+          if (res.Status){
+            closeDialog();
+            ElMessage.success('删除成功');
+          }else{
+            ElMessage.error(res.StatusMessage)
+          }
+        })
+      })
+      .catch(() => {});
 };
 // 提交
 const onSubmit = () => {

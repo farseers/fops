@@ -169,9 +169,6 @@ const getTableData = () => {
       }, 500);
     }
   })
-
-
-
 };
 
 const getTableLogData = () => {
@@ -186,13 +183,11 @@ const getTableLogData = () => {
     if (res.Status){
       state.tableLogData.data = res.Data.List;
       state.tableLogData.total = res.Data.RecordCount;
-      state.tableLogData.loading = false;
     }else{
       state.tableLogData.data=[]
-      state.tableLogData.loading = false;
     }
+    state.tableLogData.loading = false;
   })
-
 };
 const getTableClusterData = () => {
   state.tableData.loading = true;
@@ -227,7 +222,7 @@ const onOpenAdd = (type: string) => {
 const onOpenEdit = (type: string, row: any) => {
   appDialogRef.value.openDialog(type, row);
 };
-// 清除目录
+// 清除镜像
 const onClearDockerImage = () => {
   ElMessageBox.confirm(`此操作将永久清除：“None镜像”，是否继续?`, '提示', {
     confirmButtonText: '确认',
