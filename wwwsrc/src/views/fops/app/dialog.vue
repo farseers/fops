@@ -83,7 +83,7 @@
             确认选择
           </el-button>
         </div>
-        <el-table ref="multipleTable" :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%" :row-key="getRowKey" @selection-change="handleSelectionChange">
+        <el-table ref="multipleTableRef" :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%" :row-key="getRowKey" @selection-change="handleSelectionChange">
           <el-table-column type="selection" :reserve-selection="true" width="55"></el-table-column>
           <el-table-column prop="Id"  label="编号" width="60" />
           <el-table-column prop="Name" label="Git名称" show-overflow-tooltip></el-table-column>
@@ -97,18 +97,18 @@
 </template>
 
 <script setup lang="ts" name="fopsAppDialog">
-import { reactive, ref,onMounted } from 'vue';
+import {reactive, ref, onMounted, getCurrentInstance, nextTick} from 'vue';
 import {fopsApi} from "/@/api/fops";
-import { ElMessageBox, ElMessage } from 'element-plus';
+import {ElMessageBox, ElMessage, ElTable} from 'element-plus';
 import {friendlyJSONstringify} from "@intlify/shared";
 // 引入 api 请求接口
 const serverApi = fopsApi();
 // 定义子组件向父组件传值/事件
 const emit = defineEmits(['refresh']);
-
+const { proxy } = getCurrentInstance() as any;
 // 定义变量内容
 const gitDialogFormRef = ref();
-const multipleTable = ref();
+const multipleTableRef = ref<InstanceType<typeof ElTable>>();
 const state = reactive({
 	ruleForm: {
     AppName:'', //应用名称
@@ -142,6 +142,7 @@ const state = reactive({
     },
   },
   gitType:1,
+  isApp:-1,
 });
 
 // 打开弹窗
@@ -238,6 +239,7 @@ const onDelete = () => {
           if (res.Status){
             closeDialog();
             ElMessage.success('删除成功');
+            emit('refresh');
           }else{
             ElMessage.error(res.StatusMessage)
           }
@@ -250,10 +252,10 @@ const onSubmit = () => {
   // 提交数据
   var param={
     "AppName":state.ruleForm.AppName,
-    "AppId":state.ruleForm.AppId,
     "ShellScript":state.ruleForm.ShellScript,
     "AppGit":parseInt(state.ruleForm.AppGit),
     "FrameworkGits":state.ruleForm.FrameworkGits,
+    "Dockerfile":state.ruleForm.Dockerfile,
   }
 
 	if (state.dialog.type === 'add') {
@@ -282,13 +284,40 @@ const onSubmit = () => {
   }
 };
 
-const getTableData = () => {
+const getTableData = (type:any) => {
   const data = [];
+  if (type==1){
+    state.isApp=0
+  }else{
+    state.isApp=1
+  }
   // 请求接口
-  serverApi.gitList({}).then(function (res){
+  serverApi.gitList({isApp:state.isApp}).then(function (res){
     if (res.Status){
       state.tableData.data = res.Data;
       state.tableData.total = res.Data.length;
+
+      if (type==1){
+        state.tableData.data.forEach(function (item,index){
+          var rowArray=state.ruleForm.FrameworkGits.filter(t=>t==item.Id);
+          if(rowArray.length>0)
+          {
+            setCurrent(item,true)
+          }else{
+            setCurrent(item,false)
+          }
+        })
+      }else{
+        state.tableData.data.forEach(function (item,index){
+          if(state.ruleForm.AppGit==item.Id)
+          {
+            setCurrent(item,true)
+          }else{
+            setCurrent(item,false)
+          }
+        })
+      }
+
     }else{
       state.tableData.data=[]
     }
@@ -308,21 +337,15 @@ const handleSelectionChange=(val:any)=> {
   console.log(state.SelectItem)
 }
 const onOpenGit=(type:any)=>{
-  getTableData()
   state.gitType=type
   state.gitDialogIsShow=true
-  if (type==1){
-    state.tableData.data.forEach(function (item,index){
-      var rowArray=state.ruleForm.FrameworkGits.filter(t=>t==item.Id);
-      if(rowArray.length>0)
-      {
-        multipleTable.value.setCurrentRow(item) //选中已经选中的数据
-      }else{
-        multipleTable.value.setCurrentRow(item,false)
-      }
-    })
-  }
+  getTableData(type)
+}
 
+const setCurrent=(row:any,isSelect:boolean)=>{
+  nextTick(()=>{
+    proxy.$refs.multipleTableRef.toggleRowSelection(row,isSelect)
+  })
 }
 // 确认选择
 const SureCheck=()=>{
@@ -337,7 +360,7 @@ const SureCheck=()=>{
 }
 // 页面加载时
 onMounted(() => {
-  //getTableData();
+
 });
 // 暴露变量
 defineExpose({

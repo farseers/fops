@@ -2,6 +2,11 @@
 	<div class="system-user-container layout-padding">
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
+        <el-select v-model="state.isApp" placeholder="Git类型" class="ml10" style="max-width: 150px;" size="mini">
+          <el-option label="全部" :value="-1"></el-option>
+          <el-option label="框架" :value="0"></el-option>
+          <el-option label="应用" :value="1"></el-option>
+        </el-select>
 <!--				<el-input size="default" placeholder="请输入用户名称" style="max-width: 180px"> </el-input>-->
 <!--				<el-button size="default" type="primary" class="ml10">-->
 <!--					<el-icon>-->
@@ -57,7 +62,7 @@
 </template>
 
 <script setup lang="ts" name="fopsGit">
-import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
+import { defineAsyncComponent, reactive, onMounted, ref,watch} from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import {fopsApi} from "/@/api/fops";
 
@@ -70,6 +75,7 @@ const GitDialog = defineAsyncComponent(() => import('/@/views/fops/git/dialog.vu
 // 定义变量内容
 const gitDialogRef = ref();
 const state = reactive({
+  isApp:-1,
 	tableData: {
 		data: [],
 		total: 0,
@@ -80,13 +86,17 @@ const state = reactive({
 		},
 	},
 });
-
+// 监听 state.isApp 的变化
+watch(() => state.isApp, (newValue, oldValue) => {
+  console.log(`count 从 ${oldValue} 变为 ${newValue}`);
+  getTableData()
+});
 // 初始化表格数据
 const getTableData = () => {
 	state.tableData.loading = true;
 	const data = [];
   // 请求接口
-  serverApi.gitList({isApp:-1}).then(function (res){
+  serverApi.gitList({isApp:state.isApp}).then(function (res){
     if (res.Status){
       state.tableData.data = res.Data;
       state.tableData.total = res.Data.length;

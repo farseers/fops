@@ -1,7 +1,7 @@
 <template>
 	<div class="system-user-dialog-container">
 		<el-dialog :title="state.dialog.title" v-model="state.dialog.isShowDialog" width="769px">
-			<el-form ref="gitDialogFormRef" :model="state.ruleForm" size="default" label-width="90px">
+			<el-form ref="gitDialogFormRef" :model="state.ruleForm" size="default" label-width="120px">
 				<el-row :gutter="35">
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item label="Git名称">
@@ -31,6 +31,11 @@
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="存储目录">
               <el-input v-model="state.ruleForm.Dir" placeholder="请输入存储目录" clearable></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="是否为应用仓库">
+              <el-switch v-model="state.ruleForm.IsApp" inline-prompt active-text="是" inactive-text="否"></el-switch>
             </el-form-item>
           </el-col>
 				</el-row>
@@ -65,6 +70,7 @@ const state = reactive({
     UserPwd: '', // 账户密码
     Dir: '', // 存储目录
     PullAt: '', // 拉取时间
+    IsApp:false, // 是否为应用仓库
 	},
 	dialog: {
 		isShowDialog: false,
@@ -90,6 +96,7 @@ const openDialog = (type: string, row: any) => {
     state.ruleForm.UserPwd=row.UserPwd
     state.ruleForm.Dir=row.Dir
     state.ruleForm.PullAt=row.PullAt
+    state.ruleForm.IsApp=row.IsApp
 
 	} else {
 		state.dialog.title = '新增Git';
@@ -129,7 +136,8 @@ const onSubmit = () => {
     "Branch":state.ruleForm.Branch,
     "UserName":state.ruleForm.UserName,
     "UserPwd":state.ruleForm.UserPwd,
-    "Dir":state.ruleForm.Dir
+    "Dir":state.ruleForm.Dir,
+    "IsApp":state.ruleForm.IsApp
   }
 
 	if (state.dialog.type === 'add') {
