@@ -12,3 +12,7 @@ type DomainObject struct {
 	DockerUserPwd    string // 账户密码
 	DockerNetwork    string // Docker网络
 }
+
+func (receiver *DomainObject) IsNil() bool {
+	return receiver.Id == 0
+}

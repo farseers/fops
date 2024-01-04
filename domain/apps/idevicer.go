@@ -16,7 +16,7 @@ type IDirectoryDevice interface {
 type IDockerDevice interface {
 	// GetDockerHub 取得dockerHub
 	GetDockerHub(dockerHubAddress string) string
-	// GetDockerImage 生成镜像名称
+	// GetDockerImage 生成镜像名称，如hub.fsgit.com/fops:1
 	GetDockerImage(dockerHubAddress string, projectName string, buildNumber int) string
 	// Login 登陆容器仓库
 	Login(dockerHub string, loginName string, loginPwd string, progress chan string, env EnvVO, ctx context.Context) bool
@@ -38,6 +38,10 @@ type IDockerDevice interface {
 	ClearImages(progress chan string) bool
 	// ExistsDocker 判断集群中是否有容器
 	ExistsDocker(cluster cluster.DomainObject, appName string) bool
+	// CreateService 创建容器服务
+	CreateService(env EnvVO, cluster cluster.DomainObject, appEO DomainObject, progress chan string, ctx context.Context) bool
+	// DeleteService 删除容器服务
+	DeleteService(appName string, progress chan string) bool
 }
 
 type IGitDevice interface {

@@ -4,6 +4,7 @@ package appsApp
 import (
 	"fmt"
 	"fops/domain/apps"
+	"fops/domain/cluster"
 	"github.com/farseer-go/collections"
 	"github.com/farseer-go/fs/dateTime"
 	"github.com/farseer-go/fs/exception"
@@ -14,9 +15,14 @@ import (
 
 // BuildAdd 添加构建
 // @post build/add
-func BuildAdd(appName string, clusterId int64, appsRepository apps.Repository) {
+func BuildAdd(appName string, clusterId int64, appsRepository apps.Repository, clusterRepository cluster.Repository) {
 	appDO := appsRepository.ToEntity(appName)
 	exception.ThrowWebExceptionfBool(appDO.IsNil(), 403, "应用不存在")
+	exception.ThrowWebExceptionfBool(appDO.DockerNodeRole == "", 403, "应用的容器节点角色未设置")
+
+	clusterDO := clusterRepository.ToEntity(clusterId)
+	exception.ThrowWebExceptionfBool(clusterDO.IsNil(), 403, "集群不存在")
+	exception.ThrowWebExceptionfBool(clusterDO.DockerNetwork == "", 403, "集群的容器网络未配置")
 
 	buildNumber := appsRepository.GetBuildNumber(appName) + 1
 	buildDO := apps.BuildEO{

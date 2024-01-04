@@ -127,6 +127,26 @@ func (dockerDevice) ExistsDocker(cluster cluster.DomainObject, appName string) b
 	return lst.ContainsAny("\"Name\": \"fops\"")
 }
 
+func (dockerDevice) CreateService(env apps.EnvVO, cluster cluster.DomainObject, appEO apps.DomainObject, progress chan string, ctx context.Context) bool {
+	shell := fmt.Sprintf("docker service create --name %s --replicas %v -d --network=%s --constraint node.role==%s --mount type=bind,src=/etc/localtime,dst=/etc/localtime %s %s", appEO.AppName, appEO.DockerReplicas, cluster.DockerNetwork, appEO.DockerNodeRole, appEO.AdditionalScripts, env.DockerImage)
+	// docker service inspect fops
+	var exitCode = exec.RunShellContext(ctx, shell, progress, nil, "")
+	if exitCode != 0 {
+		exception.ThrowWebException(403, "创建容器失败。")
+		return false
+	}
+	return true
+}
+
+func (dockerDevice) DeleteService(appName string, progress chan string) bool {
+	var exitCode = exec.RunShell(fmt.Sprintf("docker service rm %s", appName), progress, nil, "")
+	if exitCode != 0 {
+		exception.ThrowWebException(403, "创建删除失败。")
+		return false
+	}
+	return true
+}
+
 func (dockerDevice) SetReplicas(cluster cluster.DomainObject, appName string, dockerReplicas int, progress chan string) bool {
 	progress <- "---------------------------------------------------------"
 	progress <- "开始更新Docker Swarm的副本数量。"
