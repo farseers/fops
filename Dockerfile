@@ -43,7 +43,7 @@ RUN mkdir -p /app/wwwroot/
 # 前端文件移到静态目录
 RUN cp -r /app/wwwsrc/dist/* /app/wwwroot/
 # 删除源文件
-RUN rm -rf /app/wwwsrc/dist
+RUN rm -rf /app/wwwsrc
 
 #设置时区
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai    /etc/localtime
