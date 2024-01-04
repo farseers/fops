@@ -109,3 +109,17 @@ func (dockerDevice) SetImages(cluster cluster.DomainObject, appName string, dock
 	progress <- "Docker Swarm更新镜像版本完成。"
 	return true
 }
+
+// ClearImages 清除镜像
+func (dockerDevice) ClearImages(progress chan string) bool {
+	progress <- "---------------------------------------------------------"
+	progress <- "开始清除镜像。"
+
+	var exitCode = exec.RunShell("docker rmi $(docker images -f \"dangling=true\" -q)", progress, nil, "")
+	if exitCode != 0 {
+		progress <- "清除镜像镜像失败。"
+		return false
+	}
+	progress <- "清除镜像完成。"
+	return true
+}

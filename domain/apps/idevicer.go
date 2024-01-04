@@ -32,6 +32,8 @@ type IDockerDevice interface {
 	Push(env EnvVO, progress chan string, ctx context.Context) bool
 	// SetImages 更新镜像版本
 	SetImages(cluster cluster.DomainObject, appName string, dockerImages string, progress chan string, ctx context.Context) bool
+	// ClearImages 清除镜像
+	ClearImages(progress chan string) bool
 }
 
 type IGitDevice interface {

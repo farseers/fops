@@ -19,6 +19,7 @@ var route = []webapi.Route{
 	{"POST", "/apps/info", appsApp.Info, "", []context.IFilter{}, []string{"appName", ""}},
 	{"POST", "/apps/build/add", appsApp.BuildAdd, "", []context.IFilter{}, []string{"appName", "clusterId", ""}},
 	{"POST", "/apps/build/list", appsApp.BuildList, "", []context.IFilter{}, []string{"appName", "pageSize", "pageIndex", ""}},
+	{"POST", "/apps/build/clearDockerImage", appsApp.ClearDockerImage, "", []context.IFilter{}, []string{""}},
 	{"GET", "/apps/build/view-{buildId}", appsApp.View, "", []context.IFilter{}, []string{"buildId"}},
 	{"POST", "/apps/register", appsApp.Register, "", []context.IFilter{}, []string{"req", ""}},
 	{"POST", "/cluster/add", clusterApp.Add, "", []context.IFilter{}, []string{"req", ""}},

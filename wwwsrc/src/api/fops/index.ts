@@ -137,6 +137,11 @@ export function fopsApi() {
 				method: 'get',
 				//data:param,
 			});
+		},dockerClearImage: () => {
+			return request({
+				url: '/apps/build/clearDockerImage',
+				method: 'post'
+			});
 		},taskGroupList: (param: string) => {
 			return requestFSGet({
 				url: '/basicapi/taskGroup/list?'+param,

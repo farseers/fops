@@ -23,6 +23,12 @@
 					</el-icon>
 					新增应用
 				</el-button>
+        <el-button size="default" type="danger" class="ml10" @click="onClearDockerImage('add')">
+          <el-icon>
+            <ele-Delete />
+          </el-icon>
+          清除None镜像
+        </el-button>
 			</div>
       <div class="flex-warp" style="background: #e0e0e0">
         <el-row style="float:left;width: 65%">
@@ -221,26 +227,26 @@ const onOpenAdd = (type: string) => {
 const onOpenEdit = (type: string, row: any) => {
   appDialogRef.value.openDialog(type, row);
 };
-// 删除用户
-const onRowDel = (row: any) => {
-	ElMessageBox.confirm(`此操作将永久删除：“${row.AppName}”，是否继续?`, '提示', {
-		confirmButtonText: '确认',
-		cancelButtonText: '取消',
-		type: 'warning',
-	})
-		.then(() => {
-      // 删除逻辑
-      serverApi.appsDel({"AppName":row.AppName}).then(function (res){
-        if (res.Status){
-          getTableData();
-          ElMessage.success('删除成功');
-        }else{
-          ElMessage.error(res.StatusMessage)
-        }
+// 清除目录
+const onClearDockerImage = () => {
+  ElMessageBox.confirm(`此操作将永久清除：“None镜像”，是否继续?`, '提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+      .then(() => {
+        // 删除逻辑
+        serverApi.dockerClearImage().then(function (res){
+          if (res.Status){
+            ElMessage.success('清除成功');
+          }else{
+            ElMessageBox.alert(res.StatusMessage,'Warning',{ type: 'warning',dangerouslyUseHTMLString: true})
+          }
+        })
       })
-		})
-		.catch(() => {});
+      .catch(() => {});
 };
+
 // 分页改变
 const onHandleSizeChange = (val: number) => {
 	state.tableData.param.pageSize = val;

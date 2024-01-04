@@ -45,6 +45,16 @@ func BuildList(appName string, pageSize int, pageIndex int, appsRepository apps.
 	return appsRepository.ToBuildList(appName, pageSize, pageIndex)
 }
 
+// ClearDockerImage 清除Docker镜像
+// @post build/clearDockerImage
+func ClearDockerImage(device apps.IDockerDevice) {
+	c := make(chan string, 100)
+	if !device.ClearImages(c) {
+		lstLog := collections.NewListFromChan(c)
+		exception.ThrowWebExceptionf(403, "无用镜像清除失败:<br />%s", lstLog.ToString("<br />"))
+	}
+}
+
 // 语法高亮
 var chineseTips = collections.NewList(
 	"环境变量：", "前置检查。", "先删除之前编译的目标文件。", "自动创建目录。", "前置检查通过。", "已经是最新的。", "拉取完成。", "登陆镜像仓库。", "镜像仓库登陆成功。",
