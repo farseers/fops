@@ -32,7 +32,7 @@ func Update(req request.UpdateRequest, appsRepository apps.Repository, appsIDock
 	// 判断副本数量是否有变更
 	if do.DockerReplicas != req.DockerReplicas {
 		c := make(chan string, 100)
-		if !appsIDockerDevice.SetReplicas(cluster.DomainObject{}, req.AppName, do.DockerReplicas, c) {
+		if !appsIDockerDevice.SetReplicas(cluster.DomainObject{}, req.AppName, req.DockerReplicas, c) {
 			lstLog := collections.NewListFromChan(c)
 			exception.ThrowWebExceptionf(403, "更新副本失败:<br />%s", lstLog.ToString("<br />"))
 		}
@@ -92,15 +92,18 @@ func doToAppsResponse(do apps.DomainObject) response.AppsResponse {
 		clusterVers = append(clusterVers, *clusterVerVO)
 	}
 	return response.AppsResponse{
-		AppName:        do.AppName,
-		ActiveInstance: do.ActiveInstance,
-		DockerVer:      do.DockerVer,
-		ShellScript:    do.ShellScript,
-		ClusterVer:     clusterVers,
-		AppGit:         do.AppGit,
-		FrameworkGits:  do.FrameworkGits,
-		Dockerfile:     do.Dockerfile,
-		DockerfilePath: do.DockerfilePath,
-		IsHealth:       len(do.ActiveInstance) >= do.DockerReplicas,
+		AppName:           do.AppName,
+		ActiveInstance:    do.ActiveInstance,
+		DockerVer:         do.DockerVer,
+		ShellScript:       do.ShellScript,
+		ClusterVer:        clusterVers,
+		AppGit:            do.AppGit,
+		FrameworkGits:     do.FrameworkGits,
+		Dockerfile:        do.Dockerfile,
+		DockerfilePath:    do.DockerfilePath,
+		DockerNodeRole:    do.DockerNodeRole,
+		DockerReplicas:    do.DockerReplicas,
+		AdditionalScripts: do.AdditionalScripts,
+		IsHealth:          len(do.ActiveInstance) >= do.DockerReplicas,
 	}
 }
