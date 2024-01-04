@@ -127,7 +127,7 @@ func (dockerDevice) ExistsDocker(cluster cluster.DomainObject, appName string) b
 	if lst.Contains("[]") && lst.ContainsPrefix("Status: Error: no such service:") {
 		return false
 	}
-	return lst.ContainsAny("\"Name\": \"fops\"")
+	return lst.ContainsAny(fmt.Sprintf("\"Name\": \"%s\"", appName))
 }
 
 func (dockerDevice) CreateService(appName, dockerNodeRole, additionalScripts, dockerNetwork string, dockerReplicas int, dockerImages string, progress chan string, ctx context.Context) bool {
