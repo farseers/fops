@@ -5,6 +5,7 @@ import (
 	"fops/application/appsApp/request"
 	"fops/application/appsApp/response"
 	"fops/domain/apps"
+	"fops/domain/cluster"
 	"github.com/farseer-go/collections"
 	"github.com/farseer-go/fs/exception"
 	"github.com/farseer-go/fs/parse"
@@ -24,8 +25,21 @@ func Add(req request.AddRequest, appsRepository apps.Repository) {
 
 // Update 修改应用
 // @post update
-func Update(req request.UpdateRequest, appsRepository apps.Repository) {
-	do := mapper.Single[apps.DomainObject](req)
+func Update(req request.UpdateRequest, appsRepository apps.Repository, appsIDockerDevice apps.IDockerDevice) {
+	do := appsRepository.ToEntity(req.AppName)
+	exception.ThrowWebExceptionBool(do.IsNil(), 403, "应用不存在")
+
+	// 判断副本数量是否有变更
+	if do.DockerReplicas != req.DockerReplicas {
+		c := make(chan string, 100)
+		if !appsIDockerDevice.SetReplicas(cluster.DomainObject{}, req.AppName, do.DockerReplicas, c) {
+			lstLog := collections.NewListFromChan(c)
+			exception.ThrowWebExceptionf(403, "更新副本失败:<br />%s", lstLog.ToString("<br />"))
+		}
+	}
+
+	// 更新应用信息
+	do = mapper.Single[apps.DomainObject](req)
 	err := appsRepository.UpdateApp(do)
 	exception.ThrowWebExceptionError(403, err)
 }
