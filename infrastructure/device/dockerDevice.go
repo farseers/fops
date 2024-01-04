@@ -127,8 +127,8 @@ func (dockerDevice) ExistsDocker(cluster cluster.DomainObject, appName string) b
 	return lst.ContainsAny("\"Name\": \"fops\"")
 }
 
-func (dockerDevice) CreateService(env apps.EnvVO, cluster cluster.DomainObject, appEO apps.DomainObject, progress chan string, ctx context.Context) bool {
-	shell := fmt.Sprintf("docker service create --name %s --replicas %v -d --network=%s --constraint node.role==%s --mount type=bind,src=/etc/localtime,dst=/etc/localtime %s %s", appEO.AppName, appEO.DockerReplicas, cluster.DockerNetwork, appEO.DockerNodeRole, appEO.AdditionalScripts, env.DockerImage)
+func (dockerDevice) CreateService(appName, dockerNodeRole, additionalScripts, dockerNetwork string, dockerReplicas int, dockerImages string, progress chan string, ctx context.Context) bool {
+	shell := fmt.Sprintf("docker service create --name %s --replicas %v -d --network=%s --constraint node.role==%s --mount type=bind,src=/etc/localtime,dst=/etc/localtime %s %s", appName, dockerReplicas, dockerNetwork, dockerNodeRole, additionalScripts, dockerImages)
 	// docker service inspect fops
 	var exitCode = exec.RunShellContext(ctx, shell, progress, nil, "")
 	if exitCode != 0 {
