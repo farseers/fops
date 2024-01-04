@@ -109,6 +109,9 @@ import {defineAsyncComponent, reactive, onMounted, ref, nextTick, watch, onUnmou
 import { ElMessageBox, ElMessage } from 'element-plus';
 import {fopsApi} from "/@/api/fops";
 
+// var idPre = document.getElementById('idPre');
+// idPre.scrollIntoView(false); // 滚动到底部
+
 // 引入 api 请求接口
 const serverApi = fopsApi();
 
