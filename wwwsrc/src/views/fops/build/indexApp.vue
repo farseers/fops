@@ -29,6 +29,12 @@
           </el-icon>
           清除None镜像
         </el-button>
+        <el-button size="default" type="danger" class="ml10" @click="onAllBuild()">
+          <el-icon>
+            <ele-Delete />
+          </el-icon>
+          全部构建
+        </el-button>
 			</div>
       <div class="flex-warp" style="background: #e0e0e0">
         <el-row style="float:left;width: 65%">
@@ -162,16 +168,12 @@ const getTableData = () => {
         item.AppGitStr=getGit(item.AppGit)
         data.push(item)
       }
-      setTimeout(() => {
-        state.tableData.data =data;
-        state.tableData.total = data.length;
-        state.tableData.loading = false;
-      }, 500);
+      state.tableData.data =data;
+      state.tableData.total = data.length;
+      state.tableData.loading = false;
     }else{
       state.tableData.data=[]
-      setTimeout(() => {
-        state.tableData.loading = false;
-      }, 500);
+      state.tableData.loading = false;
     }
   })
 };
@@ -216,6 +218,15 @@ const getTableClusterData = () => {
   })
 
 };
+
+// 全部构建
+const onAllBuild=()=>{
+  for (let i = 0; i < state.tableData.data.length; i++) {
+    var item=state.tableData.data[i]
+    onBuildAdd(item)
+  }
+}
+
 const onClusterChange=(value:number)=>{
   state.clusterId=value
 }
