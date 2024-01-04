@@ -42,7 +42,7 @@ func Delete(appName string, appsRepository apps.Repository) {
 // @post list
 func List(appsRepository apps.Repository) collections.List[response.AppsResponse] {
 	lstDO := appsRepository.ToList()
-	lstGit := appsRepository.ToGitListAll()
+	lstGit := appsRepository.ToGitListAll(-1)
 
 	lst := collections.NewList[response.AppsResponse]()
 	lstDO.Foreach(func(item *apps.DomainObject) {

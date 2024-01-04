@@ -31,7 +31,7 @@ var route = []webapi.Route{
 	{"POST", "/flog/upload", flogApp.Upload, "", []context.IFilter{}, []string{"req", ""}},
 	{"POST", "/git/add", gitApp.Add, "", []context.IFilter{}, []string{"req", ""}},
 	{"POST", "/git/update", gitApp.Update, "", []context.IFilter{}, []string{"req", ""}},
-	{"POST", "/git/list", gitApp.List, "", []context.IFilter{}, []string{"", ""}},
+	{"POST", "/git/list", gitApp.List, "", []context.IFilter{}, []string{"isApp", "", ""}},
 	{"POST", "/git/delete", gitApp.Delete, "", []context.IFilter{}, []string{"gitId", "", ""}},
 	{"POST", "/git/clear", gitApp.Clear, "", []context.IFilter{}, []string{"gitId", "", ""}},
 	{"POST", "/git/pull", gitApp.Pull, "", []context.IFilter{}, []string{"gitId", "", ""}},

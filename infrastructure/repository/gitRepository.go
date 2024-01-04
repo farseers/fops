@@ -23,7 +23,7 @@ func (receiver *gitRepository) ToGitList(lstIds collections.List[int64]) collect
 }
 
 func (receiver *gitRepository) ToGitListAll(isApp int) collections.List[apps.GitEO] {
-	lst := context.MysqlContext.Git.WhereIf(isApp > -1, "is_app = ?", isApp).ToList()
+	lst := context.MysqlContext.Git.WhereIf(isApp > -1, "is_app = ?", isApp).Order("is_app desc,name asc").ToList()
 	return mapper.ToList[apps.GitEO](lst)
 }
 
