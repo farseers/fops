@@ -8,13 +8,16 @@ import (
 	"github.com/farseer-go/collections"
 	"github.com/farseer-go/fs/exception"
 	"github.com/farseer-go/mapper"
+	"strings"
 )
 
 // Add 添加Git
 // @post add
 func Add(req request.AddRequest, appsRepository apps.Repository) {
 	do := mapper.Single[apps.GitEO](req)
-
+	if !strings.HasPrefix(do.Dir, "/") {
+		do.Dir = "/" + do.Dir
+	}
 	// 添加
 	err := appsRepository.AddGit(do)
 	exception.ThrowWebExceptionError(403, err)
@@ -26,6 +29,9 @@ func Update(req request.UpdateRequest, appsRepository apps.Repository) {
 	do := mapper.Single[apps.GitEO](req)
 	exception.ThrowWebExceptionBool(!appsRepository.ExistsGit(req.Id), 403, "GitId不存在")
 
+	if !strings.HasPrefix(do.Dir, "/") {
+		do.Dir = "/" + do.Dir
+	}
 	_, err := appsRepository.UpdateGit(do)
 	exception.ThrowWebExceptionError(403, err)
 }
