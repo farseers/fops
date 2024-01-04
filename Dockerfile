@@ -34,7 +34,7 @@ COPY --from=build /src/fops/farseer.yaml .
 COPY --from=build /src/fops/wwwsrc ./wwwsrc
 WORKDIR /app/wwwsrc
 # 构建npm
-RUN npm -i
+RUN npm install
 RUN npm run build
 
 # 前端文件移到静态目录
