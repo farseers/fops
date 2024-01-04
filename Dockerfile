@@ -31,6 +31,7 @@ COPY --from=build /src/fops/farseer.yaml .
 #COPY --from=build /src/views ./views
 # 复制静态资源（没有静态资源需要注释掉）
 #COPY --from=build /src/fops/wwwroot ./wwwroot
+# 复制vue源码
 COPY --from=build /src/fops/wwwsrc ./wwwsrc
 WORKDIR /app/wwwsrc
 # 构建npm
@@ -38,7 +39,7 @@ RUN npm install
 RUN npm run build
 
 # 前端文件移到静态目录
-RUN mv ./dist/* /app/wwwroot
+RUN mv ./dist/* /app/wwwroot/
 
 #设置时区
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai    /etc/localtime
