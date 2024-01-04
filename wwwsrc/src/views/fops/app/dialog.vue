@@ -320,45 +320,54 @@ const onSubmit = () => {
 };
 
 const getTableData = (type:any) => {
-  state.SelectItem=[] // 清空
-  const data = [];
+
   if (type==1){
     state.isApp=0
+    state.SelectItem=state.ruleForm.FrameworkGits // 清空
   }else{
     state.isApp=1
+    var select=[]
+    select.push(state.ruleForm.AppGit)
+    state.SelectItem=select // 清空
   }
   // 请求接口
   serverApi.gitList({isApp:state.isApp}).then(function (res){
     if (res.Status){
       state.tableData.data = res.Data;
       state.tableData.total = res.Data.length;
-
-      if (type==1){
-        state.tableData.data.forEach(function (item,index){
-          var rowArray=state.ruleForm.FrameworkGits.filter(t=>t==item.Id);
-          if(rowArray.length>0)
-          {
-            setCurrent(item,true)
-          }else{
-            setCurrent(item,false)
-          }
-        })
-      }else{
-        state.tableData.data.forEach(function (item,index){
-          if(state.ruleForm.AppGit==item.Id)
-          {
-            setCurrent(item,true)
-          }else{
-            setCurrent(item,false)
-          }
-        })
-      }
-
+      onloadSelect(type)
     }else{
       state.tableData.data=[]
     }
   })
 };
+
+const onloadSelect=(type:number)=>{
+  // 清空选项
+  state.tableData.data.forEach(function (item,index){
+    setCurrent(item,false)
+  })
+  if (type==1){
+    state.tableData.data.forEach(function (item,index){
+      var rowArray=state.ruleForm.FrameworkGits.filter(t=>t==item.Id);
+      if(rowArray.length>0)
+      {
+        setCurrent(item,true)
+      }else{
+        setCurrent(item,false)
+      }
+    })
+  }else{
+    state.tableData.data.forEach(function (item,index){
+      if(state.ruleForm.AppGit==item.Id)
+      {
+        setCurrent(item,true)
+      }else{
+        setCurrent(item,false)
+      }
+    })
+  }
+}
 const getRowKey=(row:any)=>{
   return row.Id;
 }
@@ -368,7 +377,12 @@ const handleSelectionChange=(val:any)=> {
   state.SelectItem=[] // 清空
   for (let i = 0; i < val.length; i++) {
     var item=val[i]
-    state.SelectItem.push(item.Id)
+    if(item.IsApp&&state.isApp==1){
+      state.SelectItem.push(item.Id)
+    }
+    if(!item.IsApp&&state.isApp==0){
+      state.SelectItem.push(item.Id)
+    }
   }
   console.log(state.SelectItem)
 }
