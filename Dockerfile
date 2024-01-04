@@ -39,7 +39,7 @@ RUN npm install
 RUN npm run build
 
 # 前端文件移到静态目录
-RUN mv ./dist/* /app/wwwroot/
+RUN cp ./dist/* /app/wwwroot/
 
 #设置时区
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai    /etc/localtime
