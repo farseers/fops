@@ -25,8 +25,10 @@
 <!--				<el-table-column prop="UserPwd" label="账户密码" show-overflow-tooltip></el-table-column>-->
         <el-table-column prop="Dir" label="存储目录" show-overflow-tooltip></el-table-column>
         <el-table-column prop="PullAt" label="拉取时间" width="180" show-overflow-tooltip></el-table-column>
-				<el-table-column label="操作" width="100">
+				<el-table-column label="操作" width="170">
 					<template #default="scope">
+            <el-button size="small" text type="primary" @click="onRowPull(scope.row)">拉取</el-button>
+            <el-button size="small" text type="primary" @click="onRowClear(scope.row)">清除</el-button>
 						<el-button size="small" text type="primary" @click="onOpenEdit('edit', scope.row)">修改</el-button>
 						<el-button size="small" text type="primary" @click="onRowDel(scope.row)">删除</el-button>
 					</template>
@@ -100,26 +102,61 @@ const onOpenAdd = (type: string) => {
 const onOpenEdit = (type: string, row: any) => {
   gitDialogRef.value.openDialog(type, row);
 };
-// 删除用户
+
+// 删除
 const onRowDel = (row: any) => {
-	ElMessageBox.confirm(`此操作将永久删除：“${row.Name}”，是否继续?`, '提示', {
-		confirmButtonText: '确认',
-		cancelButtonText: '取消',
-		type: 'warning',
-	})
-		.then(() => {
-      // 删除逻辑
-      serverApi.gitDel({"GitId":row.Id}).then(function (res){
-        if (res.Status){
-          getTableData();
-          ElMessage.success('删除成功');
-        }else{
-          ElMessage.error(res.StatusMessage)
-        }
+  ElMessageBox.confirm(`此操作将永久删除：“${row.Name}”，是否继续?`, '提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+      .then(() => {
+        // 删除逻辑
+        serverApi.gitDel({"GitId":row.Id}).then(function (res){
+          if (res.Status){
+            getTableData();
+            ElMessage.success('删除成功');
+          }else{
+            ElMessage.error(res.StatusMessage)
+          }
+        })
       })
-		})
-		.catch(() => {});
+      .catch(() => {});
 };
+
+// 清除目录
+const onRowClear = (row: any) => {
+  ElMessageBox.confirm(`此操作将永久清除目录：“${row.Name}”，是否继续?`, '提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+      .then(() => {
+        // 删除逻辑
+        serverApi.gitClear({"GitId":row.Id}).then(function (res){
+          if (res.Status){
+            getTableData();
+            ElMessage.success('清除成功');
+          }else{
+            ElMessage.error(res.StatusMessage)
+          }
+        })
+      })
+      .catch(() => {});
+};
+
+// 拉取
+const onRowPull = (row: any) => {
+  serverApi.gitPull({"GitId":row.Id}).then(function (res){
+    if (res.Status){
+      getTableData();
+      ElMessage.success('拉取成功');
+    }else{
+      ElMessage.error(res.StatusMessage)
+    }
+  })
+};
+
 // 分页改变
 const onHandleSizeChange = (val: number) => {
 	state.tableData.param.pageSize = val;

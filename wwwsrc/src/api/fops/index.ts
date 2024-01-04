@@ -42,6 +42,20 @@ export function fopsApi() {
 				data:param,
 			});
 		},
+		gitClear: (param: object) => {
+			return request({
+				url: '/git/clear',
+				method: 'post',
+				data:param,
+			});
+		},
+		gitPull: (param: object) => {
+			return request({
+				url: '/git/pull',
+				method: 'post',
+				data:param,
+			});
+		},
 		gitDel: (param: object) => {
 			return request({
 				url: '/git/delete',

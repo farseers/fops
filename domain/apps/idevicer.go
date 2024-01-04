@@ -42,7 +42,7 @@ type IGitDevice interface {
 	// ExistsGitProject 项目GIT是否存在
 	ExistsGitProject(gitPath string) bool
 	// Clear 消除仓库
-	Clear(gitHub string, progress chan string) bool
+	Clear(git GitEO, progress chan string) bool
 	// CloneOrPull 根据判断是否存在Git目录，来决定返回Clone or pull
 	CloneOrPull(git GitEO, progress chan string, ctx context.Context) bool
 	// CloneOrPullAndDependent 拉取主仓库及依赖仓库

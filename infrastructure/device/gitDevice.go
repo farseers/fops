@@ -47,9 +47,9 @@ func (*gitDevice) ExistsGitProject(gitPath string) bool {
 	return file.IsExists(gitPath)
 }
 
-func (device *gitDevice) Clear(gitHub string, progress chan string) bool {
+func (device *gitDevice) Clear(git apps.GitEO, progress chan string) bool {
 	// 获取Git存放的路径
-	gitPath := device.GetGitPath(gitHub)
+	gitPath := git.GetAbsolutePath()
 	exitCode := exec.RunShell("rm -rf "+gitPath, progress, nil, "")
 	if exitCode != 0 {
 		progress <- "Git清除失败"

@@ -42,7 +42,7 @@ func Delete(gitId int64, appsRepository apps.Repository, appsIGitDevice apps.IGi
 	exception.ThrowWebExceptionBool(gitId < 1, 403, "GitId没有填")
 	gitEO := appsRepository.ToGitEntity(gitId)
 	c := make(chan string, 100)
-	if !appsIGitDevice.Clear(gitEO.Hub, c) {
+	if !appsIGitDevice.Clear(gitEO, c) {
 		lstLog := collections.NewListFromChan(c)
 		exception.ThrowWebExceptionf(403, "清除目录失败:<br />%s", lstLog.ToString("<br />"))
 	}
@@ -56,7 +56,7 @@ func Clear(gitId int64, appsRepository apps.Repository, appsIGitDevice apps.IGit
 	exception.ThrowWebExceptionBool(gitId < 1, 403, "GitId没有填")
 	gitEO := appsRepository.ToGitEntity(gitId)
 	c := make(chan string, 100)
-	if !appsIGitDevice.Clear(gitEO.Hub, c) {
+	if !appsIGitDevice.Clear(gitEO, c) {
 		lstLog := collections.NewListFromChan(c)
 		exception.ThrowWebExceptionf(403, "清除目录失败:<br />%s", lstLog.ToString("<br />"))
 	}
@@ -70,7 +70,7 @@ func Pull(gitId int64, appsRepository apps.Repository, appsIGitDevice apps.IGitD
 	c := make(chan string, 100)
 	if !appsIGitDevice.CloneOrPull(gitEO, c, context.Background()) {
 		lstLog := collections.NewListFromChan(c)
-		exception.ThrowWebExceptionf(403, "清除目录失败:<br />%s", lstLog.ToString("<br />"))
+		exception.ThrowWebExceptionf(403, "拉取目录失败:<br />%s", lstLog.ToString("<br />"))
 	}
 }
 
