@@ -95,10 +95,13 @@ func (receiver *BuildEO) StartBuild() {
 	// docker上传
 	receiver.checkResult(receiver.dockerDevice.Push(receiver.Env, receiver.logQueue.progress, receiver.ctx))
 
-	// 更新镜像
-	//receiver.checkResult(receiver.kubectlDevice.SetImages(receiver.Cluster, receiver.AppName, receiver.Env.DockerImage, receiver.Project.K8SControllersType, receiver.progress, receiver.ctx))
-	receiver.checkResult(receiver.dockerDevice.SetImages(clusterDO, receiver.AppName, receiver.Env.DockerImage, receiver.logQueue.progress, receiver.ctx))
+	// 首次创建还是更新镜像
+	if receiver.dockerDevice.ExistsDocker(clusterDO, receiver.AppName) {
+		//receiver.checkResult(receiver.kubectlDevice.SetImages(receiver.Cluster, receiver.AppName, receiver.Env.DockerImage, receiver.Project.K8SControllersType, receiver.progress, receiver.ctx))
+		receiver.checkResult(receiver.dockerDevice.SetImages(clusterDO, receiver.AppName, receiver.Env.DockerImage, receiver.logQueue.progress, receiver.ctx))
+	} else { // 创建
 
+	}
 	receiver.success()
 }
 

@@ -107,9 +107,9 @@ func View(buildId int64) action.IResult {
 			logPart = fmt.Sprintf("<span style=\"color:#cfbbfc\">%s</span>", logPart)
 		} else if cmdResultTips.Contains(logPart) || strings.HasPrefix(logPart, "The push refers to repository ") || regexp.MustCompile(`\w+\.apps/\w+ image updated`).MatchString(logPart) {
 			logPart = fmt.Sprintf("<span style=\"color:#fff\">%s</span>", logPart)
-		} else if startsWithAny(cmdPrefix, logPart) {
+		} else if cmdPrefix.ContainsPrefix(logPart) {
 			logPart = fmt.Sprintf("<span style=\"color:#ffe127\">%s</span>", logPart)
-		} else if containsAny(errorTips, strings.ToLower(logPart)) {
+		} else if errorTips.ContainsAny(strings.ToLower(logPart)) {
 			logPart = fmt.Sprintf("<span style=\"color:#ff5b5b\">%s</span>", logPart)
 		} else {
 			dockerLogMatch := regexp.MustCompile(`#\d+ \[.+ \d+/\d+\] (?P<cmd>.+)`).FindStringSubmatch(logPart)
@@ -130,18 +130,4 @@ func View(buildId int64) action.IResult {
 		logContent[i] = dateTimePart + " " + logPart
 	}
 	return action.Content(strings.Join(logContent, "\n"))
-}
-
-// 检查字符串是否以指定字符串切片中的任意字符串开头
-func startsWithAny(lst collections.List[string], str string) bool {
-	return lst.Where(func(item string) bool {
-		return strings.HasPrefix(str, item)
-	}).Any()
-}
-
-// 检查字符串切片中是否包含指定子字符串
-func containsAny(lst collections.List[string], substr string) bool {
-	return lst.Where(func(item string) bool {
-		return strings.Contains(substr, strings.ToLower(item))
-	}).Any()
 }

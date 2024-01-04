@@ -6,7 +6,9 @@ import (
 	"fops/domain/apps"
 	"fops/domain/apps/event"
 	"fops/domain/cluster"
+	"github.com/farseer-go/collections"
 	"github.com/farseer-go/fs/container"
+	"github.com/farseer-go/fs/exception"
 	"github.com/farseer-go/utils/exec"
 	"github.com/farseer-go/utils/file"
 	"github.com/farseer-go/utils/str"
@@ -108,6 +110,21 @@ func (dockerDevice) SetImages(cluster cluster.DomainObject, appName string, dock
 	}
 	progress <- "Docker Swarm更新镜像版本完成。"
 	return true
+}
+
+func (dockerDevice) ExistsDocker(cluster cluster.DomainObject, appName string) bool {
+	progress := make(chan string, 1000)
+	// docker service inspect fops
+	var exitCode = exec.RunShell(fmt.Sprintf("docker service inspect %s", appName), progress, nil, "")
+	if exitCode != 0 {
+		exception.ThrowWebException(403, "获取应用信息时失败。")
+		return false
+	}
+	lst := collections.NewListFromChan(progress)
+	if lst.Contains("[]") && lst.ContainsPrefix("Status: Error: no such service:") {
+		return false
+	}
+	return lst.ContainsAny("\"Name\": \"fops\"")
 }
 
 func (dockerDevice) SetReplicas(cluster cluster.DomainObject, appName string, dockerReplicas int, progress chan string) bool {
