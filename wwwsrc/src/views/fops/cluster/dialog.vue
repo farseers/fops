@@ -18,6 +18,11 @@
 							<el-input v-model="state.ruleForm.K8sConnectConfig" placeholder="请输入K8s连接配置" clearable></el-input>
 						</el-form-item>
 					</el-col>
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="Docker网络">
+              <el-input v-model="state.ruleForm.DockerNetwork" placeholder="请输入Docker网络名称" clearable></el-input>
+            </el-form-item>
+          </el-col>
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item label="DockerHub名称">
 							<el-input v-model="state.ruleForm.DockerName" placeholder="请输入仓库名称" clearable></el-input>
@@ -67,6 +72,7 @@ const state = reactive({
     Name: '', // 集群名称
     Ip: '', // 集群地址
     K8sConnectConfig: '', // K8s连接配置
+    DockerNetwork: '', // Docker网络
     DockerName: '', // 仓库名称
     DockerHub: '', // 托管地址
     DockerUserName: '', // 账户名称
@@ -92,6 +98,7 @@ const openDialog = (type: string, row: any) => {
     state.ruleForm.Name=row.Name
     state.ruleForm.Ip=row.Ip
     state.ruleForm.K8sConnectConfig=row.K8sConnectConfig
+    state.ruleForm.DockerNetwork=row.DockerNetwork
     state.ruleForm.DockerName=row.DockerName
     state.ruleForm.DockerHub=row.DockerHub
     state.ruleForm.DockerUserName=row.DockerUserName
@@ -105,6 +112,7 @@ const openDialog = (type: string, row: any) => {
     state.ruleForm.Name=""
     state.ruleForm.Ip=""
     state.ruleForm.K8sConnectConfig=""
+    state.ruleForm.DockerNetwork=""
     state.ruleForm.DockerName=""
     state.ruleForm.DockerHub=""
     state.ruleForm.DockerUserName=""
@@ -133,6 +141,7 @@ const onSubmit = () => {
     "Name":state.ruleForm.Name,
     "Ip":state.ruleForm.Ip,
     "K8sConnectConfig":state.ruleForm.K8sConnectConfig,
+    "DockerNetwork":state.ruleForm.DockerNetwork,
     "DockerName":state.ruleForm.DockerName,
     "DockerHub":state.ruleForm.DockerHub,
     "DockerUserName":state.ruleForm.DockerUserName,
