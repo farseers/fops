@@ -36,10 +36,10 @@
             <div  style="background: #ffffff;width: 24%"  class="flex-warp-item" v-for="(v, k) in state.tableData.data" :key="k">
               <div class="flex-warp-item-box" @click="onShowBuildList(v)">
                 <div class="appItem">
-                  <el-tag size="mini">{{ v.AppName }}</el-tag>
-                  <el-tag v-if="v.IsHealth" size="mini" type="success">健康</el-tag>
-                  <el-tag v-else-if="length(v.ActiveInstance) > 0" size="mini" type="warning">不健康</el-tag>
-                  <el-tag v-else size="mini" type="danger">未运行</el-tag>
+                  <el-tag size="small">{{ v.AppName }}</el-tag>
+                  <el-tag v-if="v.IsHealth" size="small" type="success">健康</el-tag>
+                  <el-tag v-else-if="v.ActiveInstance!=null && v.ActiveInstance.length > 0" size="small" type="warning">不健康</el-tag>
+                  <el-tag v-else size="small" type="danger">未运行</el-tag>
                 </div>
                 <div class="appItem">容器版本：{{ v.DockerVer }}</div>
                 <div class="appItem">集群版本：{{ v.ClusterVer }}</div>
@@ -65,10 +65,10 @@
                 <el-table-column prop="AppName" label="应用名称" ></el-table-column>
                 <el-table-column label="状态" width="90" show-overflow-tooltip>
                   <template #default="scope">
-                    <el-tag v-if="scope.row.Status==0" size="mini" type="info">未开始</el-tag>
-                    <el-tag v-else-if="scope.row.Status==1" size="mini" type="warning">构建中</el-tag>
-                    <el-tag v-if="scope.row.Status==2 && scope.row.IsSuccess == true" size="mini" type="success">成功</el-tag>
-                    <el-tag v-else-if="scope.row.Status==2 && scope.row.IsSuccess == false" size="mini" type="danger">失败</el-tag>
+                    <el-tag v-if="scope.row.Status==0" size="small" type="info">未开始</el-tag>
+                    <el-tag v-else-if="scope.row.Status==1" size="small" type="warning">构建中</el-tag>
+                    <el-tag v-if="scope.row.Status==2 && scope.row.IsSuccess == true" size="small" type="success">成功</el-tag>
+                    <el-tag v-else-if="scope.row.Status==2 && scope.row.IsSuccess == false" size="small" type="danger">失败</el-tag>
                   </template>
                 </el-table-column>
                 <el-table-column prop="FinishAt" width="170" label="完成时间"></el-table-column>

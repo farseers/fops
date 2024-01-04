@@ -79,32 +79,32 @@
 <!--          </el-col>-->
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="任务内容" >
-              <el-tag size="mini">ID：{{state.ruleForm.Task.Id}}</el-tag>
-              <el-tag size="mini">名称：{{state.ruleForm.Task.Name}}</el-tag>
-              <el-tag size="mini">版本：{{state.ruleForm.Task.Ver}}</el-tag>
-              <el-tag size="mini">标题：{{state.ruleForm.Task.Caption}}</el-tag>
+              <el-tag size="small">ID：{{state.ruleForm.Task.Id}}</el-tag>
+              <el-tag size="small">名称：{{state.ruleForm.Task.Name}}</el-tag>
+              <el-tag size="small">版本：{{state.ruleForm.Task.Ver}}</el-tag>
+              <el-tag size="small">标题：{{state.ruleForm.Task.Caption}}</el-tag>
             </el-form-item>
             <el-form-item label="运行数据" >
-              <el-tag size="mini">参数：{{JSON.stringify(state.ruleForm.Task.Data) }}</el-tag>
+              <el-tag size="small">参数：{{JSON.stringify(state.ruleForm.Task.Data) }}</el-tag>
             </el-form-item>
             <el-form-item label="运行数据" >
-              <el-tag size="mini">运行耗时：{{state.ruleForm.Task.RunSpeed}}</el-tag>
-              <el-tag size="mini">进度：{{state.ruleForm.Task.Progress}}</el-tag>
+              <el-tag size="small">运行耗时：{{state.ruleForm.Task.RunSpeed}}</el-tag>
+              <el-tag size="small">进度：{{state.ruleForm.Task.Progress}}</el-tag>
             </el-form-item>
             <el-form-item label="任务时间" >
-              <el-tag size="mini">开始时间：{{state.ruleForm.Task.StartAt}}</el-tag>
-              <el-tag size="mini">运行时间：{{state.ruleForm.Task.RunAt}}</el-tag>
-              <el-tag size="mini">调度时间：{{state.ruleForm.Task.SchedulerAt}}</el-tag>
-              <el-tag size="mini">创建时间：{{state.ruleForm.Task.CreateAt}}</el-tag>
+              <el-tag size="small">开始时间：{{state.ruleForm.Task.StartAt}}</el-tag>
+              <el-tag size="small">运行时间：{{state.ruleForm.Task.RunAt}}</el-tag>
+              <el-tag size="small">调度时间：{{state.ruleForm.Task.SchedulerAt}}</el-tag>
+              <el-tag size="small">创建时间：{{state.ruleForm.Task.CreateAt}}</el-tag>
             </el-form-item>
             <el-form-item label="任务状态" >
-              <el-tag size="mini">状态：{{getStatusDesc(state.ruleForm.Task.Status)}}</el-tag>
+              <el-tag size="small">状态：{{getStatusDesc(state.ruleForm.Task.Status)}}</el-tag>
             </el-form-item>
             <el-form-item label="客户端信息" >
-              <el-tag size="mini">客户端ID：{{state.ruleForm.Task.Client.Id}}</el-tag>
-              <el-tag size="mini">客户端名称：{{state.ruleForm.Task.Client.Name}}</el-tag>
-              <el-tag size="mini">客户端IP：{{state.ruleForm.Task.Client.Ip}}</el-tag>
-              <el-tag size="mini">客户端端口：{{state.ruleForm.Task.Client.Port}}</el-tag>
+              <el-tag size="small">客户端ID：{{state.ruleForm.Task.Client.Id}}</el-tag>
+              <el-tag size="small">客户端名称：{{state.ruleForm.Task.Client.Name}}</el-tag>
+              <el-tag size="small">客户端IP：{{state.ruleForm.Task.Client.Ip}}</el-tag>
+              <el-tag size="small">客户端端口：{{state.ruleForm.Task.Client.Port}}</el-tag>
             </el-form-item>
           </el-col>
 				</el-row>

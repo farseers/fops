@@ -12,7 +12,7 @@
         <label class="ml10">日志内容</label>
         <el-input size="default" v-model="state.logContent" placeholder="日志内容" style="max-width: 250px;padding-left: 5px"> </el-input>
         <label class="ml10">日志类型</label>
-        <el-select v-model="state.logLevel" placeholder="日志类型" class="ml10" style="max-width: 110px;" size="mini">
+        <el-select v-model="state.logLevel" placeholder="日志类型" class="ml10" style="max-width: 110px;" size="small">
           <el-option label="全部" :value="-1"></el-option>
           <el-option label="Trace" :value="0"></el-option>
           <el-option label="Debug" :value="1"></el-option>
@@ -36,22 +36,22 @@
         </el-table-column>
         <el-table-column width="200px" label="应用" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag size="mini">{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
+            <el-tag size="small">{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
             {{scope.row.AppId}}
           </template>
         </el-table-column>
         <el-table-column width="100px" prop="LogLevel" label="日志类型" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag v-if="scope.row.LogLevel == 'Info'" size="mini">{{scope.row.LogLevel}}</el-tag>
-            <el-tag v-else-if="scope.row.LogLevel == 'Debug'" type="info" size="mini">{{scope.row.LogLevel}}</el-tag>
-            <el-tag v-else-if="scope.row.LogLevel == 'Warn'" type="warning" size="mini">{{scope.row.LogLevel}}</el-tag>
-            <el-tag v-else-if="scope.row.LogLevel == 'Error'" type="danger" size="mini">{{scope.row.LogLevel}}</el-tag>
+            <el-tag v-if="scope.row.LogLevel == 'Info'" size="small">{{scope.row.LogLevel}}</el-tag>
+            <el-tag v-else-if="scope.row.LogLevel == 'Debug'" type="info" size="small">{{scope.row.LogLevel}}</el-tag>
+            <el-tag v-else-if="scope.row.LogLevel == 'Warn'" type="warning" size="small">{{scope.row.LogLevel}}</el-tag>
+            <el-tag v-else-if="scope.row.LogLevel == 'Error'" type="danger" size="small">{{scope.row.LogLevel}}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="内容" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag v-if="scope.row.TraceId > 0" type="info" size="mini">TraceID {{scope.row.TraceId}}</el-tag>
-            <br v-if="scope.row.TraceId > 0" type="info" size="mini" />
+            <el-tag v-if="scope.row.TraceId > 0" type="info" size="small">TraceID {{scope.row.TraceId}}</el-tag>
+            <br v-if="scope.row.TraceId > 0" type="info" size="small" />
             {{scope.row.Content}}
           </template>
         </el-table-column>

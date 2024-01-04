@@ -2,7 +2,7 @@
 	<div class="system-user-container layout-padding">
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
-        <el-select v-model="state.isApp" placeholder="Git类型" class="ml10" style="max-width: 150px;" size="mini">
+        <el-select v-model="state.isApp" placeholder="Git类型" class="ml10" style="max-width: 150px;" size="small">
           <el-option label="全部" :value="-1"></el-option>
           <el-option label="框架" :value="0"></el-option>
           <el-option label="应用" :value="1"></el-option>
@@ -25,8 +25,8 @@
 				<el-table-column prop="Id" label="编号" width="60" />
 				<el-table-column label="Git名称" width="200" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag v-if="scope.row.IsApp == true" size="mini">{{scope.row.Name}}</el-tag>
-            <el-tag v-else size="mini" type="info">{{scope.row.Name}}</el-tag>
+            <el-tag v-if="scope.row.IsApp == true" size="small">{{scope.row.Name}}</el-tag>
+            <el-tag v-else size="small" type="info">{{scope.row.Name}}</el-tag>
           </template>
         </el-table-column>
 				<el-table-column prop="Hub" label="托管地址" show-overflow-tooltip></el-table-column>

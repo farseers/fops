@@ -13,7 +13,7 @@
         <label class="ml10">任务ID</label>
         <el-input size="default" v-model="state.taskId" placeholder="任务ID" style="max-width: 180px;padding-left: 5px"> </el-input>
         <label class="ml10">往前推N分钟的数据</label>
-        <el-select v-model="state.startMin" placeholder="往前推N分钟的数据" class="ml10" style="max-width: 150px;" size="mini">
+        <el-select v-model="state.startMin" placeholder="往前推N分钟的数据" class="ml10" style="max-width: 150px;" size="small">
           <el-option label="全部" :value="0"></el-option>
           <el-option label="1小时耗时最高" :value="60"></el-option>
           <el-option label="30分钟耗时最高" :value="30"></el-option>
@@ -39,31 +39,31 @@
         </el-table-column>
         <el-table-column width="200px" label="应用" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag size="mini">{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
+            <el-tag size="small">{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
             {{scope.row.AppId}}
           </template>
         </el-table-column>
         <el-table-column width="120px" prop="UseDesc" label="执行耗时" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag size="mini" v-if="scope.row.UseTs > 100000000" type="danger">{{scope.row.UseDesc}}</el-tag>
-            <el-tag size="mini" v-else-if="scope.row.UseTs > 50000000" type="warning">{{scope.row.UseDesc}}</el-tag>
-            <el-tag size="mini" v-else-if="scope.row.UseTs > 1000000">{{scope.row.UseDesc}}</el-tag>
-            <el-tag size="mini" v-else type="success">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="small" v-if="scope.row.UseTs > 100000000" type="danger">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="small" v-else-if="scope.row.UseTs > 50000000" type="warning">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="small" v-else-if="scope.row.UseTs > 1000000">{{scope.row.UseDesc}}</el-tag>
+            <el-tag size="small" v-else type="success">{{scope.row.UseDesc}}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="任务名称" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag v-if="scope.row.TaskGroupId >0" size="mini">任务组Id：{{scope.row.TaskGroupId}}</el-tag>
-            <el-tag v-if="scope.row.TaskId >0" size="mini" type="success">任务Id：{{scope.row.TaskId}}</el-tag>
+            <el-tag v-if="scope.row.TaskGroupId >0" size="small">任务组Id：{{scope.row.TaskGroupId}}</el-tag>
+            <el-tag v-if="scope.row.TaskId >0" size="small" type="success">任务Id：{{scope.row.TaskId}}</el-tag>
             <br v-if="scope.row.TaskGroupId >0 || scope.row.TaskId >0" />
             {{scope.row.TaskName}}
           </template>
         </el-table-column>
         <el-table-column width="300px" label="异常" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">
-            <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>
-            <el-tag size="mini" v-else type="info">无</el-tag>
+            <el-tag size="small" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">
+            <el-tag size="small" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>
+            <el-tag size="small" v-else type="info">无</el-tag>
           </template>
         </el-table-column>
         <el-table-column width="180px" prop="CreateAt" label="请求时间" show-overflow-tooltip></el-table-column>

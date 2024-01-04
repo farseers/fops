@@ -30,17 +30,17 @@
 				<el-table-column label="名称" style="line-height: 45px;height: 45px">
           <template #default="scope">
             <div style="float: left;padding-right: 10px;padding-top: 5px">
-              <el-tag size="mini" cursor="cursor" @click="onIsEnable(scope.row)" v-if="scope.row.IsEnable">启用</el-tag>
-              <el-tag size="mini" cursor="cursor" @click="onIsEnable(scope.row)" v-else type="info">停用</el-tag>
+              <el-tag size="small" cursor="cursor" @click="onIsEnable(scope.row)" v-if="scope.row.IsEnable">启用</el-tag>
+              <el-tag size="small" cursor="cursor" @click="onIsEnable(scope.row)" v-else type="info">停用</el-tag>
 <!--                      <el-switch v-model="scope.row.IsEnable" @click="onIsEnable(scope.row)" inline-prompt active-text="启用" inactive-text="停用"></el-switch>-->
             </div>
             <div style="float: left;padding-right: 10px;padding-top: 5px">
-              <el-tag size="mini" v-if="scope.row.Task.Status==0" type="info">未开始</el-tag>
-              <el-tag size="mini" v-if="scope.row.Task.Status==1" type="success">调度中</el-tag>
-              <el-tag size="mini" style="color:red" v-if="scope.row.Task.Status==2" type="warning">调度失败</el-tag>
-              <el-tag size="mini" v-if="scope.row.Task.Status==3" type="success">执行中</el-tag>
-              <el-tag size="mini" v-if="scope.row.Task.Status==4" type="danger">失败</el-tag>
-              <el-tag size="mini" style="color:green" v-if="scope.row.Task.Status==5" type="success">成功</el-tag>
+              <el-tag size="small" v-if="scope.row.Task.Status==0" type="info">未开始</el-tag>
+              <el-tag size="small" v-if="scope.row.Task.Status==1" type="success">调度中</el-tag>
+              <el-tag size="small" style="color:red" v-if="scope.row.Task.Status==2" type="warning">调度失败</el-tag>
+              <el-tag size="small" v-if="scope.row.Task.Status==3" type="success">执行中</el-tag>
+              <el-tag size="small" v-if="scope.row.Task.Status==4" type="danger">失败</el-tag>
+              <el-tag size="small" style="color:green" v-if="scope.row.Task.Status==5" type="success">成功</el-tag>
             </div>
             <div @click="onTaskList(scope.row)" style="float: left">
               <span>{{scope.row.Caption}}</span><br>
@@ -75,7 +75,7 @@
             <el-table-column label="客户端信息" width="180" show-overflow-tooltip>
               <template #default="scope">
                 <div v-for="(item, index) in scope.row.Clients.slice(0, 3)" :key="index">
-                  <el-tag size="mini">{{item.Name}} {{item.Ip}}:{{item.Port}}</el-tag>
+                  <el-tag size="small">{{item.Name}} {{item.Ip}}:{{item.Port}}</el-tag>
                   <span v-if="scope.row.Clients.length>3">更多</span>
                 </div>
               </template>
