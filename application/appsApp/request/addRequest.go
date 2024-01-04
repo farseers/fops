@@ -8,7 +8,7 @@ type AddRequest struct {
 	AppGit            int64                   // 应用的源代码
 	FrameworkGits     collections.List[int64] // 依赖的框架源代码
 	HealthInstance    int                     // 健康的实例数量
-	Replicas          int                     // 副本数量
+	DockerReplicas    int                     // 副本数量
 	DockerNodeRole    string                  // 容器节点角色 manager or worker
 	AdditionalScripts string                  // 首次创建应用时附加脚本
 }
