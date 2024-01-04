@@ -18,12 +18,16 @@
 			</div>
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
 				<el-table-column prop="Id" label="编号" width="60" />
-				<el-table-column prop="Name" label="Git名称" width="180" show-overflow-tooltip></el-table-column>
+				<el-table-column label="Git名称" width="200" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag v-if="scope.row.IsApp == true" size="mini">{{scope.row.Name}}</el-tag>
+            <el-tag v-else size="mini" type="info">{{scope.row.Name}}</el-tag>
+          </template>
+        </el-table-column>
 				<el-table-column prop="Hub" label="托管地址" show-overflow-tooltip></el-table-column>
-				<el-table-column prop="Branch" label="Git分支" width="160" show-overflow-tooltip></el-table-column>
-				<el-table-column prop="UserName" label="账户名称" width="160" show-overflow-tooltip></el-table-column>
-<!--				<el-table-column prop="UserPwd" label="账户密码" show-overflow-tooltip></el-table-column>-->
-        <el-table-column prop="Dir" label="存储目录" show-overflow-tooltip></el-table-column>
+				<el-table-column prop="Branch" label="Git分支" width="100" show-overflow-tooltip></el-table-column>
+				<el-table-column prop="UserName" label="账户名称" width="180" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="Dir" label="存储目录" width="220" show-overflow-tooltip></el-table-column>
         <el-table-column prop="PullAt" label="拉取时间" width="180" show-overflow-tooltip></el-table-column>
 				<el-table-column label="操作" width="170">
 					<template #default="scope">
@@ -82,7 +86,7 @@ const getTableData = () => {
 	state.tableData.loading = true;
 	const data = [];
   // 请求接口
-  serverApi.gitList({}).then(function (res){
+  serverApi.gitList({isApp:-1}).then(function (res){
     if (res.Status){
       state.tableData.data = res.Data;
       state.tableData.total = res.Data.length;
