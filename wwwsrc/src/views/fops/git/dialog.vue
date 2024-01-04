@@ -33,24 +33,7 @@
               <el-input v-model="state.ruleForm.Dir" placeholder="请输入存储目录" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="副本数量">
-              <el-input v-model="state.ruleForm.DockerReplicas" type="number" placeholder="请输入副本数量" clearable></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="容器节点角色">
-              <el-select v-model="state.ruleForm.DockerNodeRoleInt" placeholder="请输入容器节点角色" class="ml10" style="max-width: 150px;" size="mini">
-                <el-option label="manager" :value="0"></el-option>
-                <el-option label="worker" :value="1"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="附加脚本">
-              <el-input v-model="state.ruleForm.AdditionalScripts" type="textarea" placeholder="请输入附加脚本" clearable></el-input>
-            </el-form-item>
-          </el-col>
+
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="是否为应用仓库">
               <el-switch v-model="state.ruleForm.IsApp" inline-prompt active-text="是" inactive-text="否"></el-switch>
@@ -89,10 +72,7 @@ const state = reactive({
     Dir: '', // 存储目录
     PullAt: '', // 拉取时间
     IsApp:false, // 是否为应用仓库
-    DockerReplicas:0,// 副本数量
-    DockerNodeRole:'',// 容器节点角色 manager or worker
-    DockerNodeRoleInt:0,// 容器节点角色 manager or worker
-    AdditionalScripts:'',// 多行内容，用多行文本框
+
   },
 	dialog: {
 		isShowDialog: false,
@@ -119,14 +99,7 @@ const openDialog = (type: string, row: any) => {
     state.ruleForm.Dir=row.Dir
     state.ruleForm.PullAt=row.PullAt
     state.ruleForm.IsApp=row.IsApp
-    state.ruleForm.DockerReplicas=row.DockerReplicas
-    state.ruleForm.DockerNodeRole=row.DockerNodeRole
-    state.ruleForm.AdditionalScripts=row.AdditionalScripts
-    if(state.ruleForm.DockerNodeRole=="manager"){
-      state.ruleForm.DockerNodeRoleInt=0
-    }else {
-      state.ruleForm.DockerNodeRoleInt=1
-    }
+
 
 	} else {
 		state.dialog.title = '新增Git';
@@ -159,11 +132,7 @@ const onCancel = () => {
 // 提交
 const onSubmit = () => {
 
-  if(state.ruleForm.DockerNodeRoleInt==0){
-    state.ruleForm.DockerNodeRole="manager"
-  }else{
-    state.ruleForm.DockerNodeRole="worker"
-  }
+
 
   // 提交数据
   var param={
@@ -174,9 +143,6 @@ const onSubmit = () => {
     "UserName":state.ruleForm.UserName,
     "UserPwd":state.ruleForm.UserPwd,
     "Dir":state.ruleForm.Dir,
-    "DockerReplicas":state.ruleForm.DockerReplicas,
-    "DockerNodeRole":state.ruleForm.DockerNodeRole,
-    "AdditionalScripts":state.ruleForm.AdditionalScripts,
     "IsApp":state.ruleForm.IsApp
   }
 

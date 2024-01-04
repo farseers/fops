@@ -63,6 +63,24 @@
               <el-input v-model="state.ruleForm.DockerfilePath" placeholder="请输入Dockerfile路径" clearable></el-input>
             </el-form-item>
           </el-col>
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="副本数量">
+              <el-input v-model="state.ruleForm.DockerReplicas" type="number" placeholder="请输入副本数量" clearable></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="容器节点角色">
+              <el-select v-model="state.ruleForm.DockerNodeRoleInt" placeholder="请输入容器节点角色" class="ml10" style="max-width: 150px;" size="mini">
+                <el-option label="manager" :value="0"></el-option>
+                <el-option label="worker" :value="1"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+            <el-form-item label="附加脚本">
+              <el-input v-model="state.ruleForm.AdditionalScripts" type="textarea" placeholder="请输入附加脚本" clearable></el-input>
+            </el-form-item>
+          </el-col>
 				</el-row>
 			</el-form>
 			<template #footer>
@@ -121,6 +139,10 @@ const state = reactive({
     Dockerfile: '', // Dockerfile内容
     DockerfilePath: '', // Dockerfile路径
     IsHealth:false, // 是否健康
+    DockerReplicas:0,// 副本数量
+    DockerNodeRole:'',// 容器节点角色 manager or worker
+    DockerNodeRoleInt:0,// 容器节点角色 manager or worker
+    AdditionalScripts:'',// 多行内容，用多行文本框
 	},
   gitList:[],
   SelectItem:[],
@@ -166,6 +188,14 @@ const openDialog = (type: string, row: any) => {
         state.ruleForm.DockerfilePath=row.DockerfilePath
         state.SelectItem=row.FrameworkGits
         state.ruleForm.IsHealth=row.IsHealth
+        state.ruleForm.DockerReplicas=row.DockerReplicas
+        state.ruleForm.DockerNodeRole=row.DockerNodeRole
+        state.ruleForm.AdditionalScripts=row.AdditionalScripts
+        if(state.ruleForm.DockerNodeRole=="manager"){
+          state.ruleForm.DockerNodeRoleInt=0
+        }else {
+          state.ruleForm.DockerNodeRoleInt=1
+        }
         loadGitInfo(row.AppGit)
         // 加载git数据
         loadGit(row.FrameworkGits)
@@ -246,6 +276,11 @@ const onDelete = () => {
 };
 // 提交
 const onSubmit = () => {
+  if(state.ruleForm.DockerNodeRoleInt==0){
+    state.ruleForm.DockerNodeRole="manager"
+  }else{
+    state.ruleForm.DockerNodeRole="worker"
+  }
   // 提交数据
   var param={
     "AppName":state.ruleForm.AppName,
@@ -253,6 +288,9 @@ const onSubmit = () => {
     "AppGit":parseInt(state.ruleForm.AppGit),
     "FrameworkGits":state.ruleForm.FrameworkGits,
     "Dockerfile":state.ruleForm.Dockerfile,
+    "DockerReplicas":parseInt(state.ruleForm.DockerReplicas),
+    "DockerNodeRole":state.ruleForm.DockerNodeRole,
+    "AdditionalScripts":state.ruleForm.AdditionalScripts,
   }
 
 	if (state.dialog.type === 'add') {
