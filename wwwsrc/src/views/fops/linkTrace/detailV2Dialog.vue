@@ -5,34 +5,34 @@
 				<el-row :gutter="35">
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20" v-if="state.tableData.length>0">
             <div>
-              应用名称：<el-tag size="mini">{{state.AppName}}</el-tag>，
+              应用名称：<el-tag size="small">{{state.AppName}}</el-tag>，
               应用ID：{{state.AppId}}，
               应用IP：{{state.AppIp}}，
               整体耗时：
-                <el-tag size="mini" v-if="state.UseTs > 100000000" type="danger">{{state.UseDesc}}</el-tag>
-                <el-tag size="mini" v-else-if="state.UseTs > 50000000" type="warning">{{state.UseDesc}}</el-tag>
-                <el-tag size="mini" v-else-if="state.UseTs > 1000000">{{state.UseDesc}}</el-tag>
-                <el-tag size="mini" v-else type="success">{{state.UseDesc}}</el-tag>
+                <el-tag size="small" v-if="state.UseTs > 100000000" type="danger">{{state.UseDesc}}</el-tag>
+                <el-tag size="small" v-else-if="state.UseTs > 50000000" type="warning">{{state.UseDesc}}</el-tag>
+                <el-tag size="small" v-else-if="state.UseTs > 1000000">{{state.UseDesc}}</el-tag>
+                <el-tag size="small" v-else type="success">{{state.UseDesc}}</el-tag>
             </div>
             <!--webapi-->
             <div class="mt10" v-if="state.TraceType == 0">
-              <el-tag size="mini">{{state.WebStatusCode}}</el-tag> {{state.WebRequestIp}} <el-tag type="success" size="mini">{{state.WebMethod}}</el-tag>
-              <el-tag v-if="state.WebContentType!=''" type="info" size="mini">{{state.WebContentType}}</el-tag>{{state.WebPath}}
+              <el-tag size="small">{{state.WebStatusCode}}</el-tag> {{state.WebRequestIp}} <el-tag type="success" size="small">{{state.WebMethod}}</el-tag>
+              <el-tag v-if="state.WebContentType!=''" type="info" size="small">{{state.WebContentType}}</el-tag>{{state.WebPath}}
               <el-button style="margin-left: 20px" type="primary" size="small">查看报文</el-button>
               <el-button style="margin-left: 20px" size="small" type="success" @click="showLog()">查看日志</el-button>
             </div>
             <!--MqConsumer--> <!--QueueConsumer-->
             <div class="mt10" v-else-if="state.TraceType == 1 || state.TraceType == 2">
               {{state.ConsumerServer}}
-              <el-tag v-if="state.ConsumerRoutingKey !=''" size="mini">{{state.ConsumerRoutingKey}}</el-tag>
+              <el-tag v-if="state.ConsumerRoutingKey !=''" size="small">{{state.ConsumerRoutingKey}}</el-tag>
               <br v-if="state.ConsumerRoutingKey !=''" />
               {{state.ConsumerQueueName}}
               <el-button style="margin-left: 20px" size="small" type="success">查看日志</el-button>
             </div>
             <!--FSchedule--> <!--Task-->
             <div class="mt10" v-else-if="state.TraceType == 3 || state.TraceType == 4">
-              <el-tag v-if="state.TaskGroupId >0" size="mini">任务组Id：{{state.TaskGroupId}}</el-tag>
-              <el-tag v-if="state.TaskId >0" size="mini" type="success">任务Id：{{state.TaskId}}</el-tag>
+              <el-tag v-if="state.TaskGroupId >0" size="small">任务组Id：{{state.TaskGroupId}}</el-tag>
+              <el-tag v-if="state.TaskId >0" size="small" type="success">任务Id：{{state.TaskId}}</el-tag>
               {{state.TaskName}}
               <el-button style="margin-left: 20px" size="small" type="success">查看日志</el-button>
             </div>
@@ -49,7 +49,7 @@
               </li>
               <li style="clear: both" v-for="(item, index) in state.TsArray" :key="index">
                 <div v-for="(info,i) in state.tableData.filter(t=>t.StartTs==item.StartTs)">
-                  <span :style="{'padding-left':index*200+'px'}" :title="info.Desc"><el-tag size="mini">{{info.AppName}}</el-tag>{{info.Caption}}，耗时：{{info.UseTs/1000}}ms</span>
+                  <span :style="{'padding-left':index*200+'px'}" :title="info.Desc"><el-tag size="small">{{info.AppName}}</el-tag>{{info.Caption}}，耗时：{{info.UseTs/1000}}ms</span>
                   <span v-if="info.Exception!=null">异常：{{friendlyJSONstringify(info.Exception)}}</span>
                   <span v-else></span>
                 </div>
@@ -66,15 +66,15 @@
 <!--        <el-table-column prop="UseDesc" label="时间" show-overflow-tooltip></el-table-column>-->
 <!--        <el-table-column width="250px" label="内容" show-overflow-tooltip>-->
 <!--          <template #default="scope">-->
-<!--            <el-tag size="mini">{{scope.row.AppName}}</el-tag><span>{{scope.row.Desc}} {{scope.row.Caption}}</span>-->
+<!--            <el-tag size="small">{{scope.row.AppName}}</el-tag><span>{{scope.row.Desc}} {{scope.row.Caption}}</span>-->
 <!--          </template>-->
 <!--        </el-table-column>-->
 <!--        <el-table-column width="120px" prop="AppIp" label="应用IP" show-overflow-tooltip></el-table-column>-->
 <!--        <el-table-column width="300px" label="异常" show-overflow-tooltip>-->
 <!--          <template #default="scope">-->
-<!--            <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">-->
-<!--            <el-tag size="mini" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>-->
-<!--            <el-tag size="mini" v-else type="info">无</el-tag>-->
+<!--            <el-tag size="small" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionCallFile}}:{{scope.row.Exception.ExceptionCallLine}} {{scope.row.Exception.ExceptionCallFuncName}}</el-tag><br  v-if="scope.row.Exception!=null">-->
+<!--            <el-tag size="small" v-if="scope.row.Exception!=null">{{scope.row.Exception.ExceptionMessage}}</el-tag>-->
+<!--            <el-tag size="small" v-else type="info">无</el-tag>-->
 <!--          </template>-->
 <!--        </el-table-column>-->
 <!--      </el-table>-->

@@ -7,11 +7,11 @@
             <ul class="custom-list">
               <li>
                 <span>{{state.ruleForm.CreateAt}}</span>
-                <el-tag size="mini">{{state.ruleForm.Method}} => </el-tag><span> {{state.ruleForm.Url}}</span> <span>整体耗时：{{state.ruleForm.UseDesc}}</span>
+                <el-tag size="small">{{state.ruleForm.Method}} => </el-tag><span> {{state.ruleForm.Url}}</span> <span>整体耗时：{{state.ruleForm.UseDesc}}</span>
               </li>
-              <li><el-tag size="mini">Headers：</el-tag>{{friendlyJSONstringify(state.ruleForm.Headers)}}</li>
-              <li><el-tag size="mini">入参：</el-tag>{{state.ruleForm.RequestBody}}</li>
-              <li><el-tag size="mini">出参：</el-tag>{{state.ruleForm.ResponseBody}}</li>
+              <li><el-tag size="small">Headers：</el-tag>{{friendlyJSONstringify(state.ruleForm.Headers)}}</li>
+              <li><el-tag size="small">入参：</el-tag>{{state.ruleForm.RequestBody}}</li>
+              <li><el-tag size="small">出参：</el-tag>{{state.ruleForm.ResponseBody}}</li>
             </ul>
 					</el-col>
 				</el-row>

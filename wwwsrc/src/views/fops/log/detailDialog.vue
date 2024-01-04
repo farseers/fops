@@ -39,7 +39,7 @@
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20" v-if="state.ruleForm.Component != ''">
             <el-form-item label="组件">
-              <el-tag size="mini">{{state.ruleForm.Component}}</el-tag>
+              <el-tag size="small">{{state.ruleForm.Component}}</el-tag>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">

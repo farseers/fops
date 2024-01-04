@@ -30,12 +30,12 @@
         <el-table-column label="名称" style="line-height: 45px;height: 45px">
           <template #default="scope">
             <div style="float: left;padding-right: 10px;padding-top: 5px">
-              <el-tag size="mini" v-if="scope.row.Task.Status==0" type="info">未开始</el-tag>
-              <el-tag size="mini" v-if="scope.row.Task.Status==1" type="success">调度中</el-tag>
-              <el-tag size="mini" style="color:red" v-if="scope.row.Task.Status==2" type="warning">调度失败</el-tag>
-              <el-tag size="mini" v-if="scope.row.Task.Status==3" type="success">执行中</el-tag>
-              <el-tag size="mini" v-if="scope.row.Task.Status==4" type="danger">失败</el-tag>
-              <el-tag size="mini" style="color:green" v-if="scope.row.Task.Status==5" type="success">成功</el-tag>
+              <el-tag size="small" v-if="scope.row.Task.Status==0" type="info">未开始</el-tag>
+              <el-tag size="small" v-if="scope.row.Task.Status==1" type="success">调度中</el-tag>
+              <el-tag size="small" style="color:red" v-if="scope.row.Task.Status==2" type="warning">调度失败</el-tag>
+              <el-tag size="small" v-if="scope.row.Task.Status==3" type="success">执行中</el-tag>
+              <el-tag size="small" v-if="scope.row.Task.Status==4" type="danger">失败</el-tag>
+              <el-tag size="small" style="color:green" v-if="scope.row.Task.Status==5" type="success">成功</el-tag>
             </div>
             <div @click="onTaskList(scope.row)" style="float: left">
               <span>{{scope.row.Caption}}</span><br>
