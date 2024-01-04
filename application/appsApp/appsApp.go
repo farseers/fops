@@ -46,8 +46,13 @@ func Update(req request.UpdateRequest, appsRepository apps.Repository, appsIDock
 
 // Delete 删除应用
 // @post delete
-func Delete(appName string, appsRepository apps.Repository) {
+func Delete(appName string, appsRepository apps.Repository, appsIDockerDevice apps.IDockerDevice) {
 	exception.ThrowWebExceptionBool(strings.Trim(appName, "") == "", 403, "参数不完整")
+	// 删除服务
+	c := make(chan string, 100)
+	appsIDockerDevice.DeleteService(appName, c)
+
+	// 删除应用
 	_, err := appsRepository.Delete(appName)
 	exception.ThrowWebExceptionError(403, err)
 }
@@ -96,6 +101,6 @@ func doToAppsResponse(do apps.DomainObject) response.AppsResponse {
 		FrameworkGits:  do.FrameworkGits,
 		Dockerfile:     do.Dockerfile,
 		DockerfilePath: do.DockerfilePath,
-		IsHealth:       len(do.ActiveInstance) >= do.HealthInstance,
+		IsHealth:       len(do.ActiveInstance) >= do.DockerReplicas,
 	}
 }
