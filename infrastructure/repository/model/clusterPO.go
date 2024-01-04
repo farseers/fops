@@ -10,4 +10,5 @@ type ClusterPO struct {
 	DockerHub        string `gorm:"size:256;not null;comment:托管地址"`
 	DockerUserName   string `gorm:"size:32;not null;comment:账户名称"`
 	DockerUserPwd    string `gorm:"size:64;not null;comment:账户密码"`
+	DockerNetwork    string `gorm:"size:64;not null;comment:Docker网络"`
 }
