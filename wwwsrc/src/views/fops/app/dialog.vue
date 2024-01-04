@@ -142,7 +142,7 @@ const state = reactive({
     IsHealth:false, // 是否健康
     DockerReplicas:1,// 副本数量
     DockerNodeRole:'',// 容器节点角色 manager or worker
-    DockerNodeRoleInt:0,// 容器节点角色 manager or worker
+    DockerNodeRoleInt:1,// 容器节点角色 manager or worker
     AdditionalScripts:'',// 多行内容，用多行文本框
 	},
   gitList:[],
