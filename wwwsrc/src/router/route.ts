@@ -94,7 +94,7 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 			},{
 				path: '/app',
 				name: 'app',
-				component: () => import('/@/views/fops/app/index.vue'),
+				component: () => import('/@/views/fops/build/indexApp.vue'),
 				meta: {
 					title: 'message.router.AppCenter',
 					isLink: '',
