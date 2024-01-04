@@ -32,6 +32,9 @@ func Update(req request.UpdateRequest, appsRepository apps.Repository) {
 	if !strings.HasPrefix(do.Dir, "/") {
 		do.Dir = "/" + do.Dir
 	}
+	if !strings.HasSuffix(do.Dir, "/") {
+		do.Dir += "/"
+	}
 	_, err := appsRepository.UpdateGit(do)
 	exception.ThrowWebExceptionError(403, err)
 }
