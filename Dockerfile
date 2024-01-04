@@ -48,5 +48,6 @@ RUN rm -rf /app/wwwsrc
 #设置时区
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai    /etc/localtime
 
+WORKDIR /app
 ENTRYPOINT ["./fops-server"]
 
