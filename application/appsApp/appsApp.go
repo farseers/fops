@@ -18,6 +18,11 @@ import (
 func Add(req request.AddRequest, appsRepository apps.Repository) {
 	do := mapper.Single[apps.DomainObject](req)
 	exception.ThrowWebExceptionBool(appsRepository.IsExists(req.AppName), 403, "应用不能重复")
+	// 删除末尾的/
+	if strings.HasSuffix(do.AdditionalScripts, "/") {
+		do.AdditionalScripts = do.AdditionalScripts[:len(do.AdditionalScripts)-1]
+	}
+
 	// 添加
 	err := appsRepository.Add(do)
 	exception.ThrowWebExceptionError(403, err)
@@ -40,6 +45,10 @@ func Update(req request.UpdateRequest, appsRepository apps.Repository, appsIDock
 
 	// 更新应用信息
 	do = mapper.Single[apps.DomainObject](req)
+	// 删除末尾的/
+	if strings.HasSuffix(do.AdditionalScripts, "/") {
+		do.AdditionalScripts = do.AdditionalScripts[:len(do.AdditionalScripts)-1]
+	}
 	err := appsRepository.UpdateApp(do)
 	exception.ThrowWebExceptionError(403, err)
 }
