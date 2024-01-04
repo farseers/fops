@@ -10,14 +10,14 @@
               <el-button v-if="state.dialog.type=='edit'" @click="onDelete" size="default" type="danger" style="margin-left: 5px;">删 除</el-button>
 						</el-form-item>
 					</el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+          <el-col v-if="state.dialog.type == 'edit'" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="是否健康">
               <el-tag v-if="state.ruleForm.IsHealth" size="small" type="success">健康</el-tag>
               <el-tag v-else-if="state.ruleForm.ActiveInstance!=null && state.ruleForm.ActiveInstance.length > 0" size="small" type="warning">不健康</el-tag>
               <el-tag v-else size="small" type="danger">未运行</el-tag>
             </el-form-item>
           </el-col>
-					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
+					<el-col v-if="state.dialog.type == 'edit'" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item style="float: left" label="镜像版本">
               <el-tag size="small">{{state.ruleForm.DockerVer}}</el-tag>
 						</el-form-item>
@@ -27,7 +27,7 @@
 					</el-col>
           <el-col style="clear:both;" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="副本数量">
-              <el-input v-model="state.ruleForm.DockerReplicas" type="number" placeholder="请输入副本数量" clearable></el-input>
+              <el-input v-model="state.ruleForm.DockerReplicas" type="number" placeholder="请输入副本数量"></el-input>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
@@ -140,7 +140,7 @@ const state = reactive({
     Dockerfile: '', // Dockerfile内容
     DockerfilePath: '', // Dockerfile路径
     IsHealth:false, // 是否健康
-    DockerReplicas:0,// 副本数量
+    DockerReplicas:1,// 副本数量
     DockerNodeRole:'',// 容器节点角色 manager or worker
     DockerNodeRoleInt:0,// 容器节点角色 manager or worker
     AdditionalScripts:'',// 多行内容，用多行文本框
