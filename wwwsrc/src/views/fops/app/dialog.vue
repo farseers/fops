@@ -112,7 +112,6 @@ const multipleTableRef = ref<InstanceType<typeof ElTable>>();
 const state = reactive({
 	ruleForm: {
     AppName:'', //应用名称
-    AppId: '', // 应用ID
     DockerVer: '', // 镜像版本
     ShellScript: '', // Shell脚本
     ClusterVer: '', // 集群版本
@@ -158,7 +157,6 @@ const openDialog = (type: string, row: any) => {
         row=res.Data
         // 绑定数据
         state.ruleForm.AppName=row.AppName
-        state.ruleForm.AppId=row.AppId
         state.ruleForm.DockerVer=row.DockerVer
         state.ruleForm.ShellScript=row.ShellScript
         state.ruleForm.ClusterVer=row.ClusterVer
@@ -178,7 +176,6 @@ const openDialog = (type: string, row: any) => {
 		state.dialog.submitTxt = '新 增';
 		// 清空表单，此项需加表单验证才能使用
     state.ruleForm.AppName=""
-    state.ruleForm.AppId=""
     state.ruleForm.DockerVer=""
     state.ruleForm.ShellScript=""
     state.ruleForm.ClusterVer=""

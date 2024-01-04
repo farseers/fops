@@ -13,7 +13,7 @@
 				<el-table-column prop="Id" label="序号" width="60" />
 				<el-table-column prop="Name" label="集群名称" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="Ip" label="集群地址" show-overflow-tooltip></el-table-column>
-<!--				<el-table-column prop="K8sConnectConfig" label="K8s连接配置" show-overflow-tooltip></el-table-column>-->
+				<el-table-column prop="DockerNetwork" label="Docker网络" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="DockerName" label="DockerHub名称" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="DockerHub" label="DockerHub地址" show-overflow-tooltip></el-table-column>
         <el-table-column prop="DockerUserName" label="账户名称" show-overflow-tooltip></el-table-column>

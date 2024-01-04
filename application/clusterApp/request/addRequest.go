@@ -7,4 +7,5 @@ type AddRequest struct {
 	DockerHub      string // 托管地址
 	DockerUserName string // 账户名称
 	DockerUserPwd  string // 账户密码
+	DockerNetwork  string // Docker网络
 }
