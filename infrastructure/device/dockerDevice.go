@@ -110,6 +110,19 @@ func (dockerDevice) SetImages(cluster cluster.DomainObject, appName string, dock
 	return true
 }
 
+func (dockerDevice) SetReplicas(cluster cluster.DomainObject, appName string, dockerReplicas int, progress chan string) bool {
+	progress <- "---------------------------------------------------------"
+	progress <- "开始更新Docker Swarm的副本数量。"
+
+	var exitCode = exec.RunShell(fmt.Sprintf("docker service update --replicas %v %s", dockerReplicas, appName), progress, nil, "")
+	if exitCode != 0 {
+		progress <- "Docker Swarm的副本数量更新失败。"
+		return false
+	}
+	progress <- "Docker Swarm的副本数量更新完成。"
+	return true
+}
+
 // ClearImages 清除镜像
 func (dockerDevice) ClearImages(progress chan string) bool {
 	progress <- "---------------------------------------------------------"
