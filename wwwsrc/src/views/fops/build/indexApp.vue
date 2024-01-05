@@ -27,9 +27,7 @@
                 </div>
               </template>
               <div class="appItem">仓库版本：<el-tag size="small">{{ v.DockerImage }}</el-tag> </div>
-              <div class="appItem">部署版本：<el-tag size="small">{{ v.ClusterVer.DockerImage }}</el-tag>
-                <el-button v-if="v.DockerVer != v.ClusterVer.DockerVer" size="small" @click="onSyncDockerVer(v)" type="info" style="margin-left: 5px">同步</el-button>
-              </div>
+              <div class="appItem">部署版本：<el-tag size="small">{{ v.ClusterVer.DockerImage }}</el-tag></div>
               <div class="appItem">部署时间：{{ v.ClusterVer.DeploySuccessAt }}</div>
               <div class="appItem">部署角色：
                 <el-tag v-if="v.DockerNodeRole=='manager'" type="danger" size="small" style="margin-left: 5px">{{ v.DockerNodeRole }}</el-tag>
@@ -37,6 +35,7 @@
                 <el-button size="small" @click="onBuildAdd(v)" type="danger" style="margin-left: 5px"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
               </div>
               <el-button style="margin-left: 5px" size="small" type="success" @click="showFsLog(v)">日志</el-button>
+              <el-button v-if="v.DockerVer != v.ClusterVer.DockerVer" size="small" style="margin-left: 5px" @click="onSyncDockerVer(v)" type="info" style="margin-left: 5px">同步</el-button>
             </el-card>
           </el-space>
         </el-main>
