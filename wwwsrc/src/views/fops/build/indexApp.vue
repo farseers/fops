@@ -103,7 +103,8 @@
         </el-row>
       </div>
 		</el-card>
-		<appDialog ref="appDialogRef" @refresh="getTableData()" />
+    <appDialog ref="appDialogRef" @refresh="getTableData()" />
+    <appAddDialog ref="appAddDialogRef" @refresh="getTableData()" />
     <el-dialog title="构建日志" v-model="state.logDialogIsShow" style="width: 80%;height: 85%;top:20px;margin-bottom: 50px">
       <el-card shadow="hover" class="layout-padding-auto" style="background-color:#393d49;overflow: auto;">
         <pre style="color: #fff;background-color:#393d49;height: 100%;" v-html="state.logContent"></pre>
@@ -125,9 +126,11 @@ const serverApi = fopsApi();
 
 // 引入组件
 const appDialog = defineAsyncComponent(() => import('/@/views/fops/app/dialog.vue'));
+const appAddDialog = defineAsyncComponent(() => import('/@/views/fops/app/addDialog.vue'));
 
 // 定义变量内容
 const appDialogRef = ref();
+const appAddDialogRef = ref();
 const state = reactive({
   logDialogIsShow:false,
   logContent:'',
@@ -219,20 +222,14 @@ const getTableClusterData = () => {
 
 };
 
-// 全部构建
-const onAllBuild=()=>{
-  for (let i = 0; i < state.tableData.data.length; i++) {
-    var item=state.tableData.data[i]
-    onBuildAdd(item)
-  }
-}
+
 
 const onClusterChange=(value:number)=>{
   state.clusterId=value
 }
 // 打开新增用户弹窗
 const onOpenAdd = (type: string) => {
-  appDialogRef.value.openDialog(type);
+  appAddDialogRef.value.openDialog(type,null);
 };
 // 打开修改用户弹窗
 const onOpenEdit = (type: string, row: any) => {
@@ -309,20 +306,59 @@ const onShowLog=()=>{
   })
 }
 const onBuildAdd = (row:any) => {
-  // 提交数据
-  var param={
-    "AppName":row.AppName,
-    "ClusterId":state.clusterId,
-  }
-  serverApi.buildAdd(param).then(async function(res){
-    if(res.Status){
-      ElMessage.success("添加成功")
-      // 刷新构建日志
-      getTableLogData()
-    }else{
-      ElMessage.error(res.StatusMessage)
-    }
+  ElMessageBox.confirm(`请确认是否添加构建?`, '提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
   })
+      .then(() => {
+        // 提交数据
+        var param={
+          "AppName":row.AppName,
+          "ClusterId":state.clusterId,
+        }
+        serverApi.buildAdd(param).then(async function(res){
+          if(res.Status){
+            ElMessage.success("添加成功")
+            // 刷新构建日志
+            getTableLogData()
+          }else{
+            ElMessage.error(res.StatusMessage)
+          }
+        })
+      })
+      .catch(() => {});
+};
+// 全部构建
+const onAllBuild=()=>{
+  ElMessageBox.confirm(`请确认是否构建全部应用?`, '提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+      .then(() => {
+        for (let i = 0; i < state.tableData.data.length; i++) {
+          var item=state.tableData.data[i]
+          onBuildAddFunc(item)
+        }
+      })
+      .catch(() => {});
+}
+const onBuildAddFunc = (row:any) => {
+    // 提交数据
+    var param={
+      "AppName":row.AppName,
+      "ClusterId":state.clusterId,
+    }
+    serverApi.buildAdd(param).then(async function(res){
+      if(res.Status){
+        ElMessage.success("添加成功")
+        // 刷新构建日志
+        getTableLogData()
+      }else{
+        ElMessage.error(res.StatusMessage)
+      }
+    })
 };
 const getGitArray=(lst:[])=>{
   var array=[]
