@@ -8,12 +8,17 @@
             名称需要与应用的AppName完全一致，才能检查健康状态
             <el-button v-if="state.dialog.type=='edit'" @click="onDelete" size="default" type="danger" style="margin-left: 5px;">删 除</el-button>
           </el-form-item>
-          <el-form-item label="镜像版本">
-            <el-tag size="small">{{state.ruleForm.DockerImage}}</el-tag>
+          <el-form-item label="仓库版本">
+            <el-tag v-if="state.ruleForm.DockerImage !=''" size="small">{{state.ruleForm.DockerImage}}</el-tag>
+            <el-tag v-else size="small">未构建</el-tag>
           </el-form-item>
           <el-form-item label="集群版本">
-            <el-tag size="small" style="margin-right: 5px;">{{state.ruleForm.ClusterVer.DockerImage}}</el-tag>
-            上次成功部署：<el-tag size="small" style="margin-right: 5px;">{{state.ruleForm.ClusterVer.DeploySuccessAt}}</el-tag>
+            <el-tag v-if="state.ruleForm.ClusterVer.DockerImage!=''" size="small" style="margin-right: 5px;">{{state.ruleForm.ClusterVer.DockerImage}}</el-tag>
+            <el-tag v-else size="small">未发布</el-tag>
+            上次成功部署：
+            <el-tag v-if="state.ruleForm.ClusterVer.DockerImage!=''" size="small" style="margin-right: 5px;">{{state.ruleForm.ClusterVer.DeploySuccessAt}}</el-tag>
+            <el-tag v-else size="small" style="margin-right: 5px;">未发布</el-tag>
+
             <el-tag v-if="state.ruleForm.IsHealth" size="small" type="success">健康</el-tag>
             <el-tag v-else-if="state.ruleForm.ActiveInstance!=null && state.ruleForm.ActiveInstance.length > 0" size="small" type="warning">不健康</el-tag>
             <el-tag v-else size="small" type="danger">未运行</el-tag>
