@@ -35,7 +35,7 @@
                 <el-button size="small" @click="onBuildAdd(v)" type="danger" style="margin-left: 5px"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
               </div>
               <el-button style="margin-left: 5px" size="small" type="success" @click="showFsLog(v)">日志</el-button>
-              <el-button v-if="v.DockerVer != v.ClusterVer.DockerVer" size="small" style="margin-left: 5px" @click="onSyncDockerVer(v)" type="info" style="margin-left: 5px">同步</el-button>
+              <el-button v-if="v.DockerVer != v.ClusterVer.DockerVer" size="small" style="margin-left: 5px" @click="onSyncDockerVer(v)" type="info" style="margin-left: 5px">同步镜像</el-button>
             </el-card>
           </el-space>
         </el-main>
