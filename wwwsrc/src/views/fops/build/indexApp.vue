@@ -143,8 +143,8 @@ const getTableData = () => {
     if (res.Status){
       for (let i = 0; i < res.Data.length; i++) {
         var item=res.Data[i]
-        item.FrameworkGitsStr=getGitArray(item.FrameworkGits)
-        item.AppGitStr=getGit(item.AppGit)
+        //item.FrameworkGitsStr=getGitArray(item.FrameworkGits)
+        //item.AppGitStr=getGit(item.AppGit)
         data.push(item)
       }
       state.tableData.data =data;
