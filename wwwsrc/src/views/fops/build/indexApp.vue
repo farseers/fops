@@ -20,8 +20,8 @@
                     <el-tag v-if="v.IsHealth" size="small" type="success" style="margin-left: 5px">健康</el-tag>
                     <el-tag v-else-if="v.ActiveInstance!=null && v.ActiveInstance.length > 0" size="small" type="warning" style="margin-left: 5px">不健康</el-tag>
                     <el-tag v-else size="small" type="danger" style="margin-left: 5px">未运行</el-tag>
-                    <el-tooltip content="副本数量" slot="label">
-                      <el-tag size="small" style="margin-left: 5px">{{ v.DockerReplicas }}</el-tag>
+                    <el-tooltip content="实例数量/副本数量" slot="label">
+                      <el-tag size="small" style="margin-left: 5px">{{v.ActiveInstance.length}}/{{ v.DockerReplicas }}</el-tag>
                     </el-tooltip>
                     <el-button class="button" size="small" @click="onOpenEdit('edit', v)" type="warning" style="margin-left: 5px">修改</el-button>
                   </div>
