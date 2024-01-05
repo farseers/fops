@@ -23,7 +23,7 @@
 					</el-icon>
 					新增应用
 				</el-button>
-        <el-button size="default" type="danger" class="ml10" @click="onClearDockerImage('add')">
+        <el-button size="default" type="info" class="ml10" @click="onClearDockerImage('add')">
           <el-icon>
             <ele-Delete />
           </el-icon>
@@ -31,12 +31,12 @@
         </el-button>
         <el-button size="default" type="danger" class="ml10" @click="onAllBuild()">
           <el-icon>
-            <ele-Delete />
+            <ele-SwitchButton />
           </el-icon>
           全部构建
         </el-button>
 			</div>
-      <div class="flex-warp" style="background: #e0e0e0">
+      <div class="flex-warp" style="background: #e0e0e0;overflow-y: auto;height: 900px">
         <el-row style="float:left;width: 65%">
           <el-col style="float: left;margin: 10px;"  :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb15" v-if="state.tableData.data.length > 0">
             <div  style="background: #ffffff;width: 24%"  class="flex-warp-item" v-for="(v, k) in state.tableData.data" :key="k">
