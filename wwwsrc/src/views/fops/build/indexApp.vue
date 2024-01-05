@@ -26,8 +26,14 @@
                   <el-button class="button" size="small" @click="onOpenEdit('edit', v)" type="warning" style="margin-left: 5px">修改</el-button>
                 </div>
               </template>
-              <div class="appItem">仓库版本：<el-tag size="small">{{ v.DockerImage }}</el-tag> </div>
-              <div class="appItem">部署版本：<el-tag size="small">{{ v.ClusterVer.DockerImage }}</el-tag></div>
+              <div class="appItem">仓库版本：
+                <el-tag v-if="v.DockerImage !=''" size="small">{{ v.DockerImage }}</el-tag>
+                <el-tag v-else size="small">还没有发布</el-tag>
+              </div>
+              <div class="appItem">部署版本：
+                <el-tag v-if="v.ClusterVer.DockerImage !=''" size="small">{{ v.ClusterVer.DockerImage }}</el-tag>
+                <el-tag v-else size="small">还没有发布</el-tag>
+              </div>
               <div class="appItem">部署时间：{{ v.ClusterVer.DeploySuccessAt }}</div>
               <div class="appItem">部署角色：
                 <el-tag v-if="v.DockerNodeRole=='manager'" type="danger" size="small" style="margin-left: 5px">{{ v.DockerNodeRole }}</el-tag>
