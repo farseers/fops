@@ -13,5 +13,5 @@ func DockerPushedConsumer(message any, ea core.EventArgs) {
 	dockerPushedEvent := message.(event.DockerPushedEvent)
 
 	// 更新项目的版本信息
-	_, _ = appsRepository.UpdateDockerVer(dockerPushedEvent.AppName, dockerPushedEvent.BuildNumber)
+	_, _ = appsRepository.UpdateDockerVer(dockerPushedEvent.AppName, dockerPushedEvent.BuildNumber, dockerPushedEvent.ImageName)
 }

@@ -27,7 +27,10 @@
                 </div>
               </template>
               <div class="appItem">仓库版本：<el-tag size="small" style="margin-left: 5px">Ver {{ v.DockerVer }}</el-tag> </div>
-              <div class="appItem">部署版本：<el-tag size="small" style="margin-left: 5px">Ver {{ v.ClusterVer.DockerVer }}</el-tag></div>
+              <div class="appItem">部署版本：
+                <el-tag size="small" style="margin-left: 5px">Ver {{ v.ClusterVer.DockerVer }}</el-tag>
+                <el-button v-if="v.DockerVer != v.ClusterVer.DockerVer" size="small" @click="onSyncDockerVer(v)" type="info" style="margin-left: 5px">同步版本</el-button>
+              </div>
               <div class="appItem">部署时间：{{ v.ClusterVer.DeploySuccessAt }}</div>
               <div class="appItem">部署角色：
                 <el-tag v-if="v.DockerNodeRole=='manager'" type="danger" size="small" style="margin-left: 5px">{{ v.DockerNodeRole }}</el-tag>
@@ -292,6 +295,7 @@ const onShowLog=()=>{
     state.logContent=res
   })
 }
+// 构建
 const onBuildAdd = (row:any) => {
   ElMessageBox.confirm(`请确认是否添加构建?`, '提示', {
     confirmButtonText: '确认',
@@ -317,6 +321,31 @@ const onBuildAdd = (row:any) => {
       .catch(() => {});
 };
 
+// 同步版本
+const onSyncDockerVer = (row:any) => {
+  ElMessageBox.confirm(`请确认是否添加构建?`, '提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+      .then(() => {
+        // 提交数据
+        var param={
+          "AppName":row.AppName,
+          "ClusterId":state.clusterId,
+        }
+        serverApi.buildAdd(param).then(async function(res){
+          if(res.Status){
+            ElMessage.success("添加成功")
+            // 刷新构建日志
+            getTableLogData()
+          }else{
+            ElMessage.error(res.StatusMessage)
+          }
+        })
+      })
+      .catch(() => {});
+};
 // 全部构建
 const onAllBuild=()=>{
   ElMessageBox.confirm(`请确认是否构建全部应用?`, '提示', {

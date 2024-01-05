@@ -91,6 +91,7 @@ func (dockerDevice) Push(env apps.EnvVO, progress chan string, ctx context.Conte
 		event.DockerPushedEvent{
 			BuildNumber: env.BuildNumber,
 			AppName:     env.AppName,
+			ImageName:   env.DockerImage,
 		}.PublishEvent()
 		return true
 	}

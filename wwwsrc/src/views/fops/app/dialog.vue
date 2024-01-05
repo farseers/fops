@@ -17,7 +17,7 @@
             <el-tag size="small">{{state.ruleForm.DockerVer}}</el-tag>
           </el-form-item>
           <el-form-item label="集群版本">
-            <el-tag size="small">Ver:{{state.ruleForm.ClusterVer.DockerVer}}</el-tag> 上次成功部署：<el-tag size="small">{{state.ruleForm.ClusterVer.DeploySuccessAt}}</el-tag>
+            <el-tag size="small" style="margin-right: 5px;">Ver:{{state.ruleForm.ClusterVer.DockerVer}}</el-tag> 上次成功部署：<el-tag size="small">{{state.ruleForm.ClusterVer.DeploySuccessAt}}</el-tag>
           </el-form-item>
           <el-form-item style="float: left" label="副本数量">
             <el-input v-model="state.ruleForm.DockerReplicas" type="number" placeholder="请输入副本数量"></el-input>

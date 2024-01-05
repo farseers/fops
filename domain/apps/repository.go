@@ -11,7 +11,7 @@ import (
 type Repository interface {
 	data.IRepository[DomainObject] // IRepository 通用的仓储接口
 	UpdateApp(do DomainObject) error
-	UpdateDockerVer(appName string, dockerVer int) (int64, error)                          // UpdateDockerVer 修改镜像版本
+	UpdateDockerVer(appName string, dockerVer int, imageName string) (int64, error)        // UpdateDockerVer 修改镜像版本
 	UpdateClusterVer(appName string, dicClusterVer map[int64]*ClusterVerVO) (int64, error) // UpdateClusterVer 修改集群的镜像版本
 	UpdateActiveInstance(appName string, eo []ActiveInstanceEO) (int64, error)
 	buildRepository

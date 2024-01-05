@@ -9,6 +9,8 @@ type DockerPushedEvent struct {
 	BuildNumber int
 	// 应用名称
 	AppName string
+	// 镜像名称
+	ImageName string
 }
 
 // PublishEvent 发布事件

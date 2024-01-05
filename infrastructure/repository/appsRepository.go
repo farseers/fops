@@ -18,13 +18,14 @@ type appsRepository struct {
 
 func (receiver *appsRepository) UpdateApp(do apps.DomainObject) error {
 	po := mapper.Single[model.AppsPO](do)
-	_, err := context.MysqlContext.Apps.Where("app_name = ?", po.AppName).Omit("app_name", "docker_ver", "cluster_ver", "active_instance").Update(po)
+	_, err := context.MysqlContext.Apps.Where("app_name = ?", po.AppName).Omit("app_name", "docker_ver", "docker_image", "cluster_ver", "active_instance").Update(po)
 	return err
 }
 
 // UpdateDockerVer 修改镜像版本
-func (receiver *appsRepository) UpdateDockerVer(appName string, dockerVer int) (int64, error) {
-	return context.MysqlContext.Apps.Where("app_name = ?", appName).UpdateValue("docker_ver", dockerVer)
+func (receiver *appsRepository) UpdateDockerVer(appName string, dockerVer int, imageName string) (int64, error) {
+	_, _ = context.MysqlContext.Apps.Where("app_name = ?", appName).UpdateValue("docker_ver", dockerVer)
+	return context.MysqlContext.Apps.Where("app_name = ?", appName).UpdateValue("docker_image", imageName)
 }
 
 // UpdateClusterVer 修改集群的镜像版本
