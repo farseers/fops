@@ -64,13 +64,13 @@ func (receiver *linkTraceWarp) addEntry(po linkTraceCom.TraceContext) {
 	entryTrace := response.LinkTraceVO{
 		Rgba: response.RgbaList[receiver.rgbaIndex], AppId: po.AppId, AppIp: po.AppIp, AppName: po.AppName, UseTs: float64(po.UseTs.Microseconds()), UseDesc: po.UseTs.String(),
 		StartTs: float64(po.StartTs - receiver.startTs),
-		Caption: fmt.Sprintf("%s", po.TraceType.ToString()),
+		Caption: "入口 ",
 	}
 	entryTrace.StartRate = entryTrace.StartTs / receiver.TotalUse * 100
 	entryTrace.UseRate = entryTrace.UseTs / receiver.TotalUse * 100
 	switch po.TraceType {
 	case eumTraceType.WebApi:
-		entryTrace.Caption += fmt.Sprintf("%v %s => %s", po.WebStatusCode, po.WebMethod, po.WebPath)
+		entryTrace.Caption += fmt.Sprintf("【%s】 => %s", po.WebMethod, po.WebPath)
 		entryTrace.Desc = fmt.Sprintf("%s 客户端IP：%s", po.WebContentType, po.WebRequestIp)
 	case eumTraceType.MqConsumer:
 		entryTrace.Caption += fmt.Sprintf("%s %s %s", po.ConsumerServer, po.ConsumerQueueName, po.ConsumerRoutingKey)

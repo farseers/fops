@@ -54,7 +54,7 @@
                   <span :style="{'margin-left':info.StartRate+'%','float':'left','position':'absolute'}" :title="info.Desc">
                     <div class="el-progress el-progress--line is-exception el-progress--text-inside" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" :style="{'width':12 * info.UseRate+'px'}">
                       <div class="el-progress-bar">
-                          <div class="el-progress-bar__inner" style="height: 21px;width: 100%; animation-duration: 3s;text-align: left">
+                          <div class="el-progress-bar__inner" :style="{'height': '21px','width': '100%', 'animation-duration': '3s','text-align': 'left','background-color':'rgb('+info.Rgba+')'}">
                             <div class="el-progress-bar__innerText" style="color:#181818">
                               <el-tag size="small" style="margin-right: 5px;">{{info.AppName}}</el-tag>
                               {{info.Caption}}
