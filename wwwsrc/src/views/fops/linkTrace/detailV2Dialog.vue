@@ -28,18 +28,18 @@
               <el-tag v-if="state.ConsumerRoutingKey !=''" size="small">{{state.ConsumerRoutingKey}}</el-tag>
               <br v-if="state.ConsumerRoutingKey !=''" />
               {{state.ConsumerQueueName}}
-              <el-button style="margin-left: 20px" size="small" type="success">查看日志</el-button>
+              <el-button style="margin-left: 20px" size="small" type="success" @click="showLog()">查看日志</el-button>
             </div>
             <!--FSchedule--> <!--Task-->
             <div class="mt10" v-else-if="state.TraceType == 3 || state.TraceType == 4">
               <el-tag v-if="state.TaskGroupId >0" size="small">任务组Id：{{state.TaskGroupId}}</el-tag>
               <el-tag v-if="state.TaskId >0" size="small" type="success">任务Id：{{state.TaskId}}</el-tag>
               {{state.TaskName}}
-              <el-button style="margin-left: 20px" size="small" type="success">查看日志</el-button>
+              <el-button style="margin-left: 20px" size="small" type="success" @click="showLog()">查看日志</el-button>
             </div>
             <!--WatchKey-->
             <div class="mt10" v-else-if="state.TraceType == 5">
-              <el-button style="margin-left: 20px" size="small" type="success">查看日志</el-button>
+              <el-button style="margin-left: 20px" size="small" type="success" @click="showLog()">查看日志</el-button>
             </div>
             <div :style="{'width':getWidth(),'overflow-x': 'auto','white-space': 'nowrap'}">
             <ul class="custom-list mt20">
@@ -227,6 +227,7 @@ const onShow=()=>{
 const showLog=()=>{
   logDialogRef.value.openDialog(state.traceInfo);
 }
+
 const getStatusDesc=(status:number)=>{
   switch (status){
     case 0:

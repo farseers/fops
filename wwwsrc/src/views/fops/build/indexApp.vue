@@ -34,7 +34,7 @@
                   <el-tag v-else size="small" style="margin-left: 5px">{{ v.DockerNodeRole }}</el-tag>
                   <el-button size="small" @click="onBuildAdd(v)" type="danger" style="margin-left: 5px"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
                 </div>
-
+                <el-button style="margin-left: 20px" size="small" type="success" @click="showFsLog()">查看日志</el-button>
               </el-card>
             </el-space>
           </el-main>
@@ -87,6 +87,7 @@
       <pre style="color: #fff;background-color:#393d49;height: 100%;" v-html="state.logContent"></pre>
     </el-card>
   </el-dialog>
+  <logDialog ref="logDialogRef"  />
 </template>
 
 <script setup lang="ts" name="fopsApp">
@@ -103,6 +104,10 @@ const serverApi = fopsApi();
 // 引入组件
 const appDialog = defineAsyncComponent(() => import('/@/views/fops/app/dialog.vue'));
 const appAddDialog = defineAsyncComponent(() => import('/@/views/fops/app/addDialog.vue'));
+
+// 日志
+const logDialog = defineAsyncComponent(() => import('/src/views/fops/log/logV2Dialog.vue'));
+const logDialogRef = ref();
 
 // 定义变量内容
 const appDialogRef = ref();
@@ -196,6 +201,11 @@ const getTableClusterData = () => {
     }
   })
 };
+
+// 打开FS日志
+const showFsLog=()=>{
+  //logDialogRef.value.openDialog(state.traceInfo);
+}
 
 const onClusterChange=(value:number)=>{
   state.clusterId=value
