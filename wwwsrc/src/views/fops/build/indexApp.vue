@@ -26,7 +26,7 @@
                   <el-button class="button" size="small" @click="onOpenEdit('edit', v)" type="warning" style="margin-left: 5px">修改</el-button>
                 </div>
               </template>
-              <div class="appItem">容器仓库：<el-tag size="small" style="margin-left: 5px">Ver {{ v.DockerVer }}</el-tag> </div>
+              <div class="appItem">仓库版本：<el-tag size="small" style="margin-left: 5px">Ver {{ v.DockerVer }}</el-tag> </div>
               <div class="appItem">部署版本：<el-tag size="small" style="margin-left: 5px">Ver {{ v.ClusterVer.DockerVer }}</el-tag></div>
               <div class="appItem">部署时间：{{ v.ClusterVer.DeploySuccessAt }}</div>
               <div class="appItem">部署角色：
