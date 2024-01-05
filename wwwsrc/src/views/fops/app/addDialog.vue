@@ -176,7 +176,7 @@ const openDialog = (type: string, row: any) => {
     state.ruleForm.FrameworkGits=[]
     state.ruleForm.Dockerfile=""
     state.ruleForm.DockerfilePath=""
-    state.ruleForm.DockerReplicas=0
+    state.ruleForm.DockerReplicas=1
     state.ruleForm.DockerNodeRole=''
     state.ruleForm.AdditionalScripts=''
     state.SelectItem=[] // 清空

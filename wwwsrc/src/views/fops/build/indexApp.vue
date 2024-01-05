@@ -1,96 +1,97 @@
 <template>
   <div class="layout-padding" style="position: relative;">
     <el-card shadow="hover">
-        <el-header style="padding: 0">
-          <el-select v-model="state.clusterId" placeholder="请选择集群" class="ml10" @change="onClusterChange">
-            <el-option v-for="item in state.clusterData" :key="item.Id" :label="item.Name" :value="item.Id"></el-option>
-          </el-select>
-          <el-button size="default" type="success" class="ml10" @click="onOpenAdd('add')"><el-icon><ele-FolderAdd /></el-icon>新增应用</el-button>
-          <el-button size="default" type="info" class="ml10" @click="onClearDockerImage('add')"><el-icon><ele-Delete /></el-icon>清除None镜像</el-button>
-          <el-button size="default" type="danger" class="ml10" @click="onAllBuild()"><el-icon><ele-SwitchButton /></el-icon>全部构建</el-button>
-        </el-header>
-        <!--应用列表-->
-        <el-container>
-          <el-main style="padding: 0">
-            <el-space wrap style="align-items: unset;">
-              <el-card shadow="hover" v-for="(v, k) in state.tableData.data" :key="k" style="width: 280px;">
-                <template #header>
-                  <div class="card-header" style="height: 20px;">
-                    <el-tag size="default">{{ v.AppName }}</el-tag>
-                    <el-tag v-if="v.IsHealth" size="small" type="success" style="margin-left: 5px">健康</el-tag>
-                    <el-tag v-else-if="v.ActiveInstance!=null && v.ActiveInstance.length > 0" size="small" type="warning" style="margin-left: 5px">不健康</el-tag>
-                    <el-tag v-else size="small" type="danger" style="margin-left: 5px">未运行</el-tag>
-                    <el-tooltip content="实例数量/副本数量" slot="label">
-                      <el-tag size="small" style="margin-left: 5px">{{v.ActiveInstance.length}}/{{ v.DockerReplicas }}</el-tag>
-                    </el-tooltip>
-                    <el-button class="button" size="small" @click="onOpenEdit('edit', v)" type="warning" style="margin-left: 5px">修改</el-button>
-                  </div>
-                </template>
-                <div class="appItem">容器仓库：<el-tag size="small" style="margin-left: 5px">Ver {{ v.DockerVer }}</el-tag> {{ v.AppGitName }} </div>
-                <div class="appItem">部署版本：<el-tag size="small" style="margin-left: 5px">Ver {{ v.ClusterVer.DockerVer }}</el-tag></div>
-                <div class="appItem">部署时间：{{ v.ClusterVer.DeploySuccessAt }}</div>
-                <div class="appItem">部署角色：
-                  <el-tag v-if="v.DockerNodeRole=='manager'" type="danger" size="small" style="margin-left: 5px">{{ v.DockerNodeRole }}</el-tag>
-                  <el-tag v-else size="small" style="margin-left: 5px">{{ v.DockerNodeRole }}</el-tag>
-                  <el-button size="small" @click="onBuildAdd(v)" type="danger" style="margin-left: 5px"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
+      <el-header style="padding: 0">
+        <el-select v-model="state.clusterId" placeholder="请选择集群" class="ml10" @change="onClusterChange">
+          <el-option v-for="item in state.clusterData" :key="item.Id" :label="item.Name" :value="item.Id"></el-option>
+        </el-select>
+        <el-button size="default" type="success" class="ml10" @click="onOpenAdd('add')"><el-icon><ele-FolderAdd /></el-icon>新增应用</el-button>
+        <el-button size="default" type="info" class="ml10" @click="onClearDockerImage('add')"><el-icon><ele-Delete /></el-icon>清除None镜像</el-button>
+        <el-button size="default" type="danger" class="ml10" @click="onAllBuild()"><el-icon><ele-SwitchButton /></el-icon>全部构建</el-button>
+      </el-header>
+      <!--应用列表-->
+      <el-container>
+        <el-main style="padding: 0">
+          <el-space wrap style="align-items: unset;">
+            <el-card shadow="hover" v-for="(v, k) in state.tableData.data" :key="k" style="width: 280px;">
+              <template #header>
+                <div class="card-header" style="height: 20px;">
+                  <el-tag size="default">{{ v.AppName }}</el-tag>
+                  <el-tag v-if="v.IsHealth" size="small" type="success" style="margin-left: 5px">健康</el-tag>
+                  <el-tag v-else-if="v.ActiveInstance!=null && v.ActiveInstance.length > 0" size="small" type="warning" style="margin-left: 5px">不健康</el-tag>
+                  <el-tag v-else size="small" type="danger" style="margin-left: 5px">未运行</el-tag>
+                  <el-tooltip content="实例数量/副本数量" slot="label">
+                    <el-tag size="small" style="margin-left: 5px">{{v.ActiveInstance.length}}/{{ v.DockerReplicas }}</el-tag>
+                  </el-tooltip>
+                  <el-button class="button" size="small" @click="onOpenEdit('edit', v)" type="warning" style="margin-left: 5px">修改</el-button>
                 </div>
-                <el-button style="margin-left: 20px" size="small" type="success" @click="showFsLog()">查看日志</el-button>
-              </el-card>
-            </el-space>
-          </el-main>
-          <el-aside width="550px">
-              <el-card>
-                <h3 style="padding: 5px;">构建队列</h3>
-                <template v-if="state.tableLogData.data.length > 0">
-                  <el-table  :data="state.tableLogData.data" v-loading="state.tableLogData.loading" style="width: 100%;background: #ffffff;">
-                    <el-table-column prop="Id" label="编号" width="70" />
-                    <el-table-column prop="AppName" label="应用名称" ></el-table-column>
-                    <el-table-column label="状态" width="90" show-overflow-tooltip>
-                      <template #default="scope">
-                        <el-tag v-if="scope.row.Status==0" size="small" type="info">未开始</el-tag>
-                        <el-tag v-else-if="scope.row.Status==1" size="small" type="warning">构建中</el-tag>
-                        <el-tag v-if="scope.row.Status==2 && scope.row.IsSuccess == true" size="small" type="success">成功</el-tag>
-                        <el-tag v-else-if="scope.row.Status==2 && scope.row.IsSuccess == false" size="small" type="danger">失败</el-tag>
-                      </template>
-                    </el-table-column>
-                    <el-table-column prop="FinishAt" width="170" label="完成时间"></el-table-column>
-                    <el-table-column label="操作" width="80">
-                      <template #default="scope">
-                        <el-button v-if="scope.row.Status!=0" size="small" type="success" @click="showLog(scope.row)">日志</el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                  <el-pagination
-                      @size-change="onHandleSizeLogChange"
-                      @current-change="onHandleCurrentLogChange"
-                      class="mt15"
-                      :pager-count="5"
-                      :page-sizes="[10, 20, 30]"
-                      v-model:current-page="state.tableLogData.param.pageNum"
-                      background
-                      v-model:page-size="state.tableLogData.param.pageSize"
-                      layout="total, sizes, prev, pager, next, jumper"
-                      :total="state.tableLogData.total"
-                  >
-                  </el-pagination>
-                </template>
-                <el-empty v-else description="暂无数据"></el-empty>
-              </el-card>
-          </el-aside>
-        </el-container>
+              </template>
+              <div class="appItem">容器仓库：<el-tag size="small" style="margin-left: 5px">Ver {{ v.DockerVer }}</el-tag> </div>
+              <div class="appItem">部署版本：<el-tag size="small" style="margin-left: 5px">Ver {{ v.ClusterVer.DockerVer }}</el-tag></div>
+              <div class="appItem">部署时间：{{ v.ClusterVer.DeploySuccessAt }}</div>
+              <div class="appItem">部署角色：
+                <el-tag v-if="v.DockerNodeRole=='manager'" type="danger" size="small" style="margin-left: 5px">{{ v.DockerNodeRole }}</el-tag>
+                <el-tag v-else size="small" style="margin-left: 5px">{{ v.DockerNodeRole }}</el-tag>
+                <el-button size="small" @click="onBuildAdd(v)" type="danger" style="margin-left: 5px"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
+              </div>
+              <el-button style="margin-left: 5px" size="small" type="success" @click="showFsLog()">日志</el-button>
+            </el-card>
+          </el-space>
+        </el-main>
+        <el-aside width="550px">
+          <el-card>
+            <h3 style="padding: 5px;">构建队列</h3>
+            <template v-if="state.tableLogData.data.length > 0">
+              <el-table  :data="state.tableLogData.data" v-loading="state.tableLogData.loading" style="width: 100%;background: #ffffff;">
+                <el-table-column prop="Id" label="编号" width="70" />
+                <el-table-column prop="AppName" label="应用名称" ></el-table-column>
+                <el-table-column label="状态" width="90" show-overflow-tooltip>
+                  <template #default="scope">
+                    <el-tag v-if="scope.row.Status==0" size="small" type="info">未开始</el-tag>
+                    <el-tag v-else-if="scope.row.Status==1" size="small" type="warning">构建中</el-tag>
+                    <el-tag v-if="scope.row.Status==2 && scope.row.IsSuccess == true" size="small" type="success">成功</el-tag>
+                    <el-tag v-else-if="scope.row.Status==2 && scope.row.IsSuccess == false" size="small" type="danger">失败</el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="FinishAt" width="170" label="完成时间"></el-table-column>
+                <el-table-column label="操作" width="80">
+                  <template #default="scope">
+                    <el-button v-if="scope.row.Status!=0" size="small" type="success" @click="showLog(scope.row)">日志</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-pagination
+                  @size-change="onHandleSizeLogChange"
+                  @current-change="onHandleCurrentLogChange"
+                  class="mt15"
+                  :pager-count="5"
+                  :page-sizes="[10, 20, 30]"
+                  v-model:current-page="state.tableLogData.param.pageNum"
+                  background
+                  v-model:page-size="state.tableLogData.param.pageSize"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="state.tableLogData.total"
+              >
+              </el-pagination>
+            </template>
+            <el-empty v-else description="暂无数据"></el-empty>
+          </el-card>
+        </el-aside>
+      </el-container>
     </el-card>
   </div>
   <appDialog ref="appDialogRef" @refresh="getTableData()" />
   <appAddDialog ref="appAddDialogRef" @refresh="getTableData()" />
+  <logDialog ref="logDialogRef"  />
   <el-dialog title="构建日志" v-model="state.logDialogIsShow" style="width: 80%;height: 85%;top:20px;margin-bottom: 50px">
     <el-card shadow="hover" class="layout-padding-auto" style="background-color:#393d49;overflow: auto;">
       <pre style="color: #fff;background-color:#393d49;height: 100%;" v-html="state.logContent"></pre>
     </el-card>
   </el-dialog>
-  <logDialog ref="logDialogRef"  />
 </template>
 
 <script setup lang="ts" name="fopsApp">
+
 import {defineAsyncComponent, reactive, onMounted, ref, nextTick, watch, onUnmounted} from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import {fopsApi} from "/@/api/fops";
