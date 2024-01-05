@@ -323,7 +323,7 @@ const onBuildAdd = (row:any) => {
 
 // 同步版本
 const onSyncDockerVer = (row:any) => {
-  ElMessageBox.confirm(`请确认是否添加构建?`, '提示', {
+  ElMessageBox.confirm(`请确认是否要同步仓库镜像到集群中?`, '提示', {
     confirmButtonText: '确认',
     cancelButtonText: '取消',
     type: 'warning',
@@ -331,14 +331,14 @@ const onSyncDockerVer = (row:any) => {
       .then(() => {
         // 提交数据
         var param={
-          "AppName":row.AppName,
-          "ClusterId":state.clusterId,
+          "appName":row.AppName,
+          "clusterId":state.clusterId,
         }
-        serverApi.buildAdd(param).then(async function(res){
+        serverApi.syncDockerImage(param).then(async function(res){
           if(res.Status){
-            ElMessage.success("添加成功")
+            ElMessage.success("同步成功")
             // 刷新构建日志
-            getTableLogData()
+            getTableData()
           }else{
             ElMessage.error(res.StatusMessage)
           }

@@ -131,6 +131,12 @@ export function fopsApi() {
 				method: 'post',
 				data:param,
 			});
+		},syncDockerImage: (param: object) => {
+			return request({
+				url: '/apps/build/syncDockerImage',
+				method: 'post',
+				data:param,
+			});
 		},buildLog: (param: string) => {
 			return requestGet({
 				url: '/apps/build/view-'+param,
