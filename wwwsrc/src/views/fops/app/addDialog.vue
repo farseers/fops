@@ -15,8 +15,8 @@
             <el-option label="worker" :value="1"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="附加脚本">
-          <el-input v-model="state.ruleForm.AdditionalScripts" type="textarea" placeholder="请输入附加脚本" clearable></el-input>
+        <el-form-item label="容器参数">
+          <el-input v-model="state.ruleForm.AdditionalScripts" type="textarea" placeholder="容器在创建时，附加的参数" clearable></el-input>
         </el-form-item>
         <el-form-item label="Git主仓库">
           <el-tag size="small">{{state.ruleForm.AppGitName}}</el-tag>
