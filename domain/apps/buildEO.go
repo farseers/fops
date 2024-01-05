@@ -195,7 +195,13 @@ func (receiver *BuildEO) GenerateDockerfileContent() bool {
 		if receiver.apps.DockerfilePath == "" {
 			receiver.apps.DockerfilePath = receiver.appGit.GetAbsolutePath() + "Dockerfile"
 		} else {
-			receiver.apps.DockerfilePath = DistRoot + receiver.apps.DockerfilePath
+			// 自定义Dockerfile路径
+			if strings.HasPrefix(receiver.apps.DockerfilePath, "/") {
+				receiver.apps.DockerfilePath = receiver.apps.DockerfilePath[1:]
+			} else if strings.HasPrefix(receiver.apps.DockerfilePath, "./") {
+				receiver.apps.DockerfilePath = receiver.apps.DockerfilePath[2:]
+			}
+			receiver.apps.DockerfilePath = receiver.appGit.GetAbsolutePath() + receiver.apps.DockerfilePath
 		}
 		receiver.Dockerfile = file.ReadString(receiver.apps.DockerfilePath)
 		if receiver.Dockerfile == "" {
