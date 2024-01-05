@@ -54,8 +54,7 @@
                 <div class="appItem">容器文件路径：{{ v.DockerfilePath }}</div>
                 <div class="appItem">
                   <el-button size="default" @click="onOpenEdit('edit', v)" type="warning">修改</el-button>
-                  <el-button @click="onBuildAdd(v)" size="default" type="danger">构建</el-button>
-
+                  <el-button @click="onBuildAdd(v)" size="default" type="danger"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
                 </div>
               </div>
             </div>
@@ -219,10 +218,7 @@ const getTableClusterData = () => {
       state.tableData.data=[]
     }
   })
-
 };
-
-
 
 const onClusterChange=(value:number)=>{
   state.clusterId=value
@@ -231,10 +227,12 @@ const onClusterChange=(value:number)=>{
 const onOpenAdd = (type: string) => {
   appAddDialogRef.value.openDialog(type,null);
 };
+
 // 打开修改用户弹窗
 const onOpenEdit = (type: string, row: any) => {
   appDialogRef.value.openDialog(type, row);
 };
+
 // 清除镜像
 const onClearDockerImage = () => {
   ElMessageBox.confirm(`此操作将永久清除：“None镜像”，是否继续?`, '提示', {
@@ -301,7 +299,6 @@ const showLog=(row:any)=>{
 }
 const onShowLog=()=>{
   serverApi.buildLog(state.logId.toString()).then(function (res){
-    console.log(res)
     state.logContent=res
   })
 }
@@ -329,6 +326,7 @@ const onBuildAdd = (row:any) => {
       })
       .catch(() => {});
 };
+
 // 全部构建
 const onAllBuild=()=>{
   ElMessageBox.confirm(`请确认是否构建全部应用?`, '提示', {
@@ -381,16 +379,19 @@ const getGit=(val:number)=>{
   return array
 }
 let intervalLogId = null;
+let intervalAppId = null;
 // 页面加载时
 onMounted(() => {
 	getTableData();
   getTableLogData();
   getTableClusterData();
   intervalLogId = setInterval(getTableLogData, 3000);
+  intervalAppId = setInterval(getTableData, 3000);
 });
 // 页面注销的时候
 onUnmounted(()=>{
   clearInterval(intervalLogId);
+  clearInterval(intervalAppId);
 })
 </script>
 
