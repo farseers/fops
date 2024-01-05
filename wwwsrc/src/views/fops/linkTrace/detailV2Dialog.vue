@@ -41,16 +41,36 @@
             <div class="mt10" v-else-if="state.TraceType == 5">
               <el-button style="margin-left: 20px" size="small" type="success" @click="showLog()">查看日志</el-button>
             </div>
-            <div :style="{'width':getWidth(),'overflow-x': 'auto','white-space': 'nowrap'}">
+            <div :style="{'width':'100%','overflow-x': 'auto','white-space': 'nowrap'}">
             <ul class="custom-list mt20">
               <li style="height: 35px;">
-                <span v-for="(item, index) in state.TsArray" :key="index" :style="{'width':200+'px','float':'left'}">
-                  {{item.StartTs/1000}}ms
+                <span v-for="(info, index) in state.tableData" :key="index" :style="{'margin-left':info.StartRate+'%','float':'left','position':'absolute'}">
+                  <el-tag v-if="index>0 && info.UseTs > 0" size="small" type="success">{{info.UseDesc}}</el-tag>
                 </span>
               </li>
-              <li style="clear: both" v-for="(item, index) in state.TsArray" :key="index">
-                <div v-for="(info,i) in state.tableData.filter(t=>t.StartTs==item.StartTs)">
-                  <span :style="{'padding-left':index*200+'px'}" :title="info.Desc"><el-tag size="small">{{info.AppName}}</el-tag>{{info.Caption}}，耗时：{{info.UseTs/1000}}ms</span>
+              <li style="clear: both;padding:2px 0;" v-for="(info, index) in state.tableData" :key="index">
+                <div>
+                  <span style="margin: 0 5px;color:#8c8b8b">{{index + 1}}</span>
+                  <span :style="{'margin-left':info.StartRate+'%','float':'left','position':'absolute'}" :title="info.Desc">
+                    <div class="el-progress el-progress--line is-exception el-progress--text-inside" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" :style="{'width':12 * info.UseRate+'px'}">
+                      <div class="el-progress-bar">
+                          <div class="el-progress-bar__inner" style="height: 21px;width: 100%; animation-duration: 3s;text-align: left">
+                            <div class="el-progress-bar__innerText" style="color:#181818">
+                              <el-tag size="small" style="margin-right: 5px;">{{info.AppName}}</el-tag>
+                              {{info.Caption}}
+                              <span v-if="index > 0 && info.UseTs > 0">，耗时：
+                                <el-tag size="small" v-if="info.UseTs > 100000000" type="danger">{{info.UseDesc}}</el-tag>
+                                <el-tag size="small" v-else-if="info.UseTs > 50000000" type="warning">{{info.UseDesc}}</el-tag>
+                                <el-tag size="small" v-else-if="info.UseTs > 1000000">{{info.UseDesc}}</el-tag>
+                                <el-tag size="small" v-else type="success">{{info.UseDesc}}</el-tag>
+                              </span>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                  </span>
                   <span v-if="info.Exception!=null">异常：{{friendlyJSONstringify(info.Exception)}}</span>
                   <span v-else></span>
                 </div>
@@ -111,18 +131,14 @@ const state = reactive({
     AppIp:'',
     AppName:'',
     StartTs:0,
+    StartRate:0,
     UseTs:0,
+    UseRate:0,
     Caption:'',
     Desc:'',
     UseDesc:'',
     Exception:'',
   }],
-  TsArray:[
-      {
-        StartTs:0,
-        DiffTs:0
-      }
-  ],
   TraceId:'',
   TraceIdN:'',
   Rgba:'',
@@ -156,6 +172,7 @@ const state = reactive({
 		submitTxt: '',
 	},
   traceInfo:{},
+  spacePx:100,
 });
 
 // 打开弹窗
@@ -164,55 +181,46 @@ const openDialog = (row2: any) => {
   //state.ruleForm = row;
   state.dialog.title = '链路追踪详情(TraceId：'+row2.TraceIdN+')';
   state.traceInfo=row2
-  //state.dialog.submitTxt = '修 改';
-  //console.log(row2)
-  state.TraceId=row2.TraceIdN
-  state.UseTs=row2.UseTs
-  state.UseDesc=row2.UseDesc
-  state.TraceType=row2.TraceType
-  state.WebStatusCode=row2.WebStatusCode
-  state.WebRequestIp=row2.WebRequestIp
-  state.WebMethod=row2.WebMethod
-  state.WebContentType=row2.WebContentType
-  state.WebPath=row2.WebPath
-  state.WebHeaders=row2.WebHeaders
-  state.WebRequestBody=row2.WebRequestBody
-  state.WebResponseBody=row2.WebResponseBody
-  state.TaskGroupId=row2.TaskGroupId
-  state.TaskId=row2.TaskId
-  state.TaskName=row2.TaskName
-  state.ConsumerServer=row2.ConsumerServer
-  state.ConsumerRoutingKey=row2.ConsumerRoutingKey
-  state.ConsumerQueueName=row2.ConsumerQueueName
-  state.CreateAt=row2.CreateAt
-  state.TraceIdN=row2.TraceIdN
+
   // 详情
   serverApi.linkTraceInfo(row2.TraceIdN).then(function (res){
     state.loading=false
     if (res.Status){
-      // 绑定数据
-      state.tableData=res.Data
-      if (res.Data.length>0){
-        state.Rgba=res.Data[0].Rgba
-        state.AppId=res.Data[0].AppId
-        state.AppIp=res.Data[0].AppIp
-        state.AppName=res.Data[0].AppName
-        state.Desc=res.Data[0].Desc
-        state.Caption=res.Data[0].Caption
-        state.TsArray=[]
-        for (let i = 0; i < state.tableData.length; i++) {
-          var item=state.tableData[i]
-          var isContains=state.TsArray.filter(t=>t.StartTs==item.StartTs)
-          if (isContains.length==0){
-            var diff=0
-            if(i>0){
-              diff=item.StartTs-state.tableData[i-1].StartTs
-            }
-            state.TsArray.push({StartTs:item.StartTs,DiffTs:diff})
-          }
-        }
-
+      // 计算宽度
+      if (res.Data.List.length <= 5) {
+        state.spacePx = 200
+      } else if (res.Data.List.length <= 10) {
+        state.spacePx = 150
+      } else{
+        state.spacePx = 60
       }
+      // 绑定数据
+      state.tableData=res.Data.List
+      state.AppId=res.Data.Entry.AppId
+      state.AppIp=res.Data.Entry.AppIp
+      state.AppName=res.Data.Entry.AppName
+      state.Desc=res.Data.Entry.Desc
+      state.UseDesc=res.Data.Entry.UseDesc
+      state.TraceId=res.Data.Entry.TraceIdN
+      state.UseTs=res.Data.Entry.UseTs
+      state.UseDesc=res.Data.Entry.UseDesc
+      state.TraceType=res.Data.Entry.TraceType
+      state.WebStatusCode=res.Data.Entry.WebStatusCode
+      state.WebRequestIp=res.Data.Entry.WebRequestIp
+      state.WebMethod=res.Data.Entry.WebMethod
+      state.WebContentType=res.Data.Entry.WebContentType
+      state.WebPath=res.Data.Entry.WebPath
+      state.WebHeaders=res.Data.Entry.WebHeaders
+      state.WebRequestBody=res.Data.Entry.WebRequestBody
+      state.WebResponseBody=res.Data.Entry.WebResponseBody
+      state.TaskGroupId=res.Data.Entry.TaskGroupId
+      state.TaskId=res.Data.Entry.TaskId
+      state.TaskName=res.Data.Entry.TaskName
+      state.ConsumerServer=res.Data.Entry.ConsumerServer
+      state.ConsumerRoutingKey=res.Data.Entry.ConsumerRoutingKey
+      state.ConsumerQueueName=res.Data.Entry.ConsumerQueueName
+      state.CreateAt=res.Data.Entry.CreateAt
+      state.TraceIdN=res.Data.Entry.TraceIdN
     }
   })
 	state.dialog.isShowDialog = true;
@@ -228,36 +236,10 @@ const showLog=()=>{
   logDialogRef.value.openDialog(state.traceInfo);
 }
 
-const getStatusDesc=(status:number)=>{
-  switch (status){
-    case 0:
-      return "未开始"
-    case 1:
-      return "调度中"
-    case 2:
-      return "调度失败"
-    case 3:
-      return "执行中"
-    case 4:
-      return "失败"
-    case 5:
-      return "成功"
-  }
-  return ""
-}
 // 取消
 const onCancel = () => {
 	closeDialog();
 };
-
-const getWidth=()=>{
-  var str="100%"
-  var total=(state.TsArray.length+1)*200
-  if(total>1400){
-    return total+"px"
-  }
-  return str;
-}
 
 // 暴露变量
 defineExpose({

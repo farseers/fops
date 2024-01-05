@@ -11,43 +11,50 @@ import (
 	linkTraceCom "github.com/farseer-go/linkTrace"
 	"github.com/farseer-go/linkTrace/eumTraceType"
 	"github.com/farseer-go/mapper"
-	"time"
 )
 
 // Info 链路追踪日志详情
 // @get info/{traceId}
-func Info(traceId int64, linkTraceRepository linkTrace.Repository) collections.List[response.LinkTraceVO] {
+func Info(traceId int64, linkTraceRepository linkTrace.Repository) response.LinkTraceResponse {
 	l := linkTraceWarp{
 		lst:       collections.NewList[response.LinkTraceVO](),
 		rgbaIndex: -1,
 		lstPO:     linkTraceRepository.ToEntity(traceId),
 	}
 	if l.lstPO.Count() == 0 {
-		return l.lst
+		return response.LinkTraceResponse{}
 	}
 
 	// 当A服务调用B服务时，前后均有可能包含数据库之类的操作。因此需要将lstPO重新组织。按实际的调用顺序重新排序
 	// 前端就可以简单的遍历lst显示到页面即可
 	entryPO := l.lstPO.First()
 	l.startTs = entryPO.StartTs
+	l.TotalUse = float64(entryPO.UseTs.Microseconds())
 	l.addEntry(entryPO)
-
 	// 调用完成
 	l.lst.Add(response.LinkTraceVO{
 		Rgba: response.RgbaList[0], AppId: entryPO.AppId, AppIp: entryPO.AppIp, AppName: entryPO.AppName, UseTs: 0,
-		StartTs: entryPO.EndTs - entryPO.StartTs,
-		Caption: "调用完成",
-		Desc:    fmt.Sprintf("耗时：%v ms", entryPO.UseTs.Milliseconds()),
+		StartTs:   float64(entryPO.EndTs - entryPO.StartTs),
+		StartRate: l.lst.Last().StartRate,
+		UseRate:   0,
+		Caption:   "调用完成",
+		Desc:      fmt.Sprintf("耗时：%v ms", entryPO.UseTs.Milliseconds()),
 	})
 
-	return l.lst
+	rsp := response.LinkTraceResponse{
+		Entry: l.lstPO.First(),
+		List:  l.lst,
+	}
+	rsp.Entry.List = nil
+	return rsp
 }
 
 type linkTraceWarp struct {
-	lst       collections.List[response.LinkTraceVO]      // 要返回的集合
+	lst       collections.List[response.LinkTraceVO]
 	rgbaIndex int                                         // 实现不同服务的调用，用颜色区分。这里通过服务入口调用时，使用索引（对应数组颜色）
 	lstPO     collections.List[linkTraceCom.TraceContext] // 数据库读的集合
 	startTs   int64                                       // 初始开始时间
+	TotalUse  float64                                     // 总共时间
 }
 
 // 服务调用入口
@@ -55,10 +62,12 @@ func (receiver *linkTraceWarp) addEntry(po linkTraceCom.TraceContext) {
 	receiver.rgbaIndex++
 	// 添加服务的入口
 	entryTrace := response.LinkTraceVO{
-		Rgba: response.RgbaList[receiver.rgbaIndex], AppId: po.AppId, AppIp: po.AppIp, AppName: po.AppName, UseTs: po.UseTs.Microseconds(), UseDesc: po.UseTs.String(),
-		StartTs: (po.StartTs - receiver.startTs) / int64(time.Microsecond),
+		Rgba: response.RgbaList[receiver.rgbaIndex], AppId: po.AppId, AppIp: po.AppIp, AppName: po.AppName, UseTs: float64(po.UseTs.Microseconds()), UseDesc: po.UseTs.String(),
+		StartTs: float64(po.StartTs - receiver.startTs),
 		Caption: fmt.Sprintf("%s", po.TraceType.ToString()),
 	}
+	entryTrace.StartRate = entryTrace.StartTs / receiver.TotalUse * 100
+	entryTrace.UseRate = entryTrace.UseTs / receiver.TotalUse * 100
 	switch po.TraceType {
 	case eumTraceType.WebApi:
 		entryTrace.Caption += fmt.Sprintf("%v %s => %s", po.WebStatusCode, po.WebMethod, po.WebPath)
@@ -86,9 +95,11 @@ func (receiver *linkTraceWarp) addDetail(po linkTraceCom.TraceContext) {
 		baseDetailPO := m["BaseTraceDetail"].(trace.BaseTraceDetail)
 		detailTrace := response.LinkTraceVO{
 			Rgba: response.RgbaList[receiver.rgbaIndex], AppId: po.AppId, AppIp: po.AppIp, AppName: po.AppName,
-			StartTs: baseDetailPO.StartTs - receiver.startTs,
-			UseTs:   baseDetailPO.UseTs.Microseconds(), UseDesc: baseDetailPO.UseTs.String()}
+			StartTs: float64(baseDetailPO.StartTs - receiver.startTs),
+			UseTs:   float64(baseDetailPO.UseTs.Microseconds()), UseDesc: baseDetailPO.UseTs.String()}
 
+		detailTrace.StartRate = detailTrace.StartTs / receiver.TotalUse * 100
+		detailTrace.UseRate = detailTrace.UseTs / receiver.TotalUse * 100
 		switch detailPO := detail.(type) {
 		case *linkTraceCom.TraceDetailDatabase:
 			if detailPO.TableName == "" && detailPO.Sql == "" {
