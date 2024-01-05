@@ -29,8 +29,12 @@
                 <div class="appItem">容器仓库：<el-tag size="small" style="margin-left: 5px">Ver {{ v.DockerVer }}</el-tag> {{ v.AppGitName }} </div>
                 <div class="appItem">部署版本：<el-tag size="small" style="margin-left: 5px">Ver {{ v.ClusterVer.DockerVer }}</el-tag></div>
                 <div class="appItem">部署时间：{{ v.ClusterVer.DeploySuccessAt }}</div>
-                <div class="appItem">容器文件路径：{{ v.DockerfilePath }}</div>
-                <el-button size="small" @click="onBuildAdd(v)" type="danger" style="margin-left: 5px"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
+                <div class="appItem">部署角色：
+                  <el-tag v-if="v.DockerNodeRole=='manager'" type="danger" size="small" style="margin-left: 5px">{{ v.DockerNodeRole }}</el-tag>
+                  <el-tag v-else size="small" style="margin-left: 5px">{{ v.DockerNodeRole }}</el-tag>
+                  <el-button size="small" @click="onBuildAdd(v)" type="danger" style="margin-left: 5px"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
+                </div>
+
               </el-card>
             </el-space>
           </el-main>
