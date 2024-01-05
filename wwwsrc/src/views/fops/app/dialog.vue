@@ -270,6 +270,7 @@ const onSubmit = () => {
     "AppGit":parseInt(state.ruleForm.AppGit),
     "FrameworkGits":state.ruleForm.FrameworkGits,
     "Dockerfile":state.ruleForm.Dockerfile,
+    "DockerfilePath":state.ruleForm.DockerfilePath,
     "DockerReplicas":parseInt(state.ruleForm.DockerReplicas),
     "DockerNodeRole":state.ruleForm.DockerNodeRole,
     "AdditionalScripts":state.ruleForm.AdditionalScripts,
