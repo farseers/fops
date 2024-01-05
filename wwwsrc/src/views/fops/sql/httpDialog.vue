@@ -6,8 +6,14 @@
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <ul class="custom-list">
               <li>
-                <span>{{state.ruleForm.CreateAt}}</span>
-                <el-tag size="small">{{state.ruleForm.Method}} => </el-tag><span> {{state.ruleForm.Url}}</span> <span>整体耗时：{{state.ruleForm.UseDesc}}</span>
+                {{state.ruleForm.CreateAt}}
+                <el-tag size="small">{{state.ruleForm.StatusCode}}</el-tag> {{state.ruleForm.RequestIp}} <el-tag type="success" size="small">{{state.ruleForm.Method}}</el-tag>
+                {{state.ruleForm.Url}}
+                整体耗时：
+                  <el-tag size="small" v-if="state.ruleForm.UseTs > 100000000" type="danger">{{state.ruleForm.UseDesc}}</el-tag>
+                  <el-tag size="small" v-else-if="state.ruleForm.UseTs > 50000000" type="warning">{{state.ruleForm.UseDesc}}</el-tag>
+                  <el-tag size="small" v-else-if="state.ruleForm.UseTs > 1000000">{{scope.row.UseDesc}}</el-tag>
+                  <el-tag size="small" v-else type="success">{{state.ruleForm.UseDesc}}</el-tag>
               </li>
               <li><el-tag size="small">Headers：</el-tag>{{friendlyJSONstringify(state.ruleForm.Headers)}}</li>
               <li><el-tag size="small">入参：</el-tag>{{state.ruleForm.RequestBody}}</li>
@@ -44,6 +50,7 @@ const state = reactive({
     ResponseBody:'',
     StatusCode:'',
     UseDesc:'',
+    UseTs:0,
   },
   TraceId:'',
   totalTs:0,

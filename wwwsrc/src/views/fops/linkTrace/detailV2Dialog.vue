@@ -8,6 +8,7 @@
               应用名称：<el-tag size="small">{{state.AppName}}</el-tag>，
               应用ID：{{state.AppId}}，
               应用IP：{{state.AppIp}}，
+              请求时间：{{state.CreateAt}}，
               整体耗时：
                 <el-tag size="small" v-if="state.UseTs > 100000000" type="danger">{{state.UseDesc}}</el-tag>
                 <el-tag size="small" v-else-if="state.UseTs > 50000000" type="warning">{{state.UseDesc}}</el-tag>
