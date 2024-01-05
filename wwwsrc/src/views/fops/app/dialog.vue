@@ -8,16 +8,15 @@
             名称需要与应用的AppName完全一致，才能检查健康状态
             <el-button v-if="state.dialog.type=='edit'" @click="onDelete" size="default" type="danger" style="margin-left: 5px;">删 除</el-button>
           </el-form-item>
-          <el-form-item style="float: left" label="是否健康">
+          <el-form-item label="镜像版本">
+            <el-tag size="small">{{state.ruleForm.DockerImage}}</el-tag>
+          </el-form-item>
+          <el-form-item label="集群版本">
+            <el-tag size="small" style="margin-right: 5px;">{{state.ruleForm.ClusterVer.DockerImage}}</el-tag>
+            上次成功部署：<el-tag size="small" style="margin-right: 5px;">{{state.ruleForm.ClusterVer.DeploySuccessAt}}</el-tag>
             <el-tag v-if="state.ruleForm.IsHealth" size="small" type="success">健康</el-tag>
             <el-tag v-else-if="state.ruleForm.ActiveInstance!=null && state.ruleForm.ActiveInstance.length > 0" size="small" type="warning">不健康</el-tag>
             <el-tag v-else size="small" type="danger">未运行</el-tag>
-          </el-form-item>
-          <el-form-item label="镜像版本">
-            <el-tag size="small">{{state.ruleForm.DockerVer}}</el-tag>
-          </el-form-item>
-          <el-form-item label="集群版本">
-            <el-tag size="small" style="margin-right: 5px;">Ver:{{state.ruleForm.ClusterVer.DockerVer}}</el-tag> 上次成功部署：<el-tag size="small">{{state.ruleForm.ClusterVer.DeploySuccessAt}}</el-tag>
           </el-form-item>
           <el-form-item style="float: left" label="副本数量">
             <el-input v-model="state.ruleForm.DockerReplicas" type="number" placeholder="请输入副本数量"></el-input>
