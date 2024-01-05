@@ -3,56 +3,39 @@
 		<el-dialog :title="state.dialog.title" v-model="state.dialog.isShowDialog" width="900px">
 			<el-form ref="gitDialogFormRef" :model="state.ruleForm" size="default" label-width="120px">
 				<el-row :gutter="35">
-					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item label="应用名称">
 							<el-input v-model="state.ruleForm.AppName" placeholder="请输入应用名称" style="max-width: 200px;margin-right: 5px"></el-input>
               名称需要与应用的AppName完全一致，才能检查健康状态
               <el-button v-if="state.dialog.type=='edit'" @click="onDelete" size="default" type="danger" style="margin-left: 5px;">删 除</el-button>
 						</el-form-item>
-					</el-col>
-          <el-col v-if="state.dialog.type == 'edit'" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="是否健康">
+            <el-form-item style="float: left" label="是否健康">
               <el-tag v-if="state.ruleForm.IsHealth" size="small" type="success">健康</el-tag>
               <el-tag v-else-if="state.ruleForm.ActiveInstance!=null && state.ruleForm.ActiveInstance.length > 0" size="small" type="warning">不健康</el-tag>
               <el-tag v-else size="small" type="danger">未运行</el-tag>
             </el-form-item>
-          </el-col>
-					<el-col v-if="state.dialog.type == 'edit'" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-						<el-form-item style="float: left" label="镜像版本">
+						<el-form-item label="镜像版本">
               <el-tag size="small">{{state.ruleForm.DockerVer}}</el-tag>
 						</el-form-item>
-            <el-form-item style="float: left" label="集群版本">
+            <el-form-item label="集群版本">
               <el-tag size="small">{{friendlyJSONstringify(state.ruleForm.ClusterVer)}}</el-tag>
             </el-form-item>
-					</el-col>
-          <el-col style="clear:both;" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="副本数量">
+            <el-form-item style="float: left" label="副本数量">
               <el-input v-model="state.ruleForm.DockerReplicas" type="number" placeholder="请输入副本数量"></el-input>
             </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="容器节点角色">
-              <el-select v-model="state.ruleForm.DockerNodeRoleInt" placeholder="请输入容器节点角色" class="ml10" style="max-width: 150px;" size="small">
+              <el-select v-model="state.ruleForm.DockerNodeRoleInt" placeholder="请输入容器节点角色" class="ml10" style="max-width: 150px;" size="default">
                 <el-option label="manager" :value="0"></el-option>
                 <el-option label="worker" :value="1"></el-option>
               </el-select>
             </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="附加脚本">
-              <el-input v-model="state.ruleForm.AdditionalScripts" type="textarea" placeholder="请输入附加脚本" clearable></el-input>
+            <el-form-item label="容器参数">
+              <el-input v-model="state.ruleForm.AdditionalScripts" type="textarea" placeholder="容器在创建时，附加的参数" clearable></el-input>
             </el-form-item>
-          </el-col>
-
-          <el-col :xs="24" :sm="18" :md="18" :lg="18" :xl="18" class="mb20">
-            <el-form-item label="Git主仓库" style="float: left">
+            <el-form-item label="Git主仓库">
               <el-tag size="small">{{state.ruleForm.AppGitName}}</el-tag>
-<!--              <el-input v-model="state.ruleForm.AppGit"  placeholder="请输入应用的源代码" clearable></el-input>-->
+              <el-button type="primary" @click="onOpenGit(2)" size="default" style="margin-left: 5px;">添加Git</el-button>
             </el-form-item>
-            <el-button type="primary" @click="onOpenGit(2)" size="default" style="margin-left: 5px;">添加Git</el-button>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
-            <el-form-item label="依赖仓库" style="float: left">
+            <el-form-item label="依赖仓库">
             <el-button type="success" @click="onOpenGit(1)" size="default" style="margin-left: 5px;">添加依赖的仓库</el-button>
             <el-table :data="state.gitList" style="width: 100%">
               <el-table-column prop="Id" label="编号" width="60" />
@@ -65,23 +48,15 @@
               </el-table-column>
             </el-table>
             </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="Shell脚本" >
               <el-input v-model="state.ruleForm.ShellScript" type="textarea" placeholder="请输入Shell脚本" clearable></el-input>
             </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="Dockerfile内容" >
               <el-input v-model="state.ruleForm.Dockerfile" type="textarea"  placeholder="请输入Dockerfile内容" clearable></el-input>
             </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="Dockerfile">
               <el-input v-model="state.ruleForm.DockerfilePath" placeholder="请输入Dockerfile路径" clearable></el-input>
             </el-form-item>
-          </el-col>
-
 				</el-row>
 			</el-form>
 			<template #footer>
