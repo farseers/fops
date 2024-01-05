@@ -1,120 +1,87 @@
 <template>
-	<div class="system-user-container layout-padding">
-		<el-card shadow="hover" class="layout-padding-auto">
-			<div class="system-user-search mb15">
-        <el-select v-model="state.clusterId" placeholder="请选择集群" class="ml10" @change="onClusterChange">
-          <el-option
-              v-for="item in state.clusterData"
-              :key="item.Id"
-              :label="item.Name"
-              :value="item.Id"
-          ></el-option>
-        </el-select>
-<!--				<el-input size="default" placeholder="请输入用户名称" style="max-width: 180px"> </el-input>-->
-<!--				<el-button size="default" type="primary" class="ml10">-->
-<!--					<el-icon>-->
-<!--						<ele-Search />-->
-<!--					</el-icon>-->
-<!--					查询-->
-<!--				</el-button>-->
-				<el-button size="default" type="success" class="ml10" @click="onOpenAdd('add')">
-					<el-icon>
-            <ele-FolderAdd />
-					</el-icon>
-					新增应用
-				</el-button>
-        <el-button size="default" type="info" class="ml10" @click="onClearDockerImage('add')">
-          <el-icon>
-            <ele-Delete />
-          </el-icon>
-          清除None镜像
-        </el-button>
-        <el-button size="default" type="danger" class="ml10" @click="onAllBuild()">
-          <el-icon>
-            <ele-SwitchButton />
-          </el-icon>
-          全部构建
-        </el-button>
-			</div>
-      <div class="flex-warp" style="background: #e0e0e0;overflow-y: auto;height: 900px">
-        <el-row style="float:left;width: 65%">
-          <el-col style="float: left;margin: 10px;"  :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb15" v-if="state.tableData.data.length > 0">
-            <div  style="background: #ffffff;width: 24%"  class="flex-warp-item" v-for="(v, k) in state.tableData.data" :key="k">
-              <div class="flex-warp-item-box" @click="onShowBuildList(v)">
-                <div class="appItem">
-                  <el-tag size="default">{{ v.AppName }}</el-tag>
-                  <el-tag v-if="v.IsHealth" size="small" type="success" style="margin-left: 5px">健康</el-tag>
-                  <el-tag v-else-if="v.ActiveInstance!=null && v.ActiveInstance.length > 0" size="small" type="warning" style="margin-left: 5px">不健康</el-tag>
-                  <el-tag v-else size="small" type="danger" style="margin-left: 5px">未运行</el-tag>
-                  <el-tooltip content="副本数量" slot="label">
-                    <el-tag size="small" style="margin-left: 5px">{{ v.DockerReplicas }}</el-tag>
-                  </el-tooltip>
-                  <el-tooltip content="镜像版本" slot="label">
-                    <el-tag size="small" style="margin-left: 5px">Ver {{ v.DockerVer }}</el-tag>
-                  </el-tooltip>
-                </div>
-                <div class="appItem">仓库：{{ v.AppGitName }}
+  <div class="layout-padding" style="position: relative;">
+    <el-card shadow="hover">
+        <el-header style="padding: 0">
+          <el-select v-model="state.clusterId" placeholder="请选择集群" class="ml10" @change="onClusterChange">
+            <el-option v-for="item in state.clusterData" :key="item.Id" :label="item.Name" :value="item.Id"></el-option>
+          </el-select>
+          <el-button size="default" type="success" class="ml10" @click="onOpenAdd('add')"><el-icon><ele-FolderAdd /></el-icon>新增应用</el-button>
+          <el-button size="default" type="info" class="ml10" @click="onClearDockerImage('add')"><el-icon><ele-Delete /></el-icon>清除None镜像</el-button>
+          <el-button size="default" type="danger" class="ml10" @click="onAllBuild()"><el-icon><ele-SwitchButton /></el-icon>全部构建</el-button>
+        </el-header>
+        <!--应用列表-->
+        <el-container>
+          <el-main style="padding: 0">
+            <el-space wrap style="align-items: unset;height:310px">
+              <el-card shadow="hover" v-for="(v, k) in state.tableData.data" :key="k" style="width: 260px;">
+                <template #header>
+                  <div class="card-header" style="height: 20px;">
+                    <el-tag size="default">{{ v.AppName }}</el-tag>
+                    <el-tag v-if="v.IsHealth" size="small" type="success" style="margin-left: 5px">健康</el-tag>
+                    <el-tag v-else-if="v.ActiveInstance!=null && v.ActiveInstance.length > 0" size="small" type="warning" style="margin-left: 5px">不健康</el-tag>
+                    <el-tag v-else size="small" type="danger" style="margin-left: 5px">未运行</el-tag>
+                    <el-tooltip content="副本数量" slot="label">
+                      <el-tag size="small" style="margin-left: 5px">{{ v.DockerReplicas }}</el-tag>
+                    </el-tooltip>
+                    <el-button class="button" size="small" @click="onOpenEdit('edit', v)" type="warning" style="margin-left: 5px">修改</el-button>
+                  </div>
+                </template>
+                <div class="appItem">仓库：{{ v.AppGitName }} <el-tag size="small" style="margin-left: 5px">Ver {{ v.DockerVer }}</el-tag></div>
                 <div class="appItem">集群版本：{{ v.ClusterVer }}</div>
-                </div>
                 <div class="appItem">容器文件路径：{{ v.DockerfilePath }}</div>
-                <div class="appItem">
-                  <el-button size="small" @click="onOpenEdit('edit', v)" type="warning">修改</el-button>
-                  <el-button size="small" @click="onBuildAdd(v)" type="danger"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
-                </div>
-              </div>
-            </div>
-          </el-col>
-          <el-empty v-else description="暂无数据"></el-empty>
-        </el-row>
-        <el-row style="width: 35%;float:left;">
-          <el-col style="float: left;background: #ffffff;margin: 15px 10px 10px 0;padding:5px;width: 98%" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb15" v-if="state.tableLogData.data.length > 0">
-            <h3 style="padding: 5px;">构建队列</h3>
-            <template v-if="state.tableLogData.data.length > 0">
-              <el-table  :data="state.tableLogData.data" v-loading="state.tableLogData.loading" style="width: 100%;background: #ffffff;">
-                <el-table-column prop="Id" label="编号" width="70" />
-                <el-table-column prop="AppName" label="应用名称" ></el-table-column>
-                <el-table-column label="状态" width="90" show-overflow-tooltip>
-                  <template #default="scope">
-                    <el-tag v-if="scope.row.Status==0" size="small" type="info">未开始</el-tag>
-                    <el-tag v-else-if="scope.row.Status==1" size="small" type="warning">构建中</el-tag>
-                    <el-tag v-if="scope.row.Status==2 && scope.row.IsSuccess == true" size="small" type="success">成功</el-tag>
-                    <el-tag v-else-if="scope.row.Status==2 && scope.row.IsSuccess == false" size="small" type="danger">失败</el-tag>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="FinishAt" width="170" label="完成时间"></el-table-column>
-                <el-table-column label="操作" width="80">
-                  <template #default="scope">
-                    <el-button v-if="scope.row.Status!=0" size="small" type="success" @click="showLog(scope.row)">日志</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <el-pagination
-                  @size-change="onHandleSizeLogChange"
-                  @current-change="onHandleCurrentLogChange"
-                  class="mt15"
-                  :pager-count="5"
-                  :page-sizes="[10, 20, 30]"
-                  v-model:current-page="state.tableLogData.param.pageNum"
-                  background
-                  v-model:page-size="state.tableLogData.param.pageSize"
-                  layout="total, sizes, prev, pager, next, jumper"
-                  :total="state.tableLogData.total"
-              >
-              </el-pagination>
-            </template>
-          </el-col>
-          <el-empty v-else description="暂无数据"></el-empty>
-        </el-row>
-      </div>
-		</el-card>
-    <appDialog ref="appDialogRef" @refresh="getTableData()" />
-    <appAddDialog ref="appAddDialogRef" @refresh="getTableData()" />
-    <el-dialog title="构建日志" v-model="state.logDialogIsShow" style="width: 80%;height: 85%;top:20px;margin-bottom: 50px">
-      <el-card shadow="hover" class="layout-padding-auto" style="background-color:#393d49;overflow: auto;">
-        <pre style="color: #fff;background-color:#393d49;height: 100%;" v-html="state.logContent"></pre>
-      </el-card>
-    </el-dialog>
-	</div>
+                <el-button size="small" @click="onBuildAdd(v)" type="danger" style="margin-left: 5px"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
+              </el-card>
+            </el-space>
+          </el-main>
+          <el-aside width="550px">
+              <el-card>
+                <h3 style="padding: 5px;">构建队列</h3>
+                <template v-if="state.tableLogData.data.length > 0">
+                  <el-table  :data="state.tableLogData.data" v-loading="state.tableLogData.loading" style="width: 100%;background: #ffffff;">
+                    <el-table-column prop="Id" label="编号" width="70" />
+                    <el-table-column prop="AppName" label="应用名称" ></el-table-column>
+                    <el-table-column label="状态" width="90" show-overflow-tooltip>
+                      <template #default="scope">
+                        <el-tag v-if="scope.row.Status==0" size="small" type="info">未开始</el-tag>
+                        <el-tag v-else-if="scope.row.Status==1" size="small" type="warning">构建中</el-tag>
+                        <el-tag v-if="scope.row.Status==2 && scope.row.IsSuccess == true" size="small" type="success">成功</el-tag>
+                        <el-tag v-else-if="scope.row.Status==2 && scope.row.IsSuccess == false" size="small" type="danger">失败</el-tag>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="FinishAt" width="170" label="完成时间"></el-table-column>
+                    <el-table-column label="操作" width="80">
+                      <template #default="scope">
+                        <el-button v-if="scope.row.Status!=0" size="small" type="success" @click="showLog(scope.row)">日志</el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                  <el-pagination
+                      @size-change="onHandleSizeLogChange"
+                      @current-change="onHandleCurrentLogChange"
+                      class="mt15"
+                      :pager-count="5"
+                      :page-sizes="[10, 20, 30]"
+                      v-model:current-page="state.tableLogData.param.pageNum"
+                      background
+                      v-model:page-size="state.tableLogData.param.pageSize"
+                      layout="total, sizes, prev, pager, next, jumper"
+                      :total="state.tableLogData.total"
+                  >
+                  </el-pagination>
+                </template>
+                <el-empty v-else description="暂无数据"></el-empty>
+              </el-card>
+          </el-aside>
+        </el-container>
+    </el-card>
+  </div>
+  <appDialog ref="appDialogRef" @refresh="getTableData()" />
+  <appAddDialog ref="appAddDialogRef" @refresh="getTableData()" />
+  <el-dialog title="构建日志" v-model="state.logDialogIsShow" style="width: 80%;height: 85%;top:20px;margin-bottom: 50px">
+    <el-card shadow="hover" class="layout-padding-auto" style="background-color:#393d49;overflow: auto;">
+      <pre style="color: #fff;background-color:#393d49;height: 100%;" v-html="state.logContent"></pre>
+    </el-card>
+  </el-dialog>
 </template>
 
 <script setup lang="ts" name="fopsApp">
@@ -246,6 +213,7 @@ const onClearDockerImage = () => {
     type: 'warning',
   })
       .then(() => {
+        state.tableData.loading = true;
         // 删除逻辑
         serverApi.dockerClearImage().then(function (res){
           if (res.Status){
@@ -254,6 +222,7 @@ const onClearDockerImage = () => {
             ElMessageBox.alert(res.StatusMessage,'Warning',{ type: 'warning',dangerouslyUseHTMLString: true})
           }
         })
+        state.tableData.loading = false;
       })
       .catch(() => {});
 };
