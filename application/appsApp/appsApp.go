@@ -68,7 +68,7 @@ func Delete(appName string, appsRepository apps.Repository, appsIDockerDevice ap
 
 // List 应用列表
 // @post list
-func List(appsRepository apps.Repository) collections.List[response.AppsResponse] {
+func List(clusterId int64, appsRepository apps.Repository) collections.List[response.AppsResponse] {
 	lstDO := appsRepository.ToList()
 	lstGit := appsRepository.ToGitListAll(-1)
 
@@ -76,7 +76,7 @@ func List(appsRepository apps.Repository) collections.List[response.AppsResponse
 	lstDO.Foreach(func(item *apps.DomainObject) {
 		item.ShellScript = ""
 		item.Dockerfile = ""
-		appsResponse := doToAppsResponse(*item)
+		appsResponse := doToAppsResponse(clusterId, *item)
 		appsResponse.AppGitName = lstGit.Where(func(gitItem apps.GitEO) bool {
 			return item.AppGit == parse.ToInt64(gitItem.Id)
 		}).First().Name
@@ -90,22 +90,28 @@ func List(appsRepository apps.Repository) collections.List[response.AppsResponse
 func Info(appName string, appsRepository apps.Repository) response.AppsResponse {
 	do := appsRepository.ToEntity(appName)
 	exception.ThrowWebExceptionBool(do.IsNil(), 403, "应用不存在")
-	rsp := doToAppsResponse(do)
+	rsp := doToAppsResponse(0, do)
 	rsp.AppGitName = appsRepository.ToGitEntity(do.AppGit).Name
 	return rsp
 }
 
-func doToAppsResponse(do apps.DomainObject) response.AppsResponse {
-	var clusterVers []apps.ClusterVerVO
-	for _, clusterVerVO := range do.ClusterVer {
-		clusterVers = append(clusterVers, *clusterVerVO)
+func doToAppsResponse(clusterId int64, do apps.DomainObject) response.AppsResponse {
+	if clusterId == 0 {
+		for i := range do.ClusterVer {
+			clusterId = i
+			break
+		}
+	}
+	vo, exists := do.ClusterVer[clusterId]
+	if !exists {
+		vo = &apps.ClusterVerVO{}
 	}
 	return response.AppsResponse{
 		AppName:           do.AppName,
 		ActiveInstance:    do.ActiveInstance,
 		DockerVer:         do.DockerVer,
 		ShellScript:       do.ShellScript,
-		ClusterVer:        clusterVers,
+		ClusterVer:        *vo,
 		AppGit:            do.AppGit,
 		FrameworkGits:     do.FrameworkGits,
 		Dockerfile:        do.Dockerfile,
