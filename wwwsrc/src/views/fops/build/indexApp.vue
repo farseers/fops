@@ -13,7 +13,7 @@
         <el-container>
           <el-main style="padding: 0">
             <el-space wrap style="align-items: unset;height:310px">
-              <el-card shadow="hover" v-for="(v, k) in state.tableData.data" :key="k" style="width: 260px;">
+              <el-card shadow="hover" v-for="(v, k) in state.tableData.data" :key="k" style="width: 280px;">
                 <template #header>
                   <div class="card-header" style="height: 20px;">
                     <el-tag size="default">{{ v.AppName }}</el-tag>
@@ -26,8 +26,9 @@
                     <el-button class="button" size="small" @click="onOpenEdit('edit', v)" type="warning" style="margin-left: 5px">修改</el-button>
                   </div>
                 </template>
-                <div class="appItem">仓库：{{ v.AppGitName }} <el-tag size="small" style="margin-left: 5px">Ver {{ v.DockerVer }}</el-tag></div>
-                <div class="appItem">集群版本：{{ v.ClusterVer }}</div>
+                <div class="appItem">容器仓库：<el-tag size="small" style="margin-left: 5px">Ver {{ v.DockerVer }}</el-tag> {{ v.AppGitName }} </div>
+                <div class="appItem">部署版本：<el-tag size="small" style="margin-left: 5px">Ver {{ v.ClusterVer.DockerVer }}</el-tag></div>
+                <div class="appItem">部署时间：{{ v.ClusterVer.DeploySuccessAt }}</div>
                 <div class="appItem">容器文件路径：{{ v.DockerfilePath }}</div>
                 <el-button size="small" @click="onBuildAdd(v)" type="danger" style="margin-left: 5px"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
               </el-card>
