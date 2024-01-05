@@ -159,6 +159,11 @@ const openDialog = (row: any) => {
   state.traceId=row.TraceIdN
   getTableData()
 }
+const openDialogAppName = (row: any) => {
+  state.dialog.isShowDialog = true;
+  state.appName=row.AppName
+  getTableData()
+}
 const closeDialog = () => {
   state.dialog.isShowDialog = false;
 };
@@ -203,6 +208,7 @@ onMounted(() => {
 // 暴露变量
 defineExpose({
   openDialog,
+  openDialogAppName
 });
 </script>
 

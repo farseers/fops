@@ -34,7 +34,7 @@
                 <el-tag v-else size="small" style="margin-left: 5px">{{ v.DockerNodeRole }}</el-tag>
                 <el-button size="small" @click="onBuildAdd(v)" type="danger" style="margin-left: 5px"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
               </div>
-              <el-button style="margin-left: 5px" size="small" type="success" @click="showFsLog()">日志</el-button>
+              <el-button style="margin-left: 5px" size="small" type="success" @click="showFsLog(v)">日志</el-button>
             </el-card>
           </el-space>
         </el-main>
@@ -79,15 +79,16 @@
         </el-aside>
       </el-container>
     </el-card>
-  </div>
+
   <appDialog ref="appDialogRef" @refresh="getTableData()" />
   <appAddDialog ref="appAddDialogRef" @refresh="getTableData()" />
-  <logDialog ref="logDialogRef"  />
+    <logDialog ref="logDialogRef"  />
   <el-dialog title="构建日志" v-model="state.logDialogIsShow" style="width: 80%;height: 85%;top:20px;margin-bottom: 50px">
     <el-card shadow="hover" class="layout-padding-auto" style="background-color:#393d49;overflow: auto;">
       <pre style="color: #fff;background-color:#393d49;height: 100%;" v-html="state.logContent"></pre>
     </el-card>
   </el-dialog>
+  </div>
 </template>
 
 <script setup lang="ts" name="fopsApp">
@@ -109,7 +110,6 @@ const appAddDialog = defineAsyncComponent(() => import('/@/views/fops/app/addDia
 // 日志
 const logDialog = defineAsyncComponent(() => import('/src/views/fops/log/logV2Dialog.vue'));
 const logDialogRef = ref();
-
 // 定义变量内容
 const appDialogRef = ref();
 const appAddDialogRef = ref();
@@ -204,8 +204,8 @@ const getTableClusterData = () => {
 };
 
 // 打开FS日志
-const showFsLog=()=>{
-  //logDialogRef.value.openDialog(state.traceInfo);
+const showFsLog=(row:any)=>{
+  logDialogRef.value.openDialogAppName(row);
 }
 
 const onClusterChange=(value:number)=>{
