@@ -42,19 +42,24 @@
             <div  style="background: #ffffff;width: 24%"  class="flex-warp-item" v-for="(v, k) in state.tableData.data" :key="k">
               <div class="flex-warp-item-box" @click="onShowBuildList(v)">
                 <div class="appItem">
-                  <el-tag size="small">{{ v.AppName }}</el-tag>
-                  <el-tag v-if="v.IsHealth" size="small" type="success">健康</el-tag>
-                  <el-tag v-else-if="v.ActiveInstance!=null && v.ActiveInstance.length > 0" size="small" type="warning">不健康</el-tag>
-                  <el-tag v-else size="small" type="danger">未运行</el-tag>
+                  <el-tag size="default">{{ v.AppName }}</el-tag>
+                  <el-tag v-if="v.IsHealth" size="small" type="success" style="margin-left: 5px">健康</el-tag>
+                  <el-tag v-else-if="v.ActiveInstance!=null && v.ActiveInstance.length > 0" size="small" type="warning" style="margin-left: 5px">不健康</el-tag>
+                  <el-tag v-else size="small" type="danger" style="margin-left: 5px">未运行</el-tag>
+                  <el-tooltip content="副本数量" slot="label">
+                    <el-tag size="small" style="margin-left: 5px">{{ v.DockerReplicas }}</el-tag>
+                  </el-tooltip>
+                  <el-tooltip content="镜像版本" slot="label">
+                    <el-tag size="small" style="margin-left: 5px">Ver {{ v.DockerVer }}</el-tag>
+                  </el-tooltip>
                 </div>
-                <div class="appItem">容器版本：{{ v.DockerVer }}</div>
-                <div class="appItem">集群版本：{{ v.ClusterVer }}</div>
                 <div class="appItem">仓库：{{ v.AppGitName }}
+                <div class="appItem">集群版本：{{ v.ClusterVer }}</div>
                 </div>
                 <div class="appItem">容器文件路径：{{ v.DockerfilePath }}</div>
                 <div class="appItem">
-                  <el-button size="default" @click="onOpenEdit('edit', v)" type="warning">修改</el-button>
-                  <el-button @click="onBuildAdd(v)" size="default" type="danger"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
+                  <el-button size="small" @click="onOpenEdit('edit', v)" type="warning">修改</el-button>
+                  <el-button size="small" @click="onBuildAdd(v)" type="danger"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
                 </div>
               </div>
             </div>
