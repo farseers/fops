@@ -110,6 +110,7 @@ func doToAppsResponse(clusterId int64, do apps.DomainObject) response.AppsRespon
 		AppName:           do.AppName,
 		ActiveInstance:    do.ActiveInstance,
 		DockerVer:         do.DockerVer,
+		DockerImage:       do.DockerImage,
 		ShellScript:       do.ShellScript,
 		ClusterVer:        *vo,
 		AppGit:            do.AppGit,
