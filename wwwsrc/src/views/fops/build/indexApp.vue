@@ -12,7 +12,7 @@
         <!--应用列表-->
         <el-container>
           <el-main style="padding: 0">
-            <el-space wrap style="align-items: unset;height:310px">
+            <el-space wrap style="align-items: unset;">
               <el-card shadow="hover" v-for="(v, k) in state.tableData.data" :key="k" style="width: 280px;">
                 <template #header>
                   <div class="card-header" style="height: 20px;">
