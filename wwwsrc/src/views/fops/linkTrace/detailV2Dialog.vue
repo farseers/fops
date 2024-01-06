@@ -42,17 +42,22 @@
               <el-button style="margin-left: 20px" size="small" type="success" @click="showLog()">查看日志</el-button>
             </div>
             <div :style="{'width':'100%','overflow-x': 'auto','white-space': 'nowrap'}">
-            <ul class="custom-list mt20">
-              <li style="height: 35px;">
+            <ul class="custom-list mt10">
+              <li style="height: 35px;padding: 10px 0;">
                 <span v-for="(info, index) in state.tableData" :key="index" :style="{'margin-left':info.StartRate+'%','float':'left','position':'absolute'}">
-                  <el-tag v-if="index>0 && info.UseTs > 0" size="small" type="success">{{info.UseDesc}}</el-tag>
+                  <el-tag v-if="index>0 && info.UseTs > 0" size="small" type="success">{{info.StartTs / 1000}}ms</el-tag>
+                </span>
+
+                <span style="float:right;margin-right: 10px">
+                  <el-tag size="small" type="success">{{state.UseTs / 1000000}}ms</el-tag>
                 </span>
               </li>
+              <!--详情-->
               <li style="clear: both;padding:2px 0;" v-for="(info, index) in state.tableData" :key="index">
                 <div>
                   <span style="margin: 0 5px;color:#8c8b8b">{{index + 1}}</span>
-                  <span :style="{'margin-left':info.StartRate+'%','float':'left','position':'absolute'}" :title="info.Desc">
-                    <div class="el-progress el-progress--line is-exception el-progress--text-inside" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" :style="{'width':12 * info.UseRate+'px'}">
+                  <span :style="{'margin-left':info.StartRate+'%','float':'left','position':'relative'}" :title="info.Desc">
+                    <div class="el-progress el-progress--line is-exception el-progress--text-inside" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" :style="{'width':10 * info.UseRate+'px'}">
                       <div class="el-progress-bar">
                           <div class="el-progress-bar__inner" :style="{'height': '21px','width': '100%', 'animation-duration': '3s','text-align': 'left','background-color':'rgb('+info.Rgba+')'}">
                             <div class="el-progress-bar__innerText" style="color:#181818">
