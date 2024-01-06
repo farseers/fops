@@ -3,7 +3,10 @@
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
         <label>应用名称</label>
-        <el-input size="default" v-model="state.appName" placeholder="应用名称" style="max-width: 150px;padding-left: 5px"> </el-input>
+        <el-select class="ml10" style="max-width: 150px;" size="small" v-model="state.appName">
+          <el-option label="全部" value=""></el-option>
+          <el-option v-for="item in state.appData" :label="item.AppName" :value="item.AppName" ></el-option>
+        </el-select>
         <label class="ml10">执行端IP</label>
         <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 120px;padding-left: 5px"> </el-input>
         <label class="ml10">请求IP</label>
@@ -124,6 +127,7 @@ const state = reactive({
 			pageSize: 10,
 		},
 	},
+  appData:[],
 });
 
 // 监听 state.startMin 的变化
@@ -131,7 +135,10 @@ watch(() => state.startMin, (newValue, oldValue) => {
   console.log(`count 从 ${oldValue} 变为 ${newValue}`);
   getTableData()
 });
-
+watch(() => state.appName, (newValue, oldValue) => {
+  console.log(`count 从 ${oldValue} 变为 ${newValue}`);
+  getTableData()
+});
 // 初始化表格数据
 const getTableData = () => {
 	state.tableData.loading = true;
@@ -164,7 +171,15 @@ const getTableData = () => {
 const onDetail=(row: any)=>{
   detailDialogRef.value.openDialog(row);
 }
-
+const getAppData=()=>{
+  serverApi.appsList({}).then(function (res){
+    if (res.Status){
+      state.appData=res.Data
+    }else{
+      state.appData=[]
+    }
+  })
+}
 // 删除用户
 const onDel = (row: any) => {
 	ElMessageBox.confirm(`此操作将永久删除：“${row.Name}”，是否继续?`, '提示', {
@@ -201,6 +216,7 @@ const onQuery=()=>{
 // 页面加载时
 onMounted(() => {
 	getTableData();
+  getAppData();
 });
 </script>
 

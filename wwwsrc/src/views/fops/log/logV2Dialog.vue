@@ -6,7 +6,10 @@
         <label>TraceId</label>
         <el-input size="default" v-model="state.traceId" placeholder="链路ID" style="max-width: 180px"> </el-input>
         <label class="ml10">应用名称</label>
-        <el-input size="default" v-model="state.appName" placeholder="应用名称" style="max-width: 150px;padding-left: 5px"> </el-input>
+        <el-select class="ml10" style="max-width: 150px;" size="small" v-model="state.appName">
+          <el-option label="全部" value=""></el-option>
+          <el-option v-for="item in state.appData" :label="item.AppName" :value="item.AppName" ></el-option>
+        </el-select>
         <label class="ml10">执行端IP</label>
         <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 120px;padding-left: 5px"> </el-input>
         <label class="ml10">日志内容</label>
@@ -117,10 +120,14 @@ const state = reactive({
         type: '',
         title: '',
         submitTxt: '',
-  },
+  },appData:[],
 });
 // 监听 state.startMin 的变化
 watch(() => state.logLevel, (newValue, oldValue) => {
+  console.log(`count 从 ${oldValue} 变为 ${newValue}`);
+  getTableData()
+});
+watch(() => state.appName, (newValue, oldValue) => {
   console.log(`count 从 ${oldValue} 变为 ${newValue}`);
   getTableData()
 });
@@ -158,11 +165,13 @@ const openDialog = (row: any) => {
   state.dialog.isShowDialog = true;
   state.traceId=row.TraceIdN
   getTableData()
+  getAppData();
 }
 const openDialogAppName = (row: any) => {
   state.dialog.isShowDialog = true;
   state.appName=row.AppName
   getTableData()
+  getAppData();
 }
 const closeDialog = () => {
   state.dialog.isShowDialog = false;
@@ -187,6 +196,15 @@ const onDel = (row: any) => {
 		})
 		.catch(() => {});
 };
+const getAppData=()=>{
+  serverApi.appsList({}).then(function (res){
+    if (res.Status){
+      state.appData=res.Data
+    }else{
+      state.appData=[]
+    }
+  })
+}
 // 分页改变
 const onHandleSizeChange = (val: number) => {
 	state.tableData.param.pageSize = val;
@@ -203,7 +221,7 @@ const onQuery=()=>{
 
 // 页面加载时
 onMounted(() => {
-	getTableData();
+
 });
 // 暴露变量
 defineExpose({
