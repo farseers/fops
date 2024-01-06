@@ -41,7 +41,7 @@
             <div class="mt10" v-else-if="state.TraceType == 5">
               <el-button style="margin-left: 20px" size="small" type="success" @click="showLog()">查看日志</el-button>
             </div>
-            <div :style="{'width':'100%','overflow-x': 'auto','white-space': 'nowrap'}">
+            <div :style="{'width':'100%','white-space': 'nowrap'}">
             <ul class="custom-list mt10">
               <li style="height: 35px;padding: 10px 0;">
                 <span v-for="(info, index) in state.tableData" :key="index" :style="{'margin-left':info.StartRate+'%','float':'left','position':'absolute'}">
