@@ -60,6 +60,7 @@ type linkTraceWarp struct {
 	lstPO     collections.List[linkTraceCom.TraceContext] // 数据库读的集合
 	startTs   int64                                       // 初始开始时间
 	TotalUse  float64                                     // 总共时间
+	PreDetail trace.BaseTraceDetail                       // 上一次的执行明细。用来解决两个服务间时间不同步（服务器的时间没有同步）
 }
 
 // 服务调用入口
@@ -73,6 +74,11 @@ func (receiver *linkTraceWarp) addEntry(po linkTraceCom.TraceContext) {
 	}
 	entryTrace.StartRate = entryTrace.StartTs / receiver.TotalUse * 100
 	entryTrace.UseRate = entryTrace.UseTs / receiver.TotalUse * 100
+	// 通常说明不同服务间的机器时间不同步
+	if entryTrace.StartRate > 100 {
+		// 使用上一个入口的结束时间
+		entryTrace.StartRate = float64(receiver.PreDetail.EndTs-receiver.startTs) / receiver.TotalUse * 100
+	}
 	switch po.TraceType {
 	case eumTraceType.WebApi:
 		entryTrace.Caption += fmt.Sprintf("【%s】 => %s", po.WebMethod, po.WebPath)
@@ -105,6 +111,11 @@ func (receiver *linkTraceWarp) addDetail(po linkTraceCom.TraceContext) {
 
 		detailTrace.StartRate = detailTrace.StartTs / receiver.TotalUse * 100
 		detailTrace.UseRate = detailTrace.UseTs / receiver.TotalUse * 100
+		// 通常说明不同服务间的机器时间不同步
+		if detailTrace.StartRate > 100 {
+			// 使用上一个入口的结束时间
+			detailTrace.StartRate = float64(receiver.PreDetail.EndTs-receiver.startTs) / receiver.TotalUse * 100
+		}
 		switch detailPO := detail.(type) {
 		case *linkTraceCom.TraceDetailDatabase:
 			if detailPO.TableName == "" && detailPO.Sql == "" {
@@ -150,6 +161,7 @@ func (receiver *linkTraceWarp) addDetail(po linkTraceCom.TraceContext) {
 			nextEntry := receiver.lstPO.Where(func(item linkTraceCom.TraceContext) bool {
 				return item.ParentAppName == detailTrace.AppName
 			}).First()
+			receiver.PreDetail = baseDetailPO
 			receiver.addEntry(nextEntry)
 		}
 	}
