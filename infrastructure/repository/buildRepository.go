@@ -16,7 +16,7 @@ type buildRepository struct {
 
 // GetBuildNumber 获取构建的编号
 func (repository *buildRepository) GetBuildNumber(appName string) int {
-	return context.MysqlContext.Build.Where("app_name = ?", appName).Order("Id desc").GetInt("build_number")
+	return context.MysqlContext.Build.Where("LOWER(app_name) = ?", appName).Order("Id desc").GetInt("build_number")
 }
 
 func (repository *buildRepository) AddBuild(eo apps.BuildEO) error {
@@ -29,7 +29,7 @@ func (repository *buildRepository) ToBuildList(appName string, pageSize int, pag
 	// 筛选appName
 	appName = strings.TrimSpace(appName)
 	if appName != "" {
-		ts.Where("app_name = ?", appName)
+		ts.Where("LOWER(app_name) = ?", appName)
 	}
 	lstPO := ts.ToPageList(pageSize, pageIndex)
 	return mapper.ToPageList[apps.BuildEO](lstPO)

@@ -32,7 +32,7 @@ func (receiver *logDataRepository) ToList(traceId, appName, appIp, logContent st
 	if linkTrace.Config.Driver == "clickhouse" {
 		lstPO := context.CHContext.LogData.
 			WhereIf(traceId != "", "trace_id = ?", traceId).
-			WhereIf(appName != "", "app_name = ?", appName).
+			WhereIf(appName != "", "LOWER(app_name) = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(logLevel > -1, "log_level = ?", logLevel).
 			WhereIf(logContent != "", "content like ?", "%"+logContent+"%").

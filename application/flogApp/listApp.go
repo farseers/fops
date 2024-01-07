@@ -18,6 +18,7 @@ func List(traceId, appName, appIp, logContent string, logLevel eumLogLevel.Enum,
 	if pageIndex < 1 {
 		pageIndex = 1
 	}
+	traceId = strings.TrimSpace(traceId)
 	appName = strings.TrimSpace(appName)
 	appIp = strings.TrimSpace(appIp)
 	logContent = strings.TrimSpace(logContent)

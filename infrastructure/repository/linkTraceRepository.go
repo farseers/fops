@@ -68,7 +68,7 @@ func (receiver *linkTraceRepository) ToWebApiList(traceId, appName, appIp, reque
 		ts := context.CHContext.TraceContextView.Select("trace_id,app_id,app_name,app_ip,parent_app_name,trace_type,start_ts,end_ts,use_ts,use_desc,create_at,web_domain,web_path,web_method,web_content_type,web_status_code,web_request_ip").
 			Where("trace_type = ? and parent_app_name = ''", eumTraceType.WebApi).
 			WhereIf(traceId != "", "trace_id = ?", traceId).
-			WhereIf(appName != "", "app_name = ?", appName).
+			WhereIf(appName != "", "LOWER(app_name) = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Millisecond)).
 			WhereIf(requestIp != "", "web_request_ip = ?", requestIp).
@@ -86,7 +86,7 @@ func (receiver *linkTraceRepository) ToTaskList(traceId, appName, appIp, taskNam
 		ts := context.CHContext.TraceContextView.Select("trace_id,app_id,app_name,app_ip,parent_app_name,trace_type,start_ts,end_ts,use_ts,use_desc,create_at,task_name").
 			Where("trace_type = ? and parent_app_name = ''", eumTraceType.Task).
 			WhereIf(traceId != "", "trace_id = ?", traceId).
-			WhereIf(appName != "", "app_name = ?", appName).
+			WhereIf(appName != "", "LOWER(app_name) = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Millisecond)).
 			WhereIf(taskName != "", "task_Name like ?", "%"+taskName+"%").
@@ -102,7 +102,7 @@ func (receiver *linkTraceRepository) ToFScheduleList(traceId, appName, appIp, ta
 		ts := context.CHContext.TraceContextView.Select("trace_id,app_id,app_name,app_ip,parent_app_name,trace_type,start_ts,end_ts,use_ts,use_desc,create_at,task_name,task_group_id,task_id").
 			Where("trace_type = ? and parent_app_name = ''", eumTraceType.FSchedule).
 			WhereIf(traceId != "", "trace_id = ?", traceId).
-			WhereIf(appName != "", "app_name = ?", appName).
+			WhereIf(appName != "", "LOWER(app_name) = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Millisecond)).
 			WhereIf(taskName != "", "task_Name like ?", "%"+taskName+"%").
@@ -120,7 +120,7 @@ func (receiver *linkTraceRepository) ToConsumerList(traceId, appName, appIp, ser
 		ts := context.CHContext.TraceContextView.Select("trace_id,app_id,app_name,app_ip,parent_app_name,trace_type,start_ts,end_ts,use_ts,use_desc,create_at,consumer_server,consumer_queue_name,consumer_routing_key").
 			Where("(trace_type = ? or trace_type = ?) and parent_app_name = ''", eumTraceType.MqConsumer, eumTraceType.QueueConsumer).
 			WhereIf(traceId != "", "trace_id = ?", traceId).
-			WhereIf(appName != "", "app_name = ?", appName).
+			WhereIf(appName != "", "LOWER(app_name) = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Millisecond)).
 			WhereIf(server != "", "consumer_server like ?", "%"+server+"%").
@@ -138,7 +138,7 @@ func (receiver *linkTraceRepository) ToSlowDbList(traceId, appName, appIp, dbNam
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceDetailDatabase.
 			WhereIf(traceId != "", "trace_id = ?", traceId).
-			WhereIf(appName != "", "app_name = ?", appName).
+			WhereIf(appName != "", "LOWER(app_name) = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
 			WhereIf(dbName != "", "db_name like ?", "%"+dbName+"%").
@@ -156,7 +156,7 @@ func (receiver *linkTraceRepository) ToSlowEsList(traceId, appName, appIp, index
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceDetailEs.
 			WhereIf(traceId != "", "trace_id = ?", traceId).
-			WhereIf(appName != "", "app_name = ?", appName).
+			WhereIf(appName != "", "LOWER(app_name) = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
 			WhereIf(indexName != "", "index_name like ?", "%"+indexName+"%").
@@ -173,7 +173,7 @@ func (receiver *linkTraceRepository) ToSlowEtcdList(traceId, appName, appIp, key
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceDetailEtcd.
 			WhereIf(traceId != "", "trace_id = ?", traceId).
-			WhereIf(appName != "", "app_name = ?", appName).
+			WhereIf(appName != "", "LOWER(app_name) = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
 			WhereIf(key != "", "key like ?", "%"+key+"%").
@@ -190,7 +190,7 @@ func (receiver *linkTraceRepository) ToSlowHandList(traceId, appName, appIp, nam
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceDetailHand.
 			WhereIf(traceId != "", "trace_id = ?", traceId).
-			WhereIf(appName != "", "app_name = ?", appName).
+			WhereIf(appName != "", "LOWER(app_name) = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
 			WhereIf(name != "", "name like ?", "%"+name+"%").
@@ -206,7 +206,7 @@ func (receiver *linkTraceRepository) ToSlowHttpList(traceId, appName, appIp, met
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceDetailHttp.
 			WhereIf(traceId != "", "trace_id = ?", traceId).
-			WhereIf(appName != "", "app_name = ?", appName).
+			WhereIf(appName != "", "LOWER(app_name) = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
 			WhereIf(method != "", "method like ?", "%"+method+"%").
@@ -226,7 +226,7 @@ func (receiver *linkTraceRepository) ToSlowMqList(traceId, appName, appIp, serve
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceDetailMq.
 			WhereIf(traceId != "", "trace_id = ?", traceId).
-			WhereIf(appName != "", "app_name = ?", appName).
+			WhereIf(appName != "", "LOWER(app_name) = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
 			WhereIf(server != "", "server like ?", "%"+server+"%").
@@ -244,7 +244,7 @@ func (receiver *linkTraceRepository) ToSlowRedisList(traceId, appName, appIp, ke
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceDetailRedis.
 			WhereIf(traceId != "", "trace_id = ?", traceId).
-			WhereIf(appName != "", "app_name = ?", appName).
+			WhereIf(appName != "", "LOWER(app_name) = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
 			WhereIf(key != "", "key like ?", "%"+key+"%").
