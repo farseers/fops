@@ -33,7 +33,7 @@
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
         <el-table-column width="180px" label="LogID" show-overflow-tooltip>
           <template #default="scope">
-            <span @click="onDetail(scope.row)">{{scope.row.LogIdN}}</span>
+            <span @click="onDetail(scope.row)">{{scope.row.LogId}}</span>
           </template>
         </el-table-column>
         <el-table-column width="200px" label="应用" show-overflow-tooltip>
@@ -155,7 +155,7 @@ const onDetail=(row: any)=>{
   detailDialogRef.value.openDialog(row);
 }
 const openDialog = (row: any) => {
-  state.traceId=row.TraceIdN
+  state.traceId=row.TraceId
   getTableData()
 }
 const getAppData=()=>{

@@ -145,7 +145,6 @@ const state = reactive({
     Exception:'',
   }],
   TraceId:'',
-  TraceIdN:'',
   Rgba:'',
   AppId:0,
   AppIp:'',
@@ -184,11 +183,11 @@ const state = reactive({
 const openDialog = (row2: any) => {
   state.loading=true
   //state.ruleForm = row;
-  state.dialog.title = '链路追踪详情(TraceId：'+row2.TraceIdN+')';
+  state.dialog.title = '链路追踪详情(TraceId：'+row2.TraceId+')';
   state.traceInfo=row2
 
   // 详情
-  serverApi.linkTraceInfo(row2.TraceIdN).then(function (res){
+  serverApi.linkTraceInfo(row2.TraceId).then(function (res){
     state.loading=false
     if (res.Status){
       // 计算宽度
@@ -206,7 +205,7 @@ const openDialog = (row2: any) => {
       state.AppName=res.Data.Entry.AppName
       state.Desc=res.Data.Entry.Desc
       state.UseDesc=res.Data.Entry.UseDesc
-      state.TraceId=res.Data.Entry.TraceIdN
+      state.TraceId=res.Data.Entry.TraceId
       state.UseTs=res.Data.Entry.UseTs
       state.UseDesc=res.Data.Entry.UseDesc
       state.TraceType=res.Data.Entry.TraceType
@@ -225,7 +224,6 @@ const openDialog = (row2: any) => {
       state.ConsumerRoutingKey=res.Data.Entry.ConsumerRoutingKey
       state.ConsumerQueueName=res.Data.Entry.ConsumerQueueName
       state.CreateAt=res.Data.Entry.CreateAt
-      state.TraceIdN=res.Data.Entry.TraceIdN
     }
   })
 	state.dialog.isShowDialog = true;

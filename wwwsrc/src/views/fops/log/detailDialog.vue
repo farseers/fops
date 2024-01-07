@@ -5,12 +5,12 @@
 				<el-row :gutter="35">
           <el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="日志ID">
-              <el-input v-model="state.ruleForm.LogIdN" placeholder="日志ID" clearable readonly></el-input>
+              <el-input v-model="state.ruleForm.LogId" placeholder="日志ID" clearable readonly></el-input>
             </el-form-item>
           </el-col>
 					<el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
 						<el-form-item label="跟踪ID">
-							<el-input v-model="state.ruleForm.TraceIdN" placeholder="跟踪ID" clearable readonly></el-input>
+							<el-input v-model="state.ruleForm.TraceId" placeholder="跟踪ID" clearable readonly></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
@@ -73,11 +73,11 @@ const emit = defineEmits(['refresh']);
 const gitDialogFormRef = ref();
 const state = reactive({
 	ruleForm: {
-    TraceIdN:'',
+    TraceId:'',
     AppId:0,
     AppName:'',
     AppIp:'',
-    LogIdN:'',
+    LogId:'',
     Content:'',
     Component:'',
     LogLevel:'',
@@ -97,7 +97,7 @@ const openDialog = (row2: any) => {
   state.dialog.title = '日志详情';
   //state.dialog.submitTxt = '修 改';
   // 详情
-  serverApi.logInfo(row2.LogIdN).then(function (res){
+  serverApi.logInfo(row2.LogId).then(function (res){
     if (res.Status){
       // 绑定数据
       state.ruleForm=res.Data

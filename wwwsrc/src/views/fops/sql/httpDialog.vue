@@ -69,14 +69,14 @@ const state = reactive({
 // 打开弹窗
 const openDialog = (type:number,row: any) => {
   //state.ruleForm = row;
-  state.dialog.title = '请求报文(TraceId：'+row.TraceIdN+')';
+  state.dialog.title = '请求报文(TraceId：'+row.TraceId+')';
   //state.dialog.submitTxt = '修 改';
   //console.log(row2)
   if(type==1){
-    state.TraceId=row.TraceIdN
+    state.TraceId=row.TraceId
     state.ruleForm=row
   }else{
-    state.TraceId=row.TraceIdN
+    state.TraceId=row.TraceId
     state.ruleForm.CreateAt=row.CreateAt
     state.ruleForm.Url=row.WebPath
     state.ruleForm.Method=row.WebMethod
