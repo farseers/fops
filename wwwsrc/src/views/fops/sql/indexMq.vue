@@ -2,7 +2,7 @@
 	<div class="system-user-container layout-padding">
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
-        <label>应用名称</label>
+        <label>应用</label>
         <el-select class="ml10" style="max-width: 150px;" size="small" v-model="state.appName">
           <el-option label="全部" value=""></el-option>
           <el-option v-for="item in state.appData" :label="item.AppName" :value="item.AppName" ></el-option>
