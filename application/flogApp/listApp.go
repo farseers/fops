@@ -22,7 +22,11 @@ func List(traceId, appName, appIp, logContent string, logLevel eumLogLevel.Enum,
 	appIp = strings.TrimSpace(appIp)
 	logContent = strings.TrimSpace(logContent)
 
-	return logDataRepository.ToList(traceId, appName, appIp, logContent, logLevel, pageSize, pageIndex)
+	lst := logDataRepository.ToList(traceId, appName, appIp, logContent, logLevel, pageSize, pageIndex)
+	lst.List = lst.List.OrderBy(func(item flog.LogData) any {
+		return item.CreateAt.UnixNano()
+	}).ToList()
+	return lst
 }
 
 // Info 日志详情
