@@ -277,7 +277,7 @@ func (receiver *linkTraceRepository) Save(lstEO collections.List[linkTraceCom.Tr
 		// 写入上下文
 		if _, err := context.CHContext.TraceContext.InsertList(lst, 2000); err != nil {
 			b, _ := json.Marshal(lst)
-			_ = flog.Errorf("写入ch失败,%s %s", err.Error(), string(b))
+			_ = flog.Errorf("TraceContext写入ch失败,%s %s", err.Error(), string(b))
 		}
 	} else {
 		return fmt.Errorf("不支持的链路追踪驱动：%s", linkTrace.Config.Driver)
@@ -336,56 +336,56 @@ func (receiver *linkTraceRepository) saveDetail(lst collections.List[model.Trace
 		if lstTraceDetailDatabase.Count() > 0 {
 			if _, err := context.CHContext.TraceDetailDatabase.InsertList(lstTraceDetailDatabase, 2000); err != nil {
 				b, _ := json.Marshal(lstTraceDetailDatabase)
-				_ = flog.Errorf("写入ch失败,%s %s", err.Error(), string(b))
+				_ = flog.Errorf("TraceDetailDatabase写入ch失败,%s %s", err.Error(), string(b))
 				return err
 			}
 		}
 		if lstTraceDetailEs.Count() > 0 {
 			if _, err := context.CHContext.TraceDetailEs.InsertList(lstTraceDetailEs, 2000); err != nil {
 				b, _ := json.Marshal(lstTraceDetailEs)
-				_ = flog.Errorf("写入ch失败,%s %s", err.Error(), string(b))
+				_ = flog.Errorf("TraceDetailEs写入ch失败,%s %s", err.Error(), string(b))
 				return err
 			}
 		}
 		if lstTraceDetailEtcd.Count() > 0 {
 			if _, err := context.CHContext.TraceDetailEtcd.InsertList(lstTraceDetailEtcd, 2000); err != nil {
 				b, _ := json.Marshal(lstTraceDetailEtcd)
-				_ = flog.Errorf("写入ch失败,%s %s", err.Error(), string(b))
+				_ = flog.Errorf("TraceDetailEtcd写入ch失败,%s %s", err.Error(), string(b))
 				return err
 			}
 		}
 		if lstTraceDetailHand.Count() > 0 {
 			if _, err := context.CHContext.TraceDetailHand.InsertList(lstTraceDetailHand, 2000); err != nil {
 				b, _ := json.Marshal(lstTraceDetailHand)
-				_ = flog.Errorf("写入ch失败,%s %s", err.Error(), string(b))
+				_ = flog.Errorf("TraceDetailHand写入ch失败,%s %s", err.Error(), string(b))
 				return err
 			}
 		}
 		if lstTraceDetailHttp.Count() > 0 {
 			if _, err := context.CHContext.TraceDetailHttp.InsertList(lstTraceDetailHttp, 2000); err != nil {
 				b, _ := json.Marshal(lstTraceDetailHttp)
-				_ = flog.Errorf("写入ch失败,%s %s", err.Error(), string(b))
+				_ = flog.Errorf("TraceDetailHttp写入ch失败,%s %s", err.Error(), string(b))
 				return err
 			}
 		}
 		if lstTraceDetailGrpc.Count() > 0 {
 			if _, err := context.CHContext.TraceDetailGrpc.InsertList(lstTraceDetailGrpc, 2000); err != nil {
 				b, _ := json.Marshal(lstTraceDetailGrpc)
-				_ = flog.Errorf("写入ch失败,%s %s", err.Error(), string(b))
+				_ = flog.Errorf("TraceDetailGrpc写入ch失败,%s %s", err.Error(), string(b))
 				return err
 			}
 		}
 		if lstTraceDetailMq.Count() > 0 {
 			if _, err := context.CHContext.TraceDetailMq.InsertList(lstTraceDetailMq, 2000); err != nil {
 				b, _ := json.Marshal(lstTraceDetailMq)
-				_ = flog.Errorf("写入ch失败,%s %s", err.Error(), string(b))
+				_ = flog.Errorf("TraceDetailMq写入ch失败,%s %s", err.Error(), string(b))
 				return err
 			}
 		}
 		if lstTraceDetailRedis.Count() > 0 {
 			if _, err := context.CHContext.TraceDetailRedis.InsertList(lstTraceDetailRedis, 2000); err != nil {
 				b, _ := json.Marshal(lstTraceDetailRedis)
-				_ = flog.Errorf("写入ch失败,%s %s", err.Error(), string(b))
+				_ = flog.Errorf("TraceDetailRedis写入ch失败,%s %s", err.Error(), string(b))
 				return err
 			}
 		}
