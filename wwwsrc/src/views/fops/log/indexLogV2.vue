@@ -30,15 +30,16 @@
 					查询
 				</el-button>
 			</div>
-      <el-card style="color: #fff;background-color:#393d49;height: 100%;line-height:35px;">
+      <el-card style="color: #fff;background-color:#393d49;height: 100%;line-height:35px;overflow: auto;" class="layout-padding-auto">
         <p v-for="(v, k) in state.tableData.data" :key="k">
-          {{v.CreateAt}}
+          <span style="color: #9caf62">{{v.CreateAt}}</span>
+          {{v.TraceId}}
           <el-tag size="small" style="margin-right: 5px;">{{v.AppName}} {{v.AppIp}}</el-tag>
           <el-tag v-if="v.LogLevel == 'Info'" size="small">{{v.LogLevel}}</el-tag>
           <el-tag v-else-if="v.LogLevel == 'Debug'" type="info" size="small">{{v.LogLevel}}</el-tag>
           <el-tag v-else-if="v.LogLevel == 'Warn'" type="warning" size="small">{{v.LogLevel}}</el-tag>
           <el-tag v-else-if="v.LogLevel == 'Error'" type="danger" size="small">{{v.LogLevel}}</el-tag>
-          {{v.TraceId}} {{v.Content}}
+           {{v.Content}}
         </p>
       </el-card>
 <!--			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">-->
@@ -94,7 +95,7 @@ const state = reactive({
 		loading: false,
 		param: {
 			pageNum: 1,
-			pageSize: 100,
+			pageSize: 19,
 		},
 	},appData:[],
 });
