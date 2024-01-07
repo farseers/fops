@@ -8,8 +8,8 @@ import (
 )
 
 type TraceContextViewPO struct {
-	TraceId           int64             `gorm:"not null;default:0;comment:上下文ID"`
-	AppId             int64             `gorm:"not null;default:0;comment:应用ID"`
+	TraceId           string            `gorm:"not null;default:'';comment:上下文ID"`
+	AppId             string            `gorm:"not null;default:'';comment:应用ID"`
 	AppName           string            `gorm:"not null;default:'';comment:应用名称"`
 	AppIp             string            `gorm:"not null;default:'';comment:应用IP"`
 	ParentAppName     string            `gorm:"not null;default:'';comment:上游应用"`

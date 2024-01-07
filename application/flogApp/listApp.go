@@ -11,7 +11,7 @@ import (
 
 // List 日志列表
 // @get list
-func List(traceId int64, appName, appIp, logContent string, logLevel eumLogLevel.Enum, pageSize, pageIndex int, logDataRepository logData.Repository) collections.PageList[flog.LogData] {
+func List(traceId, appName, appIp, logContent string, logLevel eumLogLevel.Enum, pageSize, pageIndex int, logDataRepository logData.Repository) collections.PageList[flog.LogData] {
 	if pageSize < 1 {
 		pageSize = 20
 	}
@@ -27,6 +27,6 @@ func List(traceId int64, appName, appIp, logContent string, logLevel eumLogLevel
 
 // Info 日志详情
 // @get info-{id}
-func Info(id int64, logDataRepository logData.Repository) flog.LogData {
+func Info(id string, logDataRepository logData.Repository) flog.LogData {
 	return logDataRepository.ToInfo(id)
 }

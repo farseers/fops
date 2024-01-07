@@ -9,6 +9,6 @@ import (
 // Repository 仓储接口
 type Repository interface {
 	Save(lstEO collections.List[flog.LogData]) error
-	ToInfo(id int64) flog.LogData
-	ToList(traceId int64, appName, appIp, logContent string, logLevel eumLogLevel.Enum, pageSize, pageIndex int) collections.PageList[flog.LogData]
+	ToInfo(id string) flog.LogData
+	ToList(traceId string, appName, appIp, logContent string, logLevel eumLogLevel.Enum, pageSize, pageIndex int) collections.PageList[flog.LogData]
 }

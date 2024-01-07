@@ -9,13 +9,13 @@ import (
 )
 
 type BaseTraceDetailPO struct {
-	TraceId        int64                 `gorm:"not null;default:0;comment:上下文ID"`
-	AppId          int64                 `gorm:"not null;default:0;comment:应用ID"`
+	TraceId        string                `gorm:"not null;default:'';comment:上下文ID"`
+	AppId          string                `gorm:"not null;default:'';comment:应用ID"`
 	AppName        string                `gorm:"not null;default:'';comment:应用名称"`
 	AppIp          string                `gorm:"not null;default:'';comment:应用IP"`
 	ParentAppName  string                `gorm:"not null;default:'';comment:上游应用"`
-	DetailId       int64                 `gorm:"not null;default:0;comment:明细ID"`
-	ParentDetailId int64                 `gorm:"not null;default:0;comment:父级明细ID"`
+	DetailId       string                `gorm:"not null;default:0;comment:明细ID"`
+	ParentDetailId string                `gorm:"not null;default:0;comment:父级明细ID"`
 	Level          int                   `gorm:"not null;comment:当前层级（入口为0层）"`
 	CallType       eumCallType.Enum      `gorm:"not null;comment:调用类型"`
 	Timeline       time.Duration         `gorm:"not null;default:0;comment:从入口开始统计（微秒）"`

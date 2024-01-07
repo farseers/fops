@@ -4,7 +4,7 @@ import "github.com/farseer-go/fs/dateTime"
 
 // ActiveInstanceEO 正在运行的实例
 type ActiveInstanceEO struct {
-	AppId       int64             // 应用ID
+	AppId       string            // 应用ID
 	AppIp       string            // 应用IP
 	HostName    string            // 主机名称
 	ProcessId   int               // 进程Id

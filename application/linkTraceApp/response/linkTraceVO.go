@@ -7,7 +7,7 @@ var RgbaList = []string{"95,184,120,0.4", "65,105,225,0.4", "219,112,147,0.4", "
 
 type LinkTraceVO struct {
 	Rgba      string  // 背景颜色
-	AppId     int64   // 应用实例ID
+	AppId     string  // 应用实例ID
 	AppIp     string  // 应用IP
 	AppName   string  // 应用名称
 	StartTs   float64 // 计算服务的相对调用时间，第一个服务从0us计算

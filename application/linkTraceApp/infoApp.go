@@ -15,7 +15,7 @@ import (
 
 // Info 链路追踪日志详情
 // @get info/{traceId}
-func Info(traceId int64, linkTraceRepository linkTrace.Repository) response.LinkTraceResponse {
+func Info(traceId string, linkTraceRepository linkTrace.Repository) response.LinkTraceResponse {
 	l := linkTraceWarp{
 		lst:       collections.NewList[response.LinkTraceVO](),
 		rgbaIndex: -1,

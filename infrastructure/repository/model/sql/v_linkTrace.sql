@@ -1,7 +1,7 @@
 CREATE VIEW {database}.{table}
     (
-    trace_id             Int64  default 0 comment '上下文ID',
-    app_id               Int64  default 0 comment '应用ID',
+    trace_id             String default '' comment '上下文ID',
+    app_id               String default '' comment '应用ID',
     app_name             String default '' comment '应用名称',
     app_ip               String default '' comment '应用IP',
     parent_app_name      String default '' comment '上游应用',

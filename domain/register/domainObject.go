@@ -5,7 +5,7 @@ import "github.com/farseer-go/fs/dateTime"
 // DomainObject 注册应用
 type DomainObject struct {
 	AppName     string            // 应用名称
-	AppId       int64             // 应用ID
+	AppId       string            // 应用ID
 	AppIp       string            // 应用IP
 	HostName    string            // 主机名称
 	ProcessId   int               // 进程Id

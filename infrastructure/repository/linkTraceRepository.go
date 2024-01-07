@@ -19,7 +19,7 @@ import (
 type linkTraceRepository struct {
 }
 
-func (receiver *linkTraceRepository) ToEntity(traceId int64) collections.List[linkTraceCom.TraceContext] {
+func (receiver *linkTraceRepository) ToEntity(traceId string) collections.List[linkTraceCom.TraceContext] {
 	var lstPO collections.List[model.TraceContextPO]
 	lst := collections.NewList[linkTraceCom.TraceContext]()
 	if linkTrace.Config.Driver == "clickhouse" {
@@ -28,41 +28,32 @@ func (receiver *linkTraceRepository) ToEntity(traceId int64) collections.List[li
 
 	lstPO.Foreach(func(item *model.TraceContextPO) {
 		do := mapper.Single[linkTraceCom.TraceContext](item)
-		do.SetTraceIdN()
 		do.List = []any{}
 		for _, detail := range item.List {
 			switch eumCallType.Enum(parse.ToInt(detail.(map[string]any)["CallType"])) {
 			case eumCallType.Database:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailDatabase](detail)
-				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			case eumCallType.Http:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailHttp](detail)
-				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			case eumCallType.Grpc:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailGrpc](detail)
-				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			case eumCallType.Redis:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailRedis](detail)
-				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			case eumCallType.Mq:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailMq](detail)
-				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			case eumCallType.Elasticsearch:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailEs](detail)
-				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			case eumCallType.Etcd:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailEtcd](detail)
-				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			case eumCallType.Hand:
 				traceDetail := mapper.Single[linkTraceCom.TraceDetailHand](detail)
-				traceDetail.SetTraceIdN()
 				do.List = append(do.List, &traceDetail)
 			}
 		}
@@ -71,10 +62,11 @@ func (receiver *linkTraceRepository) ToEntity(traceId int64) collections.List[li
 	return lst
 }
 
-func (receiver *linkTraceRepository) ToWebApiList(appName, appIp, requestIp, searchUrl string, statusCode int, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
+func (receiver *linkTraceRepository) ToWebApiList(traceId, appName, appIp, requestIp, searchUrl string, statusCode int, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceContextView.Select("trace_id,app_id,app_name,app_ip,parent_app_name,trace_type,start_ts,end_ts,use_ts,use_desc,create_at,web_domain,web_path,web_method,web_content_type,web_status_code,web_request_ip").
 			Where("trace_type = ? and parent_app_name = ''", eumTraceType.WebApi).
+			WhereIf(traceId != "", "trace_id = ?", traceId).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Millisecond)).
@@ -84,14 +76,15 @@ func (receiver *linkTraceRepository) ToWebApiList(appName, appIp, requestIp, sea
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro())
 
 		lstPO := ts.DescIfElse(startMin > 0, "use_ts", "start_ts").ToPageList(pageSize, pageIndex)
-		return receiver.setTraceIdN(lstPO)
+		return mapper.ToPageList[linkTraceCom.TraceContext](lstPO)
 	}
 	return collections.NewPageList[linkTraceCom.TraceContext](collections.NewList[linkTraceCom.TraceContext](), 0)
 }
-func (receiver *linkTraceRepository) ToTaskList(appName, appIp, taskName string, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
+func (receiver *linkTraceRepository) ToTaskList(traceId, appName, appIp, taskName string, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceContextView.Select("trace_id,app_id,app_name,app_ip,parent_app_name,trace_type,start_ts,end_ts,use_ts,use_desc,create_at,task_name").
 			Where("trace_type = ? and parent_app_name = ''", eumTraceType.Task).
+			WhereIf(traceId != "", "trace_id = ?", traceId).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Millisecond)).
@@ -99,14 +92,15 @@ func (receiver *linkTraceRepository) ToTaskList(appName, appIp, taskName string,
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro())
 
 		lstPO := ts.DescIfElse(startMin > 0, "use_ts", "start_ts").ToPageList(pageSize, pageIndex)
-		return receiver.setTraceIdN(lstPO)
+		return mapper.ToPageList[linkTraceCom.TraceContext](lstPO)
 	}
 	return collections.NewPageList[linkTraceCom.TraceContext](collections.NewList[linkTraceCom.TraceContext](), 0)
 }
-func (receiver *linkTraceRepository) ToFScheduleList(appName, appIp, taskName string, taskGroupId, taskId, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
+func (receiver *linkTraceRepository) ToFScheduleList(traceId, appName, appIp, taskName string, taskGroupId, taskId, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceContextView.Select("trace_id,app_id,app_name,app_ip,parent_app_name,trace_type,start_ts,end_ts,use_ts,use_desc,create_at,task_name,task_group_id,task_id").
 			Where("trace_type = ? and parent_app_name = ''", eumTraceType.FSchedule).
+			WhereIf(traceId != "", "trace_id = ?", traceId).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Millisecond)).
@@ -116,14 +110,15 @@ func (receiver *linkTraceRepository) ToFScheduleList(appName, appIp, taskName st
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro())
 
 		lstPO := ts.DescIfElse(startMin > 0, "use_ts", "start_ts").ToPageList(pageSize, pageIndex)
-		return receiver.setTraceIdN(lstPO)
+		return mapper.ToPageList[linkTraceCom.TraceContext](lstPO)
 	}
 	return collections.NewPageList[linkTraceCom.TraceContext](collections.NewList[linkTraceCom.TraceContext](), 0)
 }
-func (receiver *linkTraceRepository) ToConsumerList(appName, appIp, server, queueName, routingKey string, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
+func (receiver *linkTraceRepository) ToConsumerList(traceId, appName, appIp, server, queueName, routingKey string, searchUseTs int64, startMin int, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceContext] {
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceContextView.Select("trace_id,app_id,app_name,app_ip,parent_app_name,trace_type,start_ts,end_ts,use_ts,use_desc,create_at,consumer_server,consumer_queue_name,consumer_routing_key").
 			Where("(trace_type = ? or trace_type = ?) and parent_app_name = ''", eumTraceType.MqConsumer, eumTraceType.QueueConsumer).
+			WhereIf(traceId != "", "trace_id = ?", traceId).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Millisecond)).
@@ -133,14 +128,15 @@ func (receiver *linkTraceRepository) ToConsumerList(appName, appIp, server, queu
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro())
 
 		lstPO := ts.DescIfElse(startMin > 0, "use_ts", "start_ts").ToPageList(pageSize, pageIndex)
-		return receiver.setTraceIdN(lstPO)
+		return mapper.ToPageList[linkTraceCom.TraceContext](lstPO)
 	}
 	return collections.NewPageList[linkTraceCom.TraceContext](collections.NewList[linkTraceCom.TraceContext](), 0)
 }
 
-func (receiver *linkTraceRepository) ToSlowDbList(appName, appIp, dbName, tableName string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailDatabase] {
+func (receiver *linkTraceRepository) ToSlowDbList(traceId, appName, appIp, dbName, tableName string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailDatabase] {
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceDetailDatabase.
+			WhereIf(traceId != "", "trace_id = ?", traceId).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -151,16 +147,14 @@ func (receiver *linkTraceRepository) ToSlowDbList(appName, appIp, dbName, tableN
 		lstPO := ts.DescIfElse(startMin > 0, "use_ts", "start_ts").ToPageList(pageSize, pageIndex)
 
 		lst := mapper.ToPageList[linkTraceCom.TraceDetailDatabase](lstPO)
-		lst.List.Foreach(func(item *linkTraceCom.TraceDetailDatabase) {
-			item.SetTraceIdN()
-		})
 		return lst
 	}
 	return collections.NewPageList[linkTraceCom.TraceDetailDatabase](collections.NewList[linkTraceCom.TraceDetailDatabase](), 0)
 }
-func (receiver *linkTraceRepository) ToSlowEsList(appName, appIp, indexName, aliasesName string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailEs] {
+func (receiver *linkTraceRepository) ToSlowEsList(traceId, appName, appIp, indexName, aliasesName string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailEs] {
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceDetailEs.
+			WhereIf(traceId != "", "trace_id = ?", traceId).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -170,16 +164,14 @@ func (receiver *linkTraceRepository) ToSlowEsList(appName, appIp, indexName, ali
 
 		lstPO := ts.DescIfElse(startMin > 0, "use_ts", "start_ts").ToPageList(pageSize, pageIndex)
 		lst := mapper.ToPageList[linkTraceCom.TraceDetailEs](lstPO)
-		lst.List.Foreach(func(item *linkTraceCom.TraceDetailEs) {
-			item.SetTraceIdN()
-		})
 		return lst
 	}
 	return collections.NewPageList[linkTraceCom.TraceDetailEs](collections.NewList[linkTraceCom.TraceDetailEs](), 0)
 }
-func (receiver *linkTraceRepository) ToSlowEtcdList(appName, appIp, key string, leaseID, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailEtcd] {
+func (receiver *linkTraceRepository) ToSlowEtcdList(traceId, appName, appIp, key string, leaseID, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailEtcd] {
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceDetailEtcd.
+			WhereIf(traceId != "", "trace_id = ?", traceId).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -189,16 +181,14 @@ func (receiver *linkTraceRepository) ToSlowEtcdList(appName, appIp, key string, 
 
 		lstPO := ts.DescIfElse(startMin > 0, "use_ts", "start_ts").ToPageList(pageSize, pageIndex)
 		lst := mapper.ToPageList[linkTraceCom.TraceDetailEtcd](lstPO)
-		lst.List.Foreach(func(item *linkTraceCom.TraceDetailEtcd) {
-			item.SetTraceIdN()
-		})
 		return lst
 	}
 	return collections.NewPageList[linkTraceCom.TraceDetailEtcd](collections.NewList[linkTraceCom.TraceDetailEtcd](), 0)
 }
-func (receiver *linkTraceRepository) ToSlowHandList(appName, appIp, name string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailHand] {
+func (receiver *linkTraceRepository) ToSlowHandList(traceId, appName, appIp, name string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailHand] {
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceDetailHand.
+			WhereIf(traceId != "", "trace_id = ?", traceId).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -207,16 +197,14 @@ func (receiver *linkTraceRepository) ToSlowHandList(appName, appIp, name string,
 
 		lstPO := ts.DescIfElse(startMin > 0, "use_ts", "start_ts").ToPageList(pageSize, pageIndex)
 		lst := mapper.ToPageList[linkTraceCom.TraceDetailHand](lstPO)
-		lst.List.Foreach(func(item *linkTraceCom.TraceDetailHand) {
-			item.SetTraceIdN()
-		})
 		return lst
 	}
 	return collections.NewPageList[linkTraceCom.TraceDetailHand](collections.NewList[linkTraceCom.TraceDetailHand](), 0)
 }
-func (receiver *linkTraceRepository) ToSlowHttpList(appName, appIp, method, url, requestBody, responseBody string, statusCode int, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailHttp] {
+func (receiver *linkTraceRepository) ToSlowHttpList(traceId, appName, appIp, method, url, requestBody, responseBody string, statusCode int, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailHttp] {
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceDetailHttp.
+			WhereIf(traceId != "", "trace_id = ?", traceId).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -229,16 +217,14 @@ func (receiver *linkTraceRepository) ToSlowHttpList(appName, appIp, method, url,
 
 		lstPO := ts.DescIfElse(startMin > 0, "use_ts", "start_ts").ToPageList(pageSize, pageIndex)
 		lst := mapper.ToPageList[linkTraceCom.TraceDetailHttp](lstPO)
-		lst.List.Foreach(func(item *linkTraceCom.TraceDetailHttp) {
-			item.SetTraceIdN()
-		})
 		return lst
 	}
 	return collections.NewPageList[linkTraceCom.TraceDetailHttp](collections.NewList[linkTraceCom.TraceDetailHttp](), 0)
 }
-func (receiver *linkTraceRepository) ToSlowMqList(appName, appIp, server, exchange, routingKey string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailMq] {
+func (receiver *linkTraceRepository) ToSlowMqList(traceId, appName, appIp, server, exchange, routingKey string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailMq] {
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceDetailMq.
+			WhereIf(traceId != "", "trace_id = ?", traceId).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -249,16 +235,14 @@ func (receiver *linkTraceRepository) ToSlowMqList(appName, appIp, server, exchan
 
 		lstPO := ts.DescIfElse(startMin > 0, "use_ts", "start_ts").ToPageList(pageSize, pageIndex)
 		lst := mapper.ToPageList[linkTraceCom.TraceDetailMq](lstPO)
-		lst.List.Foreach(func(item *linkTraceCom.TraceDetailMq) {
-			item.SetTraceIdN()
-		})
 		return lst
 	}
 	return collections.NewPageList[linkTraceCom.TraceDetailMq](collections.NewList[linkTraceCom.TraceDetailMq](), 0)
 }
-func (receiver *linkTraceRepository) ToSlowRedisList(appName, appIp, key, field string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailRedis] {
+func (receiver *linkTraceRepository) ToSlowRedisList(traceId, appName, appIp, key, field string, searchUseTs int64, startMin, pageSize, pageIndex int) collections.PageList[linkTraceCom.TraceDetailRedis] {
 	if linkTrace.Config.Driver == "clickhouse" {
 		ts := context.CHContext.TraceDetailRedis.
+			WhereIf(traceId != "", "trace_id = ?", traceId).
 			WhereIf(appName != "", "app_name = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Microsecond)).
@@ -268,9 +252,6 @@ func (receiver *linkTraceRepository) ToSlowRedisList(appName, appIp, key, field 
 
 		lstPO := ts.DescIfElse(startMin > 0, "use_ts", "start_ts").ToPageList(pageSize, pageIndex)
 		lst := mapper.ToPageList[linkTraceCom.TraceDetailRedis](lstPO)
-		lst.List.Foreach(func(item *linkTraceCom.TraceDetailRedis) {
-			item.SetTraceIdN()
-		})
 		return lst
 	}
 	return collections.NewPageList[linkTraceCom.TraceDetailRedis](collections.NewList[linkTraceCom.TraceDetailRedis](), 0)
@@ -392,12 +373,4 @@ func (receiver *linkTraceRepository) saveDetail(lst collections.List[model.Trace
 	}
 
 	return nil
-}
-
-func (receiver *linkTraceRepository) setTraceIdN(lstPO collections.PageList[model.TraceContextViewPO]) collections.PageList[linkTraceCom.TraceContext] {
-	lst := mapper.ToPageList[linkTraceCom.TraceContext](lstPO)
-	lst.List.Foreach(func(item *linkTraceCom.TraceContext) {
-		item.SetTraceIdN()
-	})
-	return lst
 }
