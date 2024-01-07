@@ -30,41 +30,24 @@
 					查询
 				</el-button>
 			</div>
-			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
-        <el-table-column width="180px" label="LogID" show-overflow-tooltip>
-          <template #default="scope">
-            <span @click="onDetail(scope.row)">{{scope.row.LogId}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column width="200px" label="应用" show-overflow-tooltip>
-          <template #default="scope">
-            <el-tag size="small">{{scope.row.AppName}} {{scope.row.AppIp}}</el-tag><br>
-            {{scope.row.AppId}}
-          </template>
-        </el-table-column>
-        <el-table-column width="100px" prop="LogLevel" label="日志类型" show-overflow-tooltip>
-          <template #default="scope">
-            <el-tag v-if="scope.row.LogLevel == 'Info'" size="small">{{scope.row.LogLevel}}</el-tag>
-            <el-tag v-else-if="scope.row.LogLevel == 'Debug'" type="info" size="small">{{scope.row.LogLevel}}</el-tag>
-            <el-tag v-else-if="scope.row.LogLevel == 'Warn'" type="warning" size="small">{{scope.row.LogLevel}}</el-tag>
-            <el-tag v-else-if="scope.row.LogLevel == 'Error'" type="danger" size="small">{{scope.row.LogLevel}}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="内容" show-overflow-tooltip>
-          <template #default="scope">
-            <el-tag v-if="scope.row.TraceId > 0" type="info" size="small">TraceID {{scope.row.TraceId}}</el-tag>
-            <br v-if="scope.row.TraceId > 0" type="info" size="small" />
-            {{scope.row.Content}}
-          </template>
-        </el-table-column>
-        <el-table-column width="180px" prop="Component" label="组件" show-overflow-tooltip></el-table-column>
-        <el-table-column width="180px" prop="CreateAt" label="请求时间" show-overflow-tooltip></el-table-column>
-				<el-table-column label="操作" width="100">
-					<template #default="scope">
-						<el-button size="small" text type="primary" @click="onDetail(scope.row)">详情</el-button>
-					</template>
-				</el-table-column>
-			</el-table>
+      <el-card style="color: #fff;background-color:#393d49;height: 100%;line-height:35px;">
+        <p v-for="(v, k) in state.tableData.data" :key="k">
+          {{v.CreateAt}}
+          <el-tag size="small" style="margin-right: 5px;">{{v.AppName}} {{v.AppIp}}</el-tag>
+          <el-tag v-if="v.LogLevel == 'Info'" size="small">{{v.LogLevel}}</el-tag>
+          <el-tag v-else-if="v.LogLevel == 'Debug'" type="info" size="small">{{v.LogLevel}}</el-tag>
+          <el-tag v-else-if="v.LogLevel == 'Warn'" type="warning" size="small">{{v.LogLevel}}</el-tag>
+          <el-tag v-else-if="v.LogLevel == 'Error'" type="danger" size="small">{{v.LogLevel}}</el-tag>
+          {{v.TraceId}} {{v.Content}}
+        </p>
+      </el-card>
+<!--			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">-->
+<!--				<el-table-column label="操作" width="100">-->
+<!--					<template #default="scope">-->
+<!--						<el-button size="small" text type="primary" @click="onDetail(scope.row)">详情</el-button>-->
+<!--					</template>-->
+<!--				</el-table-column>-->
+<!--			</el-table>-->
 			<el-pagination
 				@size-change="onHandleSizeChange"
 				@current-change="onHandleCurrentChange"
@@ -111,7 +94,7 @@ const state = reactive({
 		loading: false,
 		param: {
 			pageNum: 1,
-			pageSize: 10,
+			pageSize: 100,
 		},
 	},appData:[],
 });
