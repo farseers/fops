@@ -135,7 +135,7 @@ func (dockerDevice) CreateService(appName, dockerNodeRole, additionalScripts, do
 	progress <- "---------------------------------------------------------"
 	progress <- "开始创建Docker Swarm容器服务。"
 
-	shell := fmt.Sprintf("docker service create --name %s --replicas %v -d --network=%s --constraint node.role==%s --mount type=bind,src=/etc/localtime,dst=/etc/localtime --mount type=bind,src=/etc/timezone,dst=/etc/timezone %s %s", appName, dockerReplicas, dockerNetwork, dockerNodeRole, additionalScripts, dockerImages)
+	shell := fmt.Sprintf("docker service create --name %s --replicas %v -d --network=%s --constraint node.role==%s --mount type=bind,src=/etc/localtime,dst=/etc/localtime %s %s", appName, dockerReplicas, dockerNetwork, dockerNodeRole, additionalScripts, dockerImages)
 	var exitCode = exec.RunShellContext(ctx, shell, progress, nil, "")
 	if exitCode != 0 {
 		progress <- "创建Docker Swarm容器失败了。"
