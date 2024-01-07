@@ -26,8 +26,8 @@
                   <el-button class="button" size="small" @click="onOpenEdit('edit', v)" type="warning" style="float:right;position: relative;">修改</el-button>
                 </div>
               </template>
-              <el-button size="small" @click="onBuildAdd(v)" type="danger" style="float:right;position: relative;"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
-              <el-button v-if="v.DockerVer != v.ClusterVer.DockerVer" size="small" @click="onSyncDockerVer(v)" type="info" style="float:right;position: relative;margin-right: 5px;">同步镜像</el-button>
+              <el-button size="small" type="success" @click="showFsLog(v)" style="float:right;position: relative;">日志</el-button>
+
               <div class="appItem" style="margin-bottom: 10px">仓库版本
                 <div class="appItem">
                   <el-tag v-if="v.DockerImage !=''" size="small">{{ v.DockerImage }}</el-tag>
@@ -35,6 +35,7 @@
                 </div>
               </div>
               <div class="appItem" style="margin-bottom: 10px">部署版本
+                <el-button v-if="v.DockerVer != v.ClusterVer.DockerVer" size="small" @click="onSyncDockerVer(v)" type="info" style="float:left;position: absolute;margin:-2px 0 0 5px;">同步镜像</el-button>
                 <div class="appItem">
                   <el-tag v-if="v.ClusterVer.DockerImage !=''" size="small">{{ v.ClusterVer.DockerImage }}</el-tag>
                   <el-tag v-else size="small">未发布</el-tag>
@@ -47,7 +48,7 @@
               <div class="appItem" style="margin-bottom: 10px">部署角色
                 <el-tag v-if="v.DockerNodeRole=='manager'" type="danger" size="small" style="margin-left: 5px">{{ v.DockerNodeRole }}</el-tag>
                 <el-tag v-else size="small" style="margin-left: 5px">{{ v.DockerNodeRole }}</el-tag>
-                <el-button style="margin-left: 5px" size="small" type="success" @click="showFsLog(v)">日志</el-button>
+                <el-button size="small" @click="onBuildAdd(v)" type="danger" style="margin-left: 5px"><el-icon><ele-SwitchButton /></el-icon>构建</el-button>
               </div>
 
 
