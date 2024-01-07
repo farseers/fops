@@ -275,10 +275,10 @@ func (receiver *linkTraceRepository) Save(lstEO collections.List[linkTraceCom.Tr
 
 	if linkTrace.Config.Driver == "clickhouse" {
 		// 写入上下文
-		_, err := context.CHContext.TraceContext.InsertList(lst, 2000)
-		flog.ErrorIfExists(err)
-		b, _ := json.Marshal(lst)
-		_ = flog.Errorf("写入ch失败,%s %s", err.Error(), string(b))
+		if _, err := context.CHContext.TraceContext.InsertList(lst, 2000); err != nil {
+			b, _ := json.Marshal(lst)
+			_ = flog.Errorf("写入ch失败,%s %s", err.Error(), string(b))
+		}
 	} else {
 		return fmt.Errorf("不支持的链路追踪驱动：%s", linkTrace.Config.Driver)
 	}
