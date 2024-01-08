@@ -36,6 +36,8 @@ type IDockerDevice interface {
 	SetReplicas(cluster cluster.DomainObject, appName string, dockerReplicas int, progress chan string) bool
 	// ClearImages 清除镜像
 	ClearImages(progress chan string) bool
+	// Restart 重启容器
+	Restart(cluster cluster.DomainObject, appName string, progress chan string) bool
 	// ExistsDocker 判断集群中是否有容器
 	ExistsDocker(cluster cluster.DomainObject, appName string) bool
 	// CreateService 创建容器服务

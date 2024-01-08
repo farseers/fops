@@ -180,3 +180,16 @@ func (dockerDevice) ClearImages(progress chan string) bool {
 	progress <- "清除镜像完成。"
 	return true
 }
+
+func (dockerDevice) Restart(cluster cluster.DomainObject, appName string, progress chan string) bool {
+	progress <- "---------------------------------------------------------"
+	progress <- "开始重启Docker Swarm的容器。"
+
+	var exitCode = exec.RunShell(fmt.Sprintf("docker service update --force %s", appName), progress, nil, "")
+	if exitCode != 0 {
+		progress <- "Docker Swarm的容器重启失败。"
+		return false
+	}
+	progress <- "Docker Swarm的容器重启完成。"
+	return true
+}

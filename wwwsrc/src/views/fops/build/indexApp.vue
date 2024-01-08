@@ -26,8 +26,8 @@
                   <el-button class="button" size="small" @click="onOpenEdit('edit', v)" type="warning" style="float:right;position: relative;">修改</el-button>
                 </div>
               </template>
-              <el-button size="small" type="success" @click="showFsLog(v)" style="float:right;position: relative;">日志</el-button>
-
+              <el-button size="small" type="success" @click="showFsLog(v)" style="float:right;position: relative;margin-left: 5px">日志</el-button>
+              <el-button size="small" @click="onRestartDocker(v)" type="warning" style="float:right;position: relative;"><el-icon><ele-SwitchButton /></el-icon>重启</el-button>
               <div class="appItem" style="margin-bottom: 10px">仓库版本
                 <div class="appItem">
                   <el-tag v-if="v.DockerImage !=''" size="small">{{ v.DockerImage }}</el-tag>
@@ -309,6 +309,7 @@ const onShowLog=()=>{
     state.logContent=res
   })
 }
+
 // 构建
 const onBuildAdd = (row:any) => {
   ElMessageBox.confirm(`请确认是否添加构建?`, '提示', {
@@ -335,6 +336,31 @@ const onBuildAdd = (row:any) => {
       .catch(() => {});
 };
 
+// 重启容器
+const onRestartDocker = (row:any) => {
+  ElMessageBox.confirm(`请确认是否重启容器?`, '提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+      .then(() => {
+        // 提交数据
+        var param={
+          "AppName":row.AppName,
+          "ClusterId":state.clusterId,
+        }
+        serverApi.restartDocker(param).then(async function(res){
+          if(res.Status){
+            ElMessage.success("重启成功")
+            // 刷新应用界面
+            getTableData()
+          }else{
+            ElMessage.error(res.StatusMessage)
+          }
+        })
+      })
+      .catch(() => {});
+};
 // 同步版本
 const onSyncDockerVer = (row:any) => {
   ElMessageBox.confirm(`请确认是否要同步仓库镜像到集群中?`, '提示', {

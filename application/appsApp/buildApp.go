@@ -59,6 +59,19 @@ func ClearDockerImage(device apps.IDockerDevice) {
 	device.ClearImages(c)
 }
 
+// RestartDocker 重启容器
+// @post build/restartDocker
+func RestartDocker(clusterId int64, appName string, device apps.IDockerDevice, clusterRepository cluster.Repository) {
+	clusterDO := clusterRepository.ToEntity(clusterId)
+	exception.ThrowWebExceptionfBool(clusterDO.IsNil(), 403, "集群不存在")
+
+	c := make(chan string, 100)
+	if !device.Restart(clusterDO, appName, c) {
+		lstLog := collections.NewListFromChan(c)
+		exception.ThrowWebExceptionf(403, "容器重启失败:<br />%s", lstLog.ToString("<br />"))
+	}
+}
+
 // SyncDockerImage 同步仓库版本
 // @post build/syncDockerImage
 func SyncDockerImage(clusterId int64, appName string, device apps.IDockerDevice, appsRepository apps.Repository, clusterRepository cluster.Repository) {
