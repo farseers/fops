@@ -89,7 +89,7 @@ func (receiver *linkTraceRepository) ToTaskList(traceId, appName, appIp, taskNam
 			WhereIf(appName != "", "LOWER(app_name) = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Millisecond)).
-			WhereIf(taskName != "", "task_Name like ?", "%"+taskName+"%").
+			WhereIf(taskName != "", "task_name like ?", "%"+taskName+"%").
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro())
 
 		lstPO := ts.DescIfElse(startMin > 0, "use_ts", "start_ts").ToPageList(pageSize, pageIndex)
