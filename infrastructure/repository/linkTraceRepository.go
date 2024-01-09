@@ -105,7 +105,7 @@ func (receiver *linkTraceRepository) ToFScheduleList(traceId, appName, appIp, ta
 			WhereIf(appName != "", "LOWER(app_name) = ?", appName).
 			WhereIf(appIp != "", "app_ip = ?", appIp).
 			WhereIf(searchUseTs > 0, "use_ts >= ?", searchUseTs*int64(time.Millisecond)).
-			WhereIf(taskName != "", "task_Name like ?", "%"+taskName+"%").
+			WhereIf(taskName != "", "task_name like ?", "%"+taskName+"%").
 			WhereIf(taskGroupId > 0, "task_group_id = ?", taskGroupId).
 			WhereIf(taskId > 0, "task_id = ?", taskId).
 			WhereIf(startMin > 0, "start_ts >= ?", dateTime.Now().AddMinutes(-startMin).UnixMicro())
