@@ -2,8 +2,8 @@
 	<div class="system-user-container layout-padding">
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
-				<el-input size="default" v-model="state.keyWord" placeholder="请输入任务名称" style="max-width: 180px"> </el-input>
-        <el-input size="default" v-model="state.clientId" placeholder="请输入客户端ID" style="max-width: 180px"  class="ml10"> </el-input>
+				<el-input size="default" v-model="state.keyWord" placeholder="请输入任务名称" clearable style="max-width: 180px"> </el-input>
+        <el-input size="default" v-model="state.clientId" placeholder="请输入客户端ID" clearable style="max-width: 180px"  class="ml10"> </el-input>
         <el-select v-model="state.enable" placeholder="请选择运行状态"  class="ml10" @change="onEnableChange">
           <el-option label="全部" :value="-1"></el-option>
           <el-option label="停止" :value="0"></el-option>

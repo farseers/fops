@@ -8,13 +8,13 @@
           <el-option v-for="item in state.appData" :label="item.AppName" :value="item.AppName" ></el-option>
         </el-select>
         <label class="ml10">执行端IP</label>
-        <el-input size="default" v-model="state.appIp" placeholder="执行端IP" style="max-width: 120px;padding-left: 5px"> </el-input>
+        <el-input size="default" v-model="state.appIp" placeholder="执行端IP" clearable style="max-width: 120px;padding-left: 5px"> </el-input>
         <label class="ml10">任务名称</label>
-        <el-input size="default" v-model="state.taskName" placeholder="任务名称" style="max-width: 180px;padding-left: 5px"> </el-input>
+        <el-input size="default" v-model="state.taskName" placeholder="任务名称" clearable style="max-width: 180px;padding-left: 5px"> </el-input>
         <label class="ml10">任务组ID</label>
-        <el-input size="default" v-model="state.taskGroupId" placeholder="任务组ID" style="max-width: 90px;padding-left: 5px"> </el-input>
+        <el-input size="default" v-model="state.taskGroupId" placeholder="任务组ID" clearable style="max-width: 90px;padding-left: 5px"> </el-input>
         <label class="ml10">任务ID</label>
-        <el-input size="default" v-model="state.taskId" placeholder="任务ID" style="max-width: 180px;padding-left: 5px"> </el-input>
+        <el-input size="default" v-model="state.taskId" placeholder="任务ID" clearable style="max-width: 180px;padding-left: 5px"> </el-input>
         <label class="ml10">往前推N分钟的数据</label>
         <el-select v-model="state.startMin" placeholder="往前推N分钟的数据" class="ml10" style="max-width: 150px;" size="small">
           <el-option label="全部" :value="0"></el-option>
@@ -25,7 +25,7 @@
           <el-option label="1分钟耗时最高" :value="1"></el-option>
         </el-select>
         <label class="ml10">执行时间</label>
-        <el-input size="default" v-model="state.searchUseTs" placeholder="执行时间大于毫秒的记录" style="max-width: 80px;padding-left: 5px"> </el-input> ms
+        <el-input size="default" v-model="state.searchUseTs" placeholder="执行时间大于毫秒的记录" clearable style="max-width: 80px;padding-left: 5px"> </el-input> ms
 
 				<el-button size="default" type="primary" class="ml10" @click="onQuery">
 					<el-icon>
