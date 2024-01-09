@@ -5,37 +5,37 @@
 				<el-row :gutter="35">
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item label="任务名称">
-							<el-input v-model="state.ruleForm.Name" placeholder="请输入任务名称" clearable></el-input>
+							<el-input v-model="state.ruleForm.Name" placeholder="请输入任务名称" readonly></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item label="版本">
-							<el-input v-model="state.ruleForm.Ver" placeholder="请输入版本" clearable readonly></el-input>
+							<el-input v-model="state.ruleForm.Ver" placeholder="请输入版本" readonly></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item label="任务标题">
-							<el-input v-model="state.ruleForm.Caption" placeholder="请输入任务标题" clearable></el-input>
+							<el-input v-model="state.ruleForm.Caption" placeholder="请输入任务标题" readonly></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item label="参数">
-							<el-input v-model="state.ruleForm.Data.lotteryName" placeholder="请输入参数" clearable></el-input>
+							<el-input v-model="state.ruleForm.Data.lotteryName" placeholder="请输入参数" readonly></el-input>
 						</el-form-item>
 					</el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="开始时间">
-              <el-input v-model="state.ruleForm.StartAt" placeholder="开始时间" clearable></el-input>
+              <el-input v-model="state.ruleForm.StartAt" placeholder="开始时间" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
             <el-form-item label="下次执行时间">
-              <el-input v-model="state.ruleForm.NextAt" placeholder="下次执行时间" clearable></el-input>
+              <el-input v-model="state.ruleForm.NextAt" placeholder="下次执行时间" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="设置Cron">
-              <el-input v-model="state.ruleForm.Cron" placeholder="请输入Cron时间格式" clearable></el-input>
+              <el-input v-model="state.ruleForm.Cron" placeholder="请输入Cron时间格式" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
@@ -51,22 +51,22 @@
 
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="激活时间">
-              <el-input v-model="state.ruleForm.ActivateAt" placeholder="激活时间" clearable></el-input>
+              <el-input v-model="state.ruleForm.ActivateAt" placeholder="激活时间" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="最后运行时间">
-              <el-input v-model="state.ruleForm.LastRunAt" placeholder="最后一次运行时间" clearable></el-input>
+              <el-input v-model="state.ruleForm.LastRunAt" placeholder="最后一次运行时间" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="平均时间">
-              <el-input v-model="state.ruleForm.RunSpeedAvg" placeholder="请输入Cron时间格式" clearable></el-input>
+              <el-input v-model="state.ruleForm.RunSpeedAvg" placeholder="请输入Cron时间格式" readonly></el-input>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="运行次数">
-              <el-input v-model="state.ruleForm.RunCount" placeholder="请输入Cron时间格式" clearable></el-input>
+              <el-input v-model="state.ruleForm.RunCount" placeholder="请输入Cron时间格式" readonly></el-input>
             </el-form-item>
           </el-col>
 <!--          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">-->
@@ -127,7 +127,6 @@ const emit = defineEmits(['refresh']);
 const gitDialogFormRef = ref();
 const state = reactive({
 	ruleForm: {
-    Id:0, //编号
     Name: '', // 任务名称
     Ver: 1, // 版本
     Caption: '', // 任务标题
@@ -179,12 +178,11 @@ const openDialog = (row2: any) => {
   state.dialog.title = '任务组详情';
   state.dialog.submitTxt = '修 改';
   // 详情
-  var url='/basicapi/taskGroup/info-'+row2.Id
+  var url='/basicapi/taskGroup/info-'+row2.Name
   serverApi.taskGroupInfo(url).then(function (res){
     if (res.Status){
       var row=res.Data
       // 绑定数据
-      state.ruleForm.Id=row.Id
       state.ruleForm.Name=row.Name
       state.ruleForm.Ver=row.Ver
       state.ruleForm.Caption=row.Caption
@@ -225,10 +223,6 @@ const getStatusDesc=(status:number)=>{
   }
   return ""
 }
-// 取消
-const onCancel = () => {
-	closeDialog();
-};
 
 // 暴露变量
 defineExpose({

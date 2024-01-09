@@ -2,14 +2,8 @@
 	<div class="system-user-container layout-padding">
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
-<!--				<el-input size="default" v-model="state.keyWord" placeholder="请输入任务名称" style="max-width: 180px"> </el-input>-->
-        <el-input size="default" v-model="state.taskGroupId" placeholder="请输入任务组ID" style="max-width: 180px"  class="ml10"> </el-input>
-<!--        <el-select v-model="state.enable" placeholder="请选择运行状态"  class="ml10" @change="onEnableChange">-->
-<!--          <el-option label="全部" :value="-1"></el-option>-->
-<!--          <el-option label="停止" :value="0"></el-option>-->
-<!--          <el-option label="运行中" :value="1"></el-option>-->
-<!--        </el-select>-->
-        <el-select v-model="state.taskStatus" placeholder="请选择调度状态" class="ml10" @change="onStatusChange">
+				<el-input size="default" v-model="state.taskGroupId" placeholder="请输入任务ID" style="max-width: 180px"> </el-input>
+        <el-select v-model="state.taskStatus" placeholder="请选择任务状态" clearable class="ml10">
           <el-option label="全部" :value="-1"></el-option>
           <el-option label="未开始" :value="0"></el-option>
           <el-option label="调度中" :value="1"></el-option>
@@ -30,26 +24,25 @@
 				<el-table-column prop="Name" label="任务组名称" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="Caption" label="任务组标题" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="StartAt" label="开始时间" show-overflow-tooltip></el-table-column>
-				<el-table-column prop="RunAt" label="运行时间" show-overflow-tooltip></el-table-column>
+				<el-table-column prop="RunAt" label="执行时间" show-overflow-tooltip></el-table-column>
         <el-table-column prop="RunSpeed" label="运行耗时" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="Progress" label="进度" show-overflow-tooltip></el-table-column>
-        <el-table-column label="任务状态" show-overflow-tooltip>
+        <el-table-column prop="status" label="任务状态" show-overflow-tooltip>
           <template #default="scope">
-            <el-tag v-if="scope.row.Status==0">未开始</el-tag>
-            <el-tag v-if="scope.row.Status==1">调度中</el-tag>
-            <el-tag v-if="scope.row.Status==2">调度失败</el-tag>
-            <el-tag v-if="scope.row.Status==3">执行中</el-tag>
-            <el-tag v-if="scope.row.Status==4">失败</el-tag>
-            <el-tag v-if="scope.row.Status==5">成功</el-tag>
+            <el-tag v-if="scope.row.status==0">未开始</el-tag>
+            <el-tag v-if="scope.row.status==1">调度中</el-tag>
+            <el-tag v-if="scope.row.status==2">调度失败</el-tag>
+            <el-tag v-if="scope.row.status==3">执行中</el-tag>
+            <el-tag v-if="scope.row.status==4">失败</el-tag>
+            <el-tag v-if="scope.row.status==5">成功</el-tag>
           </template>
         </el-table-column>
-<!--				<el-table-column label="操作" width="100">-->
-<!--					<template #default="scope">-->
-<!--						<el-button size="small" text type="primary" @click="onDetail(scope.row)">详情信息</el-button>-->
-<!--            <el-button size="small" text type="primary" @click="onEdit('edit',scope.row)">修改</el-button>-->
-<!--            <el-button size="small" text type="primary" @click="onDel(scope.row)">删除</el-button>-->
-<!--					</template>-->
-<!--				</el-table-column>-->
+				<el-table-column label="操作" width="100">
+					<template #default="scope">
+						<el-button size="small" text type="primary" @click="onDetail(scope.row)">详情信息</el-button>
+            <el-button size="small" text type="primary" @click="onEdit('edit',scope.row)">修改</el-button>
+            <el-button size="small" text type="primary" @click="onDel(scope.row)">删除</el-button>
+					</template>
+				</el-table-column>
 			</el-table>
 			<el-pagination
 				@size-change="onHandleSizeChange"
@@ -69,14 +62,13 @@
 	</div>
 </template>
 
-<script setup lang="ts" name="fopsTask">
-import { defineAsyncComponent, reactive, onMounted, ref,nextTick  } from 'vue';
+<script setup lang="ts" name="fopsTaskRunning">
+import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import {fopsApi} from "/@/api/fops";
 
 // 引入 api 请求接口
 const serverApi = fopsApi();
-
 // 引入组件
 const editDialog = defineAsyncComponent(() => import('/src/views/fops/task/editGroupDialog.vue'));
 
@@ -84,10 +76,8 @@ const editDialog = defineAsyncComponent(() => import('/src/views/fops/task/editG
 // 定义变量内容
 const editDialogRef = ref();
 const state = reactive({
-  keyWord:'',
-  enable:-1,
+  taskGroupName:'',
   taskStatus:-1,
-  taskGroupId:'',
 	tableData: {
 		data: [],
 		total: 0,
@@ -102,28 +92,23 @@ const state = reactive({
 // 初始化表格数据
 const getTableData = () => {
 	state.tableData.loading = true;
-  // if (state.clientId==""){
-  //   state.clientId="0"
-  // }
-
-  const params = new URLSearchParams();
-  params.append('taskStatus', state.taskStatus.toString());
-  params.append('taskGroupId', state.taskGroupId);
-  params.append('pageSize', state.tableData.param.pageSize.toString());
-  params.append('pageIndex', state.tableData.param.pageNum.toString());
+	var param={
+    //name:state.keyWord,
+    //enable:state.enable,
+    taskGroupName:state.taskGroupName,
+    taskStatus:state.taskStatus,
+    pageSize:state.tableData.param.pageSize,
+    pageIndex:state.tableData.param.pageNum
+  }
   // 请求接口
-  serverApi.taskList(params.toString()).then(function (res){
+  serverApi.taskFinishedList(param).then(function (res){
     if (res.Status){
       state.tableData.data = res.Data.List;
       state.tableData.total = res.Data.RecordCount;
-      setTimeout(() => {
         state.tableData.loading = false;
-      }, 500);
     }else{
       state.tableData.data=[]
-      setTimeout(() => {
         state.tableData.loading = false;
-      }, 500);
     }
 
   })
@@ -132,10 +117,7 @@ const getTableData = () => {
 const onDetail=(row: any)=>{
 
 }
-const onQuery=()=>{
-  getTableData();
-}
-const onEdit=(type: string, row: any)=>{
+const onEdit=(type:string,row:any)=>{
   editDialogRef.value.openDialog(type, row);
 }
 // 删除用户
@@ -168,18 +150,12 @@ const onHandleCurrentChange = (val: number) => {
 	state.tableData.param.pageNum = val;
 	getTableData();
 };
-const onStatusChange=(value:number)=>{
-  state.taskStatus=value
-}
-const onEnableChange=(value:number)=>{
-  state.enable=value
+const onQuery=()=>{
+  getTableData();
 }
 // 页面加载时
 onMounted(() => {
-  // 等待下一次 DOM 更新后再执行代码
-  nextTick(() => {
-    getTableData();
-  });
+	getTableData();
 });
 </script>
 

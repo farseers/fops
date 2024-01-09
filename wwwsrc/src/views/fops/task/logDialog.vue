@@ -80,7 +80,7 @@ const serverApi = fopsApi();
 const editDialogRef = ref();
 const state = reactive({
   keyWord:'',
-  taskGroupId:'',
+  taskGroupName:'',
   logLevel:-1,
   tableData: {
     data: [],
@@ -104,7 +104,7 @@ const getTableData = () => {
 
   const params = new URLSearchParams();
   params.append('logLevel', state.logLevel.toString());
-  params.append('taskGroupId', state.taskGroupId.toString());
+  params.append('taskGroupName', state.taskGroupName.toString());
   params.append('pageSize', state.tableData.param.pageSize.toString());
   params.append('pageIndex', state.tableData.param.pageNum.toString());
 
@@ -129,7 +129,7 @@ const onEdit=(type: string,row:any)=>{
   editDialogRef.value.openDialog(type, row);
 }
 const openDialog = (row: any) => {
-  state.taskGroupId=row.Id
+  state.taskGroupName=row.Name
   state.dialog.isShowDialog = true;
   state.dialog.title = row.Caption;
   getTableData();

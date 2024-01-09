@@ -26,7 +26,6 @@
 				</el-button>
 			</div>
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%" class="mytable">
-				<el-table-column prop="Id" label="序号" width="60" />
 				<el-table-column label="名称" style="line-height: 45px;height: 45px">
           <template #default="scope">
             <div style="float: left;padding-right: 10px;padding-top: 5px">
@@ -83,9 +82,9 @@
 				<el-table-column label="操作" width="150">
 					<template #default="scope">
 						<el-button size="small" text type="primary" @click="onDetail(scope.row)">详情信息</el-button>
-                        <el-button size="small" text type="warning" @click="onEdit('edit',scope.row)">修改</el-button>
-                        <el-button size="small" text type="danger" @click="onLog(scope.row)">日志</el-button>
-                        <el-button size="small" text type="info" @click="onDel(scope.row)">删除</el-button>
+            <el-button size="small" text type="warning" @click="onEdit('edit',scope.row)">修改</el-button>
+            <el-button size="small" text type="danger" @click="onLog(scope.row)">日志</el-button>
+            <el-button size="small" text type="info" @click="onDel(scope.row)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -111,7 +110,7 @@
 </template>
 
 <script setup lang="ts" name="fopsTask">
-import { defineAsyncComponent, reactive, onMounted, ref,nextTick  } from 'vue';
+import {defineAsyncComponent, reactive, onMounted, ref, nextTick, watch} from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import {fopsApi} from "/@/api/fops";
 import {friendlyJSONstringify} from "@intlify/shared";
@@ -149,13 +148,19 @@ const state = reactive({
   NowTime:new Date()
 });
 
+// 监听 state.taskStatus 的变化
+watch(() => state.taskStatus, (newValue, oldValue) => {
+  getTableData()
+});
+
+// 监听 state.enable 的变化
+watch(() => state.enable, (newValue, oldValue) => {
+  getTableData()
+});
+
 // 初始化表格数据
 const getTableData = () => {
 	state.tableData.loading = true;
-  // if (state.clientId==""){
-  //   state.clientId="0"
-  // }
-
   const params = new URLSearchParams();
   params.append('name', state.keyWord);
   params.append('enable', state.enable.toString());
@@ -169,19 +174,13 @@ const getTableData = () => {
     if (res.Status){
       state.tableData.data = res.Data.List;
       state.tableData.total = res.Data.RecordCount;
-      setTimeout(() => {
-        state.tableData.loading = false;
-      }, 500);
     }else{
       state.tableData.data=[]
-      setTimeout(() => {
-        state.tableData.loading = false;
-      }, 500);
     }
-
+    state.tableData.loading = false;
   })
-
 };
+
 const compareTime=(nextAt:any)=>{
   var convertedTime = new Date(nextAt)
   return convertedTime.getTime() < new Date().getTime();
@@ -201,7 +200,7 @@ const onTaskList=(row: any)=>{
 const onLog=(row: any)=>{
   logDialogRef.value.openDialog(row);
 }
-// 删除用户
+// 删除
 const onDel = (row: any) => {
 	ElMessageBox.confirm(`此操作将永久删除：“${row.Name}”，是否继续?`, '提示', {
 		confirmButtonText: '确认',
@@ -210,7 +209,7 @@ const onDel = (row: any) => {
 	})
 		.then(() => {
       // 删除逻辑
-      serverApi.taskDel({"TaskGroupId":row.Id}).then(function (res){
+      serverApi.taskDel({"taskGroupName":row.Name}).then(function (res){
         if (res.Status){
           getTableData();
           ElMessage.success('删除成功');
@@ -240,7 +239,7 @@ const onIsEnable=(row: any)=>{
   })
       .then(() => {
         // 设置状态
-        serverApi.taskGroupSetEnable({"taskGroupId":row.Id,"enable":setEnable}).then(function (res){
+        serverApi.taskGroupSetEnable({"taskGroupName":row.Name,"enable":setEnable}).then(function (res){
           if (res.Status){
             getTableData();
             if(setEnable){

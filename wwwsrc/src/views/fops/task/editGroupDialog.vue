@@ -5,12 +5,12 @@
 				<el-row :gutter="35">
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item label="任务名称">
-							<el-input v-model="state.ruleForm.Name" placeholder="请输入任务名称" clearable></el-input>
+							<el-input v-model="state.ruleForm.Name" placeholder="请输入任务名称" readonly></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
 						<el-form-item label="版本">
-							<el-input v-model="state.ruleForm.Ver" placeholder="请输入版本" clearable readonly></el-input>
+							<el-input v-model="state.ruleForm.Ver" placeholder="请输入版本" readonly></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24" class="mb20">
@@ -79,7 +79,6 @@ const emit = defineEmits(['refresh']);
 const gitDialogFormRef = ref();
 const state = reactive({
 	ruleForm: {
-    Id:0, //编号
     Name: '', // 任务名称
     Ver: 1, // 版本
     Caption: '', // 任务标题
@@ -106,12 +105,11 @@ const openDialog = (type: string, row: any) => {
 		state.dialog.submitTxt = '修 改';
 
     // 详情
-    var url='/basicapi/taskGroup/info-'+row.Id
+    var url='/basicapi/taskGroup/info-'+row.Name
     serverApi.taskGroupInfo(url).then(function (res){
       if (res.Status){
         var row=res.Data
         // 绑定数据
-        state.ruleForm.Id=row.Id
         state.ruleForm.Name=row.Name
         state.ruleForm.Ver=row.Ver
         state.ruleForm.Caption=row.Caption
@@ -127,7 +125,6 @@ const openDialog = (type: string, row: any) => {
 		state.dialog.title = '新增任务';
 		state.dialog.submitTxt = '新 增';
 
-    state.ruleForm.Id=0
     state.ruleForm.Name=""
     state.ruleForm.Ver=0
     state.ruleForm.Caption=""
@@ -168,7 +165,6 @@ const onSubmit = () => {
 
   // 提交数据
   var param={
-    "Id":state.ruleForm.Id,
     "Name":state.ruleForm.Name,
     "Ver":state.ruleForm.Ver,
     "Caption":state.ruleForm.Caption,

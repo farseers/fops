@@ -2,7 +2,7 @@
 	<div class="system-user-container layout-padding">
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
-				<el-input size="default" v-model="state.taskGroupId" placeholder="请输入任务组ID" style="max-width: 180px"> </el-input>
+				<el-input size="default" v-model="state.taskGroupName" placeholder="请输入任务组ID" style="max-width: 180px"> </el-input>
         <el-select v-model="state.logLevel" placeholder="请选择日志等级" clearable class="ml10">
           <el-option label="全部" :value="-1"></el-option>
           <el-option label="Trace" :value="0"></el-option>
@@ -90,7 +90,7 @@ const editDialog = defineAsyncComponent(() => import('/src/views/fops/task/editG
 const editDialogRef = ref();
 const state = reactive({
   keyWord:'',
-  taskGroupId:'',
+  taskGroupName:'',
   logLevel:-1,
 	tableData: {
 		data: [],
@@ -109,7 +109,7 @@ const getTableData = () => {
 
   const params = new URLSearchParams();
   params.append('logLevel', state.logLevel.toString());
-  params.append('taskGroupId', state.taskGroupId.toString());
+  params.append('taskGroupName', state.taskGroupName.toString());
   params.append('pageSize', state.tableData.param.pageSize.toString());
   params.append('pageIndex', state.tableData.param.pageNum.toString());
 

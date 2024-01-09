@@ -26,9 +26,13 @@
 				</el-button>
 			</div>
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
-        <el-table-column prop="Id" label="序号" width="60" />
         <el-table-column label="名称" style="line-height: 45px;height: 45px">
           <template #default="scope">
+            <div style="float: left;padding-right: 10px;padding-top: 5px">
+              <el-tag size="small" cursor="cursor" @click="onIsEnable(scope.row)" v-if="scope.row.IsEnable">启用</el-tag>
+              <el-tag size="small" cursor="cursor" @click="onIsEnable(scope.row)" v-else type="info">停用</el-tag>
+              <!--                      <el-switch v-model="scope.row.IsEnable" @click="onIsEnable(scope.row)" inline-prompt active-text="启用" inactive-text="停用"></el-switch>-->
+            </div>
             <div style="float: left;padding-right: 10px;padding-top: 5px">
               <el-tag size="small" v-if="scope.row.Task.Status==0" type="info">未开始</el-tag>
               <el-tag size="small" v-if="scope.row.Task.Status==1" type="success">调度中</el-tag>
@@ -69,8 +73,10 @@
         </el-table-column>
         <el-table-column label="客户端信息" width="180" show-overflow-tooltip>
           <template #default="scope">
-            <span>{{scope.row.Task.Client.Name}}</span><br>
-            <span>{{scope.row.Task.Client.Ip}}:{{scope.row.Task.Client.Port}}</span>
+            <div v-for="(item, index) in scope.row.Clients.slice(0, 3)" :key="index">
+              <el-tag size="small">{{item.Name}} {{item.Ip}}:{{item.Port}}</el-tag>
+              <span v-if="scope.row.Clients.length>3">更多</span>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="150">
@@ -151,21 +157,22 @@ const getTableData = () => {
     if (res.Status){
       state.tableData.data = res.Data.List;
       state.tableData.total = res.Data.RecordCount;
-        state.tableData.loading = false;
     }else{
       state.tableData.data=[]
-        state.tableData.loading = false;
     }
-
+    state.tableData.loading = false;
   })
-
 };
+
 const compareTime=(nextAt:any)=>{
   var convertedTime = new Date(nextAt)
   return convertedTime.getTime() < new Date().getTime();
 }
 const onDetail=(row: any)=>{
   detailDialogRef.value.openDialog(row);
+}
+const onQuery=()=>{
+  getTableData();
 }
 const onEdit=(type: string, row: any)=>{
   editDialogRef.value.openDialog(type, row);
@@ -176,36 +183,72 @@ const onTaskList=(row: any)=>{
 const onLog=(row: any)=>{
   logDialogRef.value.openDialog(row);
 }
-// 删除用户
+// 删除
 const onDel = (row: any) => {
-	ElMessageBox.confirm(`此操作将永久删除：“${row.Name}”，是否继续?`, '提示', {
-		confirmButtonText: '确认',
-		cancelButtonText: '取消',
-		type: 'warning',
-	})
-		.then(() => {
-      // 删除逻辑
-      serverApi.taskDel({"TaskGroupId":row.Id}).then(function (res){
-        if (res.Status){
-          getTableData();
-          ElMessage.success('删除成功');
-        }else{
-          ElMessage.error(res.StatusMessage)
-        }
+  ElMessageBox.confirm(`此操作将永久删除：“${row.Name}”，是否继续?`, '提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+      .then(() => {
+        // 删除逻辑
+        serverApi.taskDel({"taskGroupName":row.Name}).then(function (res){
+          if (res.Status){
+            getTableData();
+            ElMessage.success('删除成功');
+          }else{
+            ElMessage.error(res.StatusMessage)
+          }
+        })
       })
-		})
-		.catch(() => {});
+      .catch(() => {});
 };
+//启用停用
+const onIsEnable=(row: any)=>{
+  var setEnable=row.IsEnable
+  var tips=""
+  if(setEnable){
+    setEnable=false
+    tips="停用"
+  }else{
+    setEnable=true
+    tips="启用"
+  }
+
+  ElMessageBox.confirm(`该任务即将：“${tips}”，是否继续?`, '提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+      .then(() => {
+        // 设置状态
+        serverApi.taskGroupSetEnable({"taskGroupName":row.Name,"enable":setEnable}).then(function (res){
+          if (res.Status){
+            getTableData();
+            if(setEnable){
+              ElMessage.success('启用-成功');
+            }else{
+              ElMessage.success('停用-成功');
+            }
+
+          }else{
+            ElMessage.error(res.StatusMessage)
+          }
+        })
+      })
+      .catch(() => {});
+}
 // 分页改变
 const onHandleSizeChange = (val: number) => {
-	state.tableData.param.pageSize = val;
-	getTableData();
+  state.tableData.param.pageSize = val;
+  getTableData();
 };
 // 分页改变
 const onHandleCurrentChange = (val: number) => {
-	state.tableData.param.pageNum = val;
-	getTableData();
+  state.tableData.param.pageNum = val;
+  getTableData();
 };
+
 // 页面加载时
 onMounted(() => {
 	getTableData();

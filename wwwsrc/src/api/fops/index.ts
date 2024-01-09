@@ -164,7 +164,7 @@ export function fopsApi() {
 				url: '/basicapi/task/list?'+param,
 				method: 'get',
 			});
-		},taskGroupInfo: (url:string,param: object) => {
+		},taskGroupInfo: (url:string) => {
 			return requestFSGet({
 				url: url,
 				method: 'get',
