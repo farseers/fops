@@ -162,7 +162,7 @@ watch(() => state.enable, (newValue, oldValue) => {
 const getTableData = () => {
 	state.tableData.loading = true;
   const params = new URLSearchParams();
-  params.append('name', state.keyWord);
+  params.append('taskGroupName', state.keyWord);
   params.append('enable', state.enable.toString());
   params.append('taskStatus', state.taskStatus.toString());
   params.append('clientId', state.clientId);
