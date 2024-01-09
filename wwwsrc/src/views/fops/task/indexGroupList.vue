@@ -2,6 +2,11 @@
 	<div class="system-user-container layout-padding">
 		<el-card shadow="hover" class="layout-padding-auto">
 			<div class="system-user-search mb15">
+        <label>客户端名称</label>
+        <el-select class="ml10" style="max-width: 150px;margin-right: 5px;" size="small" v-model="state.appName">
+          <el-option label="全部" value=""></el-option>
+          <el-option v-for="item in state.appData" :label="item.AppName" :value="item.AppName" ></el-option>
+        </el-select>
 				<el-input size="default" v-model="state.keyWord" placeholder="请输入任务名称" clearable style="max-width: 180px"> </el-input>
         <el-input size="default" v-model="state.clientId" placeholder="请输入客户端ID" clearable style="max-width: 180px"  class="ml10"> </el-input>
         <el-select v-model="state.enable" placeholder="请选择运行状态"  class="ml10" @change="onEnableChange">
@@ -133,6 +138,7 @@ const taskDialogRef = ref();
 const logDialogRef = ref();
 const state = reactive({
   keyWord:'',
+  appName:'',
   enable:-1,
   taskStatus:-1,
   clientId:'',
@@ -145,7 +151,8 @@ const state = reactive({
 			pageSize: 10,
 		},
 	},
-  NowTime:new Date()
+  NowTime:new Date(),
+  appData:[],
 });
 
 // 监听 state.taskStatus 的变化
@@ -158,10 +165,25 @@ watch(() => state.enable, (newValue, oldValue) => {
   getTableData()
 });
 
+watch(() => state.appName, (newValue, oldValue) => {
+  getTableData()
+});
+
+const getAppData=()=>{
+  serverApi.appsList({}).then(function (res){
+    if (res.Status){
+      state.appData=res.Data
+    }else{
+      state.appData=[]
+    }
+  })
+}
+
 // 初始化表格数据
 const getTableData = () => {
 	state.tableData.loading = true;
   const params = new URLSearchParams();
+  params.append('clientName', state.appName);
   params.append('taskGroupName', state.keyWord);
   params.append('enable', state.enable.toString());
   params.append('taskStatus', state.taskStatus.toString());
@@ -276,6 +298,7 @@ onMounted(() => {
   // 等待下一次 DOM 更新后再执行代码
   nextTick(() => {
     getTableData();
+    getAppData();
   });
 });
 </script>
